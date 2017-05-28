@@ -8,13 +8,16 @@ var config = {
     entry: {main:APP_DIR + '/main.jsx'},
     output: {
         path: BUILD_DIR,
-        filename: '/js/[name].bundle.js'
+        filename: './js/[name].bundle.js'
     },
     module: {
         loaders: [{
             test: /\.jsx?/,
             include: APP_DIR,
-            loader: 'babel-loader'
+            loader: 'babel-loader',
+            query: {
+                presets:['react']
+            }
         }, {
             test: /\.less$/,
             include: APP_DIR,

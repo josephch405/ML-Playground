@@ -1,12 +1,32 @@
 require("./main.less");
-import knn from './knn'
+import React from 'react'
+import ReactDOM from 'react-dom'
+
+import UI from './ui'
+import Store from './store'
+import Knn from './knn'
+import Canvas from './canvas'
 
 var c = document.getElementById("canvas");
 var ctx = c.getContext("2d");
 
-ctx.canvas.width = window.innerHeight * .8;
-ctx.canvas.height = window.innerHeight * .8;
+ctx.canvas.width = 600;
+ctx.canvas.height = 600;
 
+const canvas = new Canvas(c);
+const store = new Store();
+const knn = new Knn();
+canvas.linkToStore(store);
+store.linkClassif(knn)
+
+ReactDOM.render(
+    <UI setClass = {(brush) => {canvas.setBrush(brush)}}/>,
+    document.getElementById('options')
+)
+
+c.addEventListener('click', (evt)=>{canvas.onPointAdded(evt)}, false)
+
+/*
 function writeMessage(context, message) {
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.font = '18pt Calibri';
@@ -34,8 +54,6 @@ function getMousePos(canvas, evt) {
     };
 }
 
-
-
 c.addEventListener('mousemove', function(evt) {
     var mousePos = getMousePos(c, evt);
     drawCursor(ctx, mousePos);
@@ -46,3 +64,4 @@ c.addEventListener('click', function(evt) {
     var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
     writeMessage(ctx, message);
 }, false)
+*/
