@@ -1,33 +1,21 @@
 import {array} from 'lodash'
 
-var knn = {
-	setData: [],
-	createNewSet: function(_n = 0, _c = '#FF0000'){
-		return {
-			name: _n,
-			color: _c,
-			points: []
+export class Knn {
+	Constructor(){
+		this.xTr = [];
+		this.yTr = [];
+		this.isRegression = false;
+	}
+	addPt(xTr, yTr){
+		if(typeof yTr == "number"){
+			//might wanna include error throwing if xTr is badly formed
+			this.xTr.push(xTr);
+			this.yTr.push(yTr);
 		}
-	},
-	indexFromName: function(n){
-		for (var i = 0; i < setData.size; i ++){
-			if (this.setData.name + "" == n + "")
-				return i
-		}
-		return null
-	},
-	addPointTo:function(n, pt){
-		var ind = this.indexFromName(n);
-		if(ind != null){
-			this.setData[ind].points.push(pt)
-		}
-	},
-	getPointsFrom:function(n){
-		var ind = this.indexFromName(n);
-		if(ind != null){
-			return this.setData[ind].points
+	}
+	classif(x, y){
+		for (var i = 0; i < xTr.length; i ++){
+			
 		}
 	}
 }
-
-export default knn;
