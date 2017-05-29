@@ -20,7 +20,7 @@ canvas.linkToStore(store);
 store.linkClassif(knn)
 
 ReactDOM.render(
-    <UI setClass = {(brush) => {canvas.setBrush(brush)}}/>,
+    <UI setClass = {(brush) => {canvas.setBrush(brush)}} train = {() => {canvas.trainAndClassif()}}/>,
     document.getElementById('options')
 )
 

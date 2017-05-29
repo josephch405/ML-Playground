@@ -14,16 +14,8 @@ export default class Canvas {
 		this.brush = S.class1;
 	}
 	getMousePos(evt){
-		return [evt.clientX - this.rect.left, 
-		evt.clientY - this.rect.top]
-    }
-    plotWithClassif(classifier, isRegression){
-    	//classifier takes in x, y, returns some output - int or maybe float
-    	for(var i = 0; i < WIDTH; i++){
-    		for (var ii = 0; ii < HEIGHT; ii++){
-
-    		}
-    	}
+		return [evt.clientX - this.rect.left - WIDTH / 2, 
+		evt.clientY - this.rect.top - HEIGHT / 2]
     }
     setBrush(brush){
     	this.brush = brush;
@@ -45,12 +37,15 @@ export default class Canvas {
     drawStoreTr(){
     	let xTr = this.store.xTr;
     	let yTr = this.store.yTr;
-    	console.log(xTr)
-    	console.log(yTr)
     	for(var i = 0; i < xTr.length; i ++){
-    		console.log(yTr[i])
-    		console.log(S.colors)
     		this.drawPoint(xTr[i][0], xTr[i][1], S.colors[yTr[i]])
+    	}
+    }
+    drawBgWithClassif(classif){
+    	for (var i = -WIDTH / 2; i <= WIDTH / 2; i += 5){
+    		for (var ii = -HEIGHT / 2; ii <= HEIGHT / 2; ii += 5){
+    			this.drawPixel(i, ii, S.bgColors[classif(i, ii)]);
+    		}
     	}
     }
     clearCtx(){
@@ -58,6 +53,27 @@ export default class Canvas {
     }
     drawPoint(x, y, color){
     	this.ctx.fillStyle = color;
-    	this.ctx.fillRect(x - PSIZE/2, y - PSIZE/2, PSIZE, PSIZE)
+    	this.ctx.fillRect(
+    		x - PSIZE/2 + WIDTH / 2, 
+    		y - PSIZE/2 + HEIGHT / 2, 
+    		PSIZE, 
+    		PSIZE
+    	)
+    }
+    drawPixel(x, y, color){
+    	this.ctx.fillStyle = color;
+    	this.ctx.fillRect(
+    		x + WIDTH / 2, 
+    		y + HEIGHT / 2, 
+    		2, 
+    		2
+    	)
+    }
+    trainAndClassif(){
+    	this.currentClassif = this.store.trainAndClassif();
+    	this.clearCtx();
+    	console.log(this.currentClassif);
+    	this.drawBgWithClassif(this.currentClassif);
+    	this.drawStoreTr();
     }
 }
