@@ -1,4 +1,5 @@
-import S from "./s"
+import S from "./s";
+import React from "react";
 
 export default class Knn {
 	constructor(){
@@ -17,6 +18,10 @@ export default class Knn {
 		this.yTr.push(yTr);
 		//}
 		return;
+	}
+	setTraining(xTr, yTr){
+		this.xTr = xTr;
+		this.yTr = yTr;
 	}
 	classif(x, y){
 		var result = this.w[0] * x + this.w[1] * y + this.w[2];
@@ -39,11 +44,12 @@ export default class Knn {
 	train(){
 		this.w = [0,0,0];
 		var allGood = false;
-		while(!allGood){
+		var iters = 10000;
+		while(!allGood && iters > 0){
 			var misClassed = 0;
 			for(var i = 0; i< this.xTr.length; i ++){
-				var pr = this.classif(this.xTr[i][0], this.xTr[i][1]);
-				if(this.yTr[i] != this.pr2cl(pr)){
+				var pred = this.classif(this.xTr[i][0], this.xTr[i][1]);
+				if(this.yTr[i] != pred){
 					misClassed += 1;
 					let y = this.cl2pr(this.yTr[i]);
 					this.w[0] += y * this.xTr[i][0];
@@ -53,6 +59,7 @@ export default class Knn {
 			}
 			if(misClassed === 0)
 				allGood = true;
+			iters --;
 		}
 
 		return;
@@ -69,5 +76,33 @@ export default class Knn {
 	}
 	getClassif(){
 		return (x, y) => this.classif(x, y);
+	}
+	uiInstance(){
+		//var setK = this.setK.bind(this);//this.setK.bind(this);
+		return(
+			class PerceptronUI extends React.Component{
+				constructor(props){
+					super(props);
+					// this.state = {
+					// 	value: ""
+					// };
+					// this.onChange = this.onChange.bind(this);
+				}
+				// onChange(e){
+				// 	if(setK(e.target.value)) {
+				// 		this.setState({
+				// 			value: e.target.value
+				// 		});
+				// 	}
+				// }
+				render(){
+					return(
+						<div>
+							Non yet
+						</div>
+					);
+				}
+			}
+		);
 	}
 }

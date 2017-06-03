@@ -8,6 +8,7 @@ import ReactDOM from "react-dom";
 import UI from "./ui";
 import Store from "./store";
 import Knn from "./knn";
+import Perceptron from "./perceptron";
 import Canvas from "./canvas";
 
 var c = document.getElementById("canvas");
@@ -18,16 +19,18 @@ ctx.canvas.height = 400;
 
 const canvas = new Canvas(c);
 const store = new Store();
-const knn = new Knn();
+//const knn = new Knn();
+const classif = new Perceptron();
 canvas.linkToStore(store);
-store.linkClassif(knn);
+//store.linkClassif(knn);
+store.linkClassif(classif);
 
 
 
 ReactDOM.render(
     <UI setClass = {(brush) => {canvas.setBrush(brush);}} 
         train = {() => {canvas.trainAndClassif();}}
-        modelUI = {knn.uiInstance()} />,
+        modelUI = {classif.uiInstance()} />,
     document.getElementById("options")
 );
 

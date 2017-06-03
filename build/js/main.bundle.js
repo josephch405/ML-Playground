@@ -9725,7 +9725,7 @@ class Knn {
 		};
 	}
 }
-/* harmony export (immutable) */ __webpack_exports__["a"] = Knn;
+/* unused harmony export default */
 
 
 /***/ }),
@@ -9801,30 +9801,35 @@ class UI extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 			"div",
 			{ id: "brushes" },
+			"Click to add data points:",
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 				"label",
 				{ id: "class1" },
 				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { value: __WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].class1, type: "radio", checked: this.state.selected == __WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].class1, onChange: e => {
 						this.handleChange(e);
-					} }),
-				"Class 1"
+					} })
 			),
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 				"label",
 				{ id: "class2" },
 				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { value: __WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].class2, type: "radio", checked: this.state.selected == __WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].class2, onChange: e => {
 						this.handleChange(e);
-					} }),
-				"Class 2"
+					} })
 			),
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 				"label",
 				{ id: "class3" },
 				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { value: __WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].class3, type: "radio", checked: this.state.selected == __WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].class3, onChange: e => {
 						this.handleChange(e);
-					} }),
-				"Class 3"
+					} })
 			),
+			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("br", null),
+			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+				"h3",
+				null,
+				"Parameters:"
+			),
+			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(ModelUI, null),
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("br", null),
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 				"button",
@@ -9832,8 +9837,7 @@ class UI extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 						this.train();
 					} },
 				"Train"
-			),
-			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(ModelUI, null)
+			)
 		);
 	}
 }
@@ -9891,10 +9895,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ui__ = __webpack_require__(85);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__store__ = __webpack_require__(84);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__knn__ = __webpack_require__(83);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__canvas__ = __webpack_require__(82);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__perceptron__ = __webpack_require__(197);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__canvas__ = __webpack_require__(82);
 
 
 //import * as css from "main.less";
+
 
 
 
@@ -9910,11 +9916,13 @@ var ctx = c.getContext("2d");
 ctx.canvas.width = 400;
 ctx.canvas.height = 400;
 
-const canvas = new __WEBPACK_IMPORTED_MODULE_6__canvas__["a" /* default */](c);
+const canvas = new __WEBPACK_IMPORTED_MODULE_7__canvas__["a" /* default */](c);
 const store = new __WEBPACK_IMPORTED_MODULE_4__store__["a" /* default */]();
-const knn = new __WEBPACK_IMPORTED_MODULE_5__knn__["a" /* default */]();
+//const knn = new Knn();
+const classif = new __WEBPACK_IMPORTED_MODULE_6__perceptron__["a" /* default */]();
 canvas.linkToStore(store);
-store.linkClassif(knn);
+//store.linkClassif(knn);
+store.linkClassif(classif);
 
 __WEBPACK_IMPORTED_MODULE_2_react_dom___default.a.render(__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__ui__["a" /* default */], { setClass: brush => {
         canvas.setBrush(brush);
@@ -9922,7 +9930,7 @@ __WEBPACK_IMPORTED_MODULE_2_react_dom___default.a.render(__WEBPACK_IMPORTED_MODU
     train: () => {
         canvas.trainAndClassif();
     },
-    modelUI: knn.uiInstance() }), document.getElementById("options"));
+    modelUI: classif.uiInstance() }), document.getElementById("options"));
 
 c.addEventListener("click", evt => {
     canvas.onPointAdded(evt);
@@ -11895,7 +11903,7 @@ exports = module.exports = __webpack_require__(92)(undefined);
 
 
 // module
-exports.push([module.i, "body,\nhtml {\n  margin: 0;\n}\n#canvasDiv {\n  text-align: center;\n}\n#options {\n  margin: 10px;\n}\ncanvas {\n  display: inline;\n  margin: 20px;\n  width: 400px;\n  height: 400px;\n  box-shadow: 0 0 2px 0 black;\n}\n#brushes > label {\n  color: white;\n  padding: 8px;\n  margin: 8px;\n  border-radius: 4px;\n}\n#brushes > #class1 {\n  background-color: #FF5400;\n}\n#brushes > #class2 {\n  background-color: #9900D8;\n}\n#brushes > #class3 {\n  background-color: #4444FF;\n}\nh1 {\n  margin-top: 5%;\n  margin-bottom: 5%;\n  padding-bottom: 2%;\n  border: black solid;\n  border-width: 0 0 5px 0;\n}\n", ""]);
+exports.push([module.i, "body,\nhtml {\n  margin: 0;\n  font-family: Open Sans;\n}\n#canvasDiv {\n  text-align: center;\n}\n#options {\n  margin: 10px;\n  line-height: 120%;\n}\ncanvas {\n  display: inline;\n  margin: 20px;\n  width: 400px;\n  height: 400px;\n  box-shadow: 0 0 2px 0 black;\n}\n#brushes > label {\n  color: white;\n  padding: 8px;\n  margin: 8px;\n  border-radius: 4px;\n}\n#brushes > #class1 {\n  background-color: #FF5400;\n}\n#brushes > #class1:hover {\n  background-color: #FF9059;\n}\n#brushes > #class2 {\n  background-color: #9900D8;\n}\n#brushes > #class2:hover {\n  background-color: #CA49FF;\n}\n#brushes > #class3 {\n  background-color: #4444FF;\n}\n#brushes > #class3:hover {\n  background-color: #8686FF;\n}\nh1 {\n  margin-top: 5%;\n  margin-bottom: 5%;\n  padding-bottom: 2%;\n  border: black solid;\n  border-width: 0 0 5px 0;\n}\n", ""]);
 
 // exports
 
@@ -24941,6 +24949,120 @@ try {
 // easier to handle this case. if(!global) { ...}
 
 module.exports = g;
+
+
+/***/ }),
+/* 197 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__s__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_react__);
+
+
+
+class Knn {
+	constructor() {
+		this.xTr = [];
+		this.yTr = [];
+		this.w = [0, 0, 0];
+		this.isRegression = false;
+	}
+	addPt(xTr, yTr) {
+		yTr = parseInt(yTr);
+		/*console.log(yTr)
+  console.log(typeof yTr)
+  if(typeof yTr == "number"){*/
+		//might wanna include error throwing if xTr is badly formed
+		this.xTr.push(xTr);
+		this.yTr.push(yTr);
+		//}
+		return;
+	}
+	setTraining(xTr, yTr) {
+		this.xTr = xTr;
+		this.yTr = yTr;
+	}
+	classif(x, y) {
+		var result = this.w[0] * x + this.w[1] * y + this.w[2];
+		return this.pr2cl(result);
+	}
+	maxIndex(arr) {
+		var bestIndex = -1;
+		var bestVar = -Infinity;
+		for (var i = 0; i < arr.length; i++) {
+			if (arr[i] > bestVar) {
+				bestVar = arr[i];
+				bestIndex = i;
+			}
+		}
+		return bestIndex;
+	}
+	dist(x1, y1, x2, y2) {
+		return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+	}
+	train() {
+		this.w = [0, 0, 0];
+		var allGood = false;
+		var iters = 10000;
+		while (!allGood && iters > 0) {
+			var misClassed = 0;
+			for (var i = 0; i < this.xTr.length; i++) {
+				var pred = this.classif(this.xTr[i][0], this.xTr[i][1]);
+				if (this.yTr[i] != pred) {
+					misClassed += 1;
+					let y = this.cl2pr(this.yTr[i]);
+					this.w[0] += y * this.xTr[i][0];
+					this.w[1] += y * this.xTr[i][1];
+					this.w[2] += y * 1;
+				}
+			}
+			if (misClassed === 0) allGood = true;
+			iters--;
+		}
+
+		return;
+	}
+	pr2cl(pr) {
+		if (pr > 0) return __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].class1;
+		return __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].class2;
+	}
+	cl2pr(cl) {
+		if (cl == __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].class1) return 1;
+		return -1;
+	}
+	getClassif() {
+		return (x, y) => this.classif(x, y);
+	}
+	uiInstance() {
+		//var setK = this.setK.bind(this);//this.setK.bind(this);
+		return class PerceptronUI extends __WEBPACK_IMPORTED_MODULE_1_react___default.a.Component {
+			constructor(props) {
+				super(props);
+				// this.state = {
+				// 	value: ""
+				// };
+				// this.onChange = this.onChange.bind(this);
+			}
+			// onChange(e){
+			// 	if(setK(e.target.value)) {
+			// 		this.setState({
+			// 			value: e.target.value
+			// 		});
+			// 	}
+			// }
+			render() {
+				return __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+					"div",
+					null,
+					"Non yet"
+				);
+			}
+		};
+	}
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = Knn;
 
 
 /***/ })
