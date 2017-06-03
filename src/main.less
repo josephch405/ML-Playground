@@ -2,9 +2,44 @@ body, html{
 	margin:0
 }
 
+#canvasDiv{
+	text-align: center;
+}
+
+#options{
+	margin: 10px;
+}
+
 canvas{
+	display:inline;
 	margin: 20px;
-	width:600px;
-	height:600px;
+	width:400px;
+	height:400px;
 	box-shadow: 0 0 2px 0 black;
+}
+
+#brushes {
+	>label{
+		color:white;
+		padding: 8px;
+		margin: 8px;
+		border-radius: 4px;
+	}
+	>#class1{
+		background-color: #FF5400;
+	}
+	>#class2{
+		background-color: #9900D8;
+	}
+	>#class3{
+		background-color: #4444FF;
+	}
+}
+
+h1{
+	margin-top: 5%;
+	margin-bottom: 5%;
+	padding-bottom: 2%;
+	border: black solid;
+	border-width: 0 0 5px 0;
 }

@@ -1,10 +1,12 @@
-import {array} from 'lodash'
+
+import React from "react";
+
 
 export default class Knn {
 	constructor(){
 		this.xTr = [];
 		this.yTr = [];
-		this.k = 6;
+		this.k = 3;
 		this.isRegression = false;
 	}
 	addPt(xTr, yTr){
@@ -13,10 +15,14 @@ export default class Knn {
 		console.log(typeof yTr)
 		if(typeof yTr == "number"){*/
 			//might wanna include error throwing if xTr is badly formed
-			this.xTr.push(xTr);
-			this.yTr.push(yTr);
+		this.xTr.push(xTr);
+		this.yTr.push(yTr);
 		//}
 		return;
+	}
+	setTraining(xTr, yTr){
+		this.xTr = xTr;
+		this.yTr = yTr;
 	}
 	classif(x, y){
 		var knn_xTr_dist = [];
@@ -32,11 +38,8 @@ export default class Knn {
 					notInserted = false;
 				}
 				else if (knn_xTr_dist[ii] > dist){
-					console.log("DOOO")
-					console.log(knn_yTr)
 					knn_xTr_dist.splice(ii, 0, dist);
 					knn_yTr.splice(ii, 0, this.yTr[i]);
-					console.log(knn_yTr)
 					notInserted = false;
 					knn_xTr_dist = knn_xTr_dist.slice(0, this.k);
 					knn_yTr = knn_yTr.slice(0, this.k);
@@ -68,6 +71,41 @@ export default class Knn {
 		return;
 	}
 	getClassif(){
-		return (x, y) => {return this.classif(x, y)};
+		return (x, y) => this.classif(x, y);
+	}
+	setK(k){
+		var _k = parseInt(k);
+		if(isNaN(_k) && k != "") return false;
+		if(k != "")
+			this.k = _k;
+		return true;
+	}
+	uiInstance(){
+		var setK = this.setK.bind(this);//this.setK.bind(this);
+		return(
+			class KnnUi extends React.Component{
+				constructor(props){
+					super(props);
+					this.state = {
+						value: ""
+					};
+					this.onChange = this.onChange.bind(this);
+				}
+				onChange(e){
+					if(setK(e.target.value)) {
+						this.setState({
+							value: e.target.value
+						});
+					}
+				}
+				render(){
+					return(
+						<div>
+							K: <input value = {this.state.value} onChange = {this.onChange}/>
+						</div>
+					);
+				}
+			}
+		);
 	}
 }

@@ -13,11 +13,12 @@ export default class Store{
 	addPoint(xTr, yTr){
 		this.xTr.push(xTr);
 		this.yTr.push(yTr);
-		this.classif.addPt(xTr, yTr);
+		this.classif.setTraining(this.xTr, this.yTr);
 	}
 	clearStore(){
 		this.xTr = [];
 		this.yTr = [];
+		this.classif.setTraining(this.xTr, this.yTr);
 	}
 	linkClassif(classif){
 		this.classif = classif;
