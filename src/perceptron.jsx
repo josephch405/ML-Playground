@@ -1,7 +1,7 @@
 import S from "./s";
 import React from "react";
 
-export default class Knn {
+export default class Perceptron {
 	constructor(){
 		this.xTr = [];
 		this.yTr = [];

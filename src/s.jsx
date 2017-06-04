@@ -11,7 +11,10 @@ let S = {
 		1: "#FFBE7B",
 		2: "#F763FF",
 		3: "#BBBBFF" 
-	}
+	},
+	model: [
+		"knn", "perceptron"
+	]
 };
 
-export default S
+export default S;

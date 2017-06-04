@@ -22,6 +22,7 @@ export default class Store{
 	}
 	linkClassif(classif){
 		this.classif = classif;
+		this.classif.setTraining(this.xTr, this.yTr);
 	}
 	trainAndClassif(){
 		this.classif.train();

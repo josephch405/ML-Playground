@@ -54,3 +54,29 @@ h1{
 	border: black solid;
 	border-width: 0 0 5px 0;
 }
+
+#model-selector{
+	> div{
+		display: inline-block;
+		padding: 10px;
+		border-width: 4px;
+		border-style: solid;
+		border-color: #DDD;
+		border-radius: 5px;
+		margin: 5px;
+		text-align: center;
+		background-color: #FFFFFF;
+
+		&.true{
+			border-color: #000;
+		}
+
+		&:hover{
+			border-color: #777;
+		}
+
+		img{
+			width: 80px;
+		}
+	}
+}
