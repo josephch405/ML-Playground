@@ -1,5 +1,5 @@
-let WIDTH = 600;
-let HEIGHT = 600;
+let WIDTH = 400;
+let HEIGHT = 400;
 let PSIZE = 6;
 
 import S from "./s";

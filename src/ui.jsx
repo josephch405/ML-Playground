@@ -6,8 +6,9 @@ import S from "./s";
 
 import Knn from "./knn";
 import Perceptron from "./perceptron";
+import Linear from "./linear";
 
-const modelList = [new Knn(), new Perceptron()];
+const modelList = [new Knn(), new Perceptron(), new Linear()];
 const modelUiList = modelList.map(function(model){
 	return model.uiInstance();
 });
@@ -50,6 +51,7 @@ export default class UI extends React.Component{
 			<div id = "model-selector">
 				<div className = {this.state.modelSelected == S.model[0]} onClick = {() => this.changeModel(S.model[0])}><img src = "./build/img/knn.png"/> <h4>K-NN</h4> </div>
 				<div className = {this.state.modelSelected == S.model[1]} onClick = {() => this.changeModel(S.model[1])}><img src = "./build/img/perceptron.png"/> <h4> Perceptron </h4> </div>
+				<div className = {this.state.modelSelected == S.model[2]} onClick = {() => this.changeModel(S.model[2])}><img src = "./build/img/linear.png"/> <h4> Linear Least Squares</h4> </div>
 			</div>
 
 			<div id = "brushes">
