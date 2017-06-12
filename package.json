@@ -33,7 +33,9 @@
   "dependencies": {
     "babel-preset-react": "^6.24.1",
     "bootstrap": "^3.3.7",
+    "node-svm": "^2.1.8",
     "react": "^15.5.4",
-    "react-dom": "^15.5.4"
+    "react-dom": "^15.5.4",
+    "svm": "^0.1.1"
   }
 }
