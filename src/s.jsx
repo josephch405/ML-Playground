@@ -13,7 +13,7 @@ let S = {
 		3: "#BBBBFF" 
 	},
 	model: [
-		"knn", "perceptron", "svm"
+		"knn", "perceptron", "svm", "ann"
 	]
 };
 

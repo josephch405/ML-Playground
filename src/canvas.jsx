@@ -47,6 +47,25 @@ export default class Canvas {
 				this.drawPixel(i, ii, S.bgColors[classif(i, ii)]);
 			}
 		}
+		/*function drawNow(i, ii){
+			this.drawPixel(i, ii, S.bgColors[classif(i, ii)]);
+			if(ii > HEIGHT / 2){
+				if(i > WIDTH / 2){
+					//done!
+				}
+				else{
+					i += 1;
+					ii = -HEIGHT/2;
+					window.setTimeout(function() {drawNow(i, ii)}, 0);
+				}
+			}
+			else{
+				ii += 1;
+				window.setTimeout(function() {drawNow(i, ii)}, 0);
+			}
+		}
+		drawNow = drawNow.bind(this)
+		window.setTimeout(function() {drawNow(-WIDTH/2, -HEIGHT/2)}, 0);*/
 	}
 	clearCtx(){
 		this.ctx.clearRect(0, 0, WIDTH, HEIGHT);
