@@ -35512,16 +35512,22 @@ class Canvas {
 		//rect is offset of canvas in window
 		this.rect = canvas.getBoundingClientRect();
 		this.brush = __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].class1;
+		this.bgInput = [];
+		for (var i = -WIDTH / 2; i <= WIDTH / 2; i += 2) {
+			for (var ii = -HEIGHT / 2; ii <= HEIGHT / 2; ii += 2) {
+				this.bgInput.push([i, ii]);
+			}
+		}
 	}
 	getMousePos(evt) {
+		this.rect = this.canvasElem.getBoundingClientRect();
 		return [evt.clientX - this.rect.left - WIDTH / 2, -(evt.clientY - this.rect.top - HEIGHT / 2)];
+	}
+	clearCtx() {
+		this.ctx.clearRect(0, 0, WIDTH, HEIGHT);
 	}
 	setBrush(brush) {
 		this.brush = brush;
-	}
-	plotWithTr(xTr, yTr) {//, isRegression){
-		//takes in data points to plot
-		//type: "c" vs "r"
 	}
 	linkToStore(store) {
 		this.store = store;
@@ -35537,50 +35543,48 @@ class Canvas {
 		let xTr = this.store.xTr;
 		let yTr = this.store.yTr;
 		for (var i = 0; i < xTr.length; i++) {
-			this.drawPoint(xTr[i][0], xTr[i][1], __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].colors[yTr[i]]);
+			this.drawPoint(xTr[i][0], xTr[i][1], yTr[i]);
 		}
 	}
 	drawBgWithClassif(classif) {
 		for (var i = -WIDTH / 2; i <= WIDTH / 2; i += 2) {
 			for (var ii = -HEIGHT / 2; ii <= HEIGHT / 2; ii += 2) {
-				this.drawPixel(i, ii, __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].bgColors[classif(i, ii)]);
+				this.drawPixel(i, ii, classif(i, ii));
 			}
 		}
-		/*function drawNow(i, ii){
-  	this.drawPixel(i, ii, S.bgColors[classif(i, ii)]);
-  	if(ii > HEIGHT / 2){
-  		if(i > WIDTH / 2){
-  			//done!
-  		}
-  		else{
-  			i += 1;
-  			ii = -HEIGHT/2;
-  			window.setTimeout(function() {drawNow(i, ii)}, 0);
-  		}
-  	}
-  	else{
-  		ii += 1;
-  		window.setTimeout(function() {drawNow(i, ii)}, 0);
-  	}
-  }
-  drawNow = drawNow.bind(this)
-  window.setTimeout(function() {drawNow(-WIDTH/2, -HEIGHT/2)}, 0);*/
 	}
-	clearCtx() {
-		this.ctx.clearRect(0, 0, WIDTH, HEIGHT);
+	batchDrawBg(batchClassif, callback) {
+		var err = () => {
+			console.log("Error!");
+		};
+		var ok = () => {
+			console.log("Error!");
+		};
+		batchClassif(this.bgInput).then(this.batchDrawPoint);
 	}
-	drawPoint(x, y, color) {
-		this.ctx.fillStyle = color;
+	drawPoint(x, y, cl) {
+		this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].colors[cl];
 		this.ctx.fillRect(x - PSIZE / 2 + WIDTH / 2, -y - PSIZE / 2 + HEIGHT / 2, PSIZE, PSIZE);
 	}
-	drawPixel(x, y, color) {
-		this.ctx.fillStyle = color;
+	batchDrawPoint(xTr, yTr) {
+		return new Promise((ok, err) => {
+			for (var i = 0; i < xTr.length; i++) {
+				this.drawPoint(xTr[i][0], xTr[i][1], yTr[i]);
+			}
+			ok();
+		});
+	}
+	//draws background pixel at x, y, of class cl
+	//synchronous
+	drawPixel(x, y, cl) {
+		this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].bgColors[cl];
 		this.ctx.fillRect(x + WIDTH / 2, -y + HEIGHT / 2, 2, 2);
 	}
-	trainAndClassif() {
-		this.currentClassif = this.store.trainAndClassif();
+	trainAndClassif(callback) {
 		this.clearCtx();
+		this.currentClassif = this.store.trainAndClassif();
 		this.drawBgWithClassif(this.currentClassif);
+
 		this.drawStoreTr();
 	}
 }
@@ -36044,6 +36048,14 @@ class Knn {
 		this.xTr = xTr;
 		this.yTr = yTr;
 	}
+	batchClassif(input) {
+		return new Promise((ok, err) => {
+			var output = input.map(i => {
+				return this.classif(i[0], i[1]);
+			});
+			ok(input, output);
+		});
+	}
 	classif(x, y) {
 		var knn_xTr_dist = [];
 		var knn_yTr = [];
@@ -36252,11 +36264,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ui__ = __webpack_require__(226);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__store__ = __webpack_require__(225);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__canvas__ = __webpack_require__(224);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__s__ = __webpack_require__(44);
 
 
 //import * as css from "main.less";
-
 
 
 
@@ -36286,46 +36296,6 @@ __WEBPACK_IMPORTED_MODULE_2_react_dom___default.a.render(__WEBPACK_IMPORTED_MODU
 c.addEventListener("click", evt => {
 	canvas.onPointAdded(evt);
 }, false);
-
-/*
-function writeMessage(context, message) {
-	context.clearRect(0, 0, canvas.width, canvas.height);
-	context.font = "18pt Calibri";
-	context.fillStyle = "black";
-	context.fillText(message, 10, 25);
-}
-
-function drawCursor(context, mousePos) {
-	context.clearRect(0, 0, canvas.width, canvas.height);
-	var radius = 6;
-	context.beginPath();
-	context.arc(mousePos.x, mousePos.y, radius, 0, 2 * Math.PI, false);
-	//context.fillStyle = "#00000000";
-	//context.fill();
-	context.lineWidth = 1;
-	context.strokeStyle = "#003300";
-	context.stroke();
-}
-
-function getMousePos(canvas, evt) {
-	var rect = canvas.getBoundingClientRect();
-	return {
-		x: evt.clientX - rect.left,
-		y: evt.clientY - rect.top
-	};
-}
-
-c.addEventListener("mousemove", function(evt) {
-	var mousePos = getMousePos(c, evt);
-	drawCursor(ctx, mousePos);
-}, false);
-
-c.addEventListener("click", function(evt) {
-	var mousePos = getMousePos(c, evt);
-	var message = "Mouse position: " + mousePos.x + "," + mousePos.y;
-	writeMessage(ctx, message);
-}, false)
-*/
 
 /***/ }),
 /* 233 */
@@ -39660,7 +39630,7 @@ exports = module.exports = __webpack_require__(239)(undefined);
 
 
 // module
-exports.push([module.i, "body,\nhtml {\n  margin: 0;\n  font-family: Open Sans;\n}\n#canvasDiv {\n  text-align: center;\n}\n#options {\n  margin: 10px;\n  line-height: 120%;\n}\ncanvas {\n  display: inline;\n  margin: 20px;\n  width: 400px;\n  height: 400px;\n  box-shadow: 0 0 2px 0 black;\n}\n#brushes > label {\n  color: white;\n  padding: 8px;\n  margin: 8px;\n  border-radius: 4px;\n}\n#brushes > #class1 {\n  background-color: #FF5400;\n}\n#brushes > #class1:hover {\n  background-color: #FF9059;\n}\n#brushes > #class2 {\n  background-color: #9900D8;\n}\n#brushes > #class2:hover {\n  background-color: #CA49FF;\n}\n#brushes > #class3 {\n  background-color: #4444FF;\n}\n#brushes > #class3:hover {\n  background-color: #8686FF;\n}\nh1 {\n  margin-top: 5%;\n  margin-bottom: 5%;\n  padding-bottom: 2%;\n  border: black solid;\n  border-width: 0 0 5px 0;\n}\n#model-selector > div {\n  display: inline-block;\n  padding: 10px;\n  width: 108px;\n  height: 160px;\n  border-width: 4px;\n  border-style: solid;\n  border-color: #DDD;\n  border-radius: 5px;\n  margin: 5px;\n  text-align: center;\n  background-color: #FFFFFF;\n  float: left;\n}\n#model-selector > div h4 {\n  font-size: 14px;\n}\n#model-selector > div.true {\n  border-color: #000;\n}\n#model-selector > div:hover {\n  border-color: #777;\n}\n#model-selector > div img {\n  width: 80px;\n}\n", ""]);
+exports.push([module.i, "body,\nhtml {\n  margin: 0;\n  font-family: 'Roboto Slab', serif;\n}\n#canvasDiv {\n  text-align: center;\n}\n#options {\n  margin: 10px;\n  line-height: 120%;\n}\ncanvas {\n  display: inline;\n  margin: 20px;\n  width: 400px;\n  height: 400px;\n  box-shadow: 0 0 2px 0 black;\n}\n#brushes > label {\n  color: white;\n  padding: 8px;\n  margin: 8px;\n  border-radius: 4px;\n}\n#brushes > #class1 {\n  background-color: #FF5400;\n}\n#brushes > #class1:hover {\n  background-color: #FF9059;\n}\n#brushes > #class2 {\n  background-color: #9900D8;\n}\n#brushes > #class2:hover {\n  background-color: #CA49FF;\n}\n#brushes > #class3 {\n  background-color: #4444FF;\n}\n#brushes > #class3:hover {\n  background-color: #8686FF;\n}\nh1 {\n  margin-top: 5%;\n  margin-bottom: 5%;\n  padding-bottom: 2%;\n  border: black solid;\n  border-width: 0 0 5px 0;\n}\n#model-selector > div {\n  display: inline-block;\n  padding: 10px;\n  width: 108px;\n  height: 160px;\n  border-width: 4px;\n  border-style: solid;\n  border-color: #DDD;\n  border-radius: 5px;\n  margin: 5px;\n  text-align: center;\n  background-color: #FFFFFF;\n  float: left;\n}\n#model-selector > div h4 {\n  font-size: 14px;\n}\n#model-selector > div.true {\n  border-color: #000;\n}\n#model-selector > div:hover {\n  border-color: #777;\n}\n#model-selector > div img {\n  width: 80px;\n}\n", ""]);
 
 // exports
 

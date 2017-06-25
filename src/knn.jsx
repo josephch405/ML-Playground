@@ -22,6 +22,14 @@ export default class Knn {
 		this.xTr = xTr;
 		this.yTr = yTr;
 	}
+	batchClassif(input){
+		return new Promise((ok, err) => {
+			var output = input.map((i)=>{
+				return this.classif(i[0], i[1]);
+			});
+			ok(input, output);
+		});
+	}
 	classif(x, y){
 		var knn_xTr_dist = [];
 		var knn_yTr = [];
