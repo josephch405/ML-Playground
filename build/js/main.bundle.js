@@ -7258,7 +7258,11 @@ let S = {
 		2: "#F763FF",
 		3: "#BBBBFF"
 	},
-	model: ["knn", "perceptron", "svm", "ann"]
+	model: ["knn", "perceptron", "svm", "ann"],
+	canvasW: 400,
+	canvasH: 400,
+	ptSize: 6,
+	bgReso: 2
 };
 
 /* harmony default export */ __webpack_exports__["a"] = (S);
@@ -35499,13 +35503,17 @@ module.exports = g;
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__s__ = __webpack_require__(44);
-let WIDTH = 400;
-let HEIGHT = 400;
-let PSIZE = 6;
 
 
+let WIDTH = __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].canvasW;
+let HEIGHT = __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].canvasH;
+let PSIZE = __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].ptSize;
+let BGRESO = __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].bgReso;
+let H_INTERV = HEIGHT / BGRESO;
+let W_INTERV = WIDTH / BGRESO;
 
 class Canvas {
+	//setup and simple helpers
 	constructor(canvas) {
 		this.canvasElem = canvas;
 		this.ctx = canvas.getContext("2d");
@@ -35513,11 +35521,14 @@ class Canvas {
 		this.rect = canvas.getBoundingClientRect();
 		this.brush = __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].class1;
 		this.bgInput = [];
-		for (var i = -WIDTH / 2; i <= WIDTH / 2; i += 2) {
-			for (var ii = -HEIGHT / 2; ii <= HEIGHT / 2; ii += 2) {
+		for (var i = -W_INTERV; i <= W_INTERV; i += BGRESO) {
+			for (var ii = -H_INTERV; ii <= H_INTERV; ii += BGRESO) {
 				this.bgInput.push([i, ii]);
 			}
 		}
+		this.batchEvalPixels = this.batchEvalPixels.bind(this);
+		this.batchDrawPixels = this.batchDrawPixels.bind(this);
+		this.drawStoreTr = this.drawStoreTr.bind(this);
 	}
 	getMousePos(evt) {
 		this.rect = this.canvasElem.getBoundingClientRect();
@@ -35526,6 +35537,9 @@ class Canvas {
 	clearCtx() {
 		this.ctx.clearRect(0, 0, WIDTH, HEIGHT);
 	}
+	//---
+
+	//used by main.jsx
 	setBrush(brush) {
 		this.brush = brush;
 	}
@@ -35539,6 +35553,21 @@ class Canvas {
 		this.clearCtx();
 		this.drawStoreTr();
 	}
+	//---
+
+
+	//synchronous drawing functions
+	drawPixel(x, y, cl) {
+		this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].bgColors[cl];
+		this.ctx.fillRect(x + WIDTH / 2, -y + HEIGHT / 2, BGRESO, BGRESO);
+	}
+	drawPoint(x, y, cl) {
+		this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].colors[cl];
+		this.ctx.fillRect(x - PSIZE / 2 + WIDTH / 2, -y - PSIZE / 2 + HEIGHT / 2, PSIZE, PSIZE);
+	}
+	//---
+
+	//promise based functions
 	drawStoreTr() {
 		let xTr = this.store.xTr;
 		let yTr = this.store.yTr;
@@ -35546,46 +35575,26 @@ class Canvas {
 			this.drawPoint(xTr[i][0], xTr[i][1], yTr[i]);
 		}
 	}
-	drawBgWithClassif(classif) {
-		for (var i = -WIDTH / 2; i <= WIDTH / 2; i += 2) {
-			for (var ii = -HEIGHT / 2; ii <= HEIGHT / 2; ii += 2) {
-				this.drawPixel(i, ii, classif(i, ii));
-			}
-		}
+	batchEvalPixels(batchClassif) {
+		return new Promise(ok => {
+			batchClassif(this.bgInput).then(ok);
+		});
 	}
-	batchDrawBg(batchClassif, callback) {
-		var err = () => {
-			console.log("Error!");
-		};
-		var ok = () => {
-			console.log("Error!");
-		};
-		batchClassif(this.bgInput).then(this.batchDrawPoint);
-	}
-	drawPoint(x, y, cl) {
-		this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].colors[cl];
-		this.ctx.fillRect(x - PSIZE / 2 + WIDTH / 2, -y - PSIZE / 2 + HEIGHT / 2, PSIZE, PSIZE);
-	}
-	batchDrawPoint(xTr, yTr) {
+	batchDrawPixels(input) {
+		var xTr = input[0];
+		var yTr = input[1];
 		return new Promise((ok, err) => {
 			for (var i = 0; i < xTr.length; i++) {
-				this.drawPoint(xTr[i][0], xTr[i][1], yTr[i]);
+				this.drawPixel(xTr[i][0], xTr[i][1], yTr[i]);
 			}
 			ok();
 		});
 	}
-	//draws background pixel at x, y, of class cl
-	//synchronous
-	drawPixel(x, y, cl) {
-		this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].bgColors[cl];
-		this.ctx.fillRect(x + WIDTH / 2, -y + HEIGHT / 2, 2, 2);
-	}
-	trainAndClassif(callback) {
-		this.clearCtx();
-		this.currentClassif = this.store.trainAndClassif();
-		this.drawBgWithClassif(this.currentClassif);
+	//---
 
-		this.drawStoreTr();
+	trainAndClassif() {
+		this.clearCtx();
+		this.store.batchTrainAndClassif().then(this.batchEvalPixels).then(this.batchDrawPixels).then(this.drawStoreTr);
 	}
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Canvas;
@@ -35622,9 +35631,11 @@ class Store {
 		this.classif = classif;
 		this.classif.setTraining(this.xTr, this.yTr);
 	}
-	trainAndClassif() {
-		this.classif.train();
-		return this.classif.getClassif();
+	batchTrainAndClassif() {
+		return new Promise((ok, err) => {
+			this.classif.train();
+			ok(this.classif.getClassif());
+		});
 	}
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Store;
@@ -35668,6 +35679,7 @@ class UI extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 			modelSelected: __WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].model[0],
 			modelUi: modelUiList[0]
 		};
+		this.handleChange = this.handleChange.bind(this);
 	}
 	componentDidMount() {
 		this.changeModel(this.state.modelSelected);
@@ -35686,6 +35698,7 @@ class UI extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 			modelUi: modelUiList[i]
 		});
 		this.props.store.linkClassif(modelList[i]);
+		this.props.renderInfo(modelList[i].info());
 	}
 	train() {
 		this.props.train();
@@ -35694,6 +35707,19 @@ class UI extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 			"div",
 			null,
+			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+				"div",
+				{ id: "brushes" },
+				"Click to add data points:",
+				[__WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].class1, __WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].class2, __WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].class3].map(i => {
+					return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+						"div",
+						{ key: i },
+						__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { id: "br-" + i, value: i, type: "radio", checked: this.state.brushSelected == i, onChange: this.handleChange }),
+						__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("label", { htmlFor: "br-" + i })
+					);
+				})
+			),
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 				"div",
 				{ id: "model-selector" },
@@ -35745,33 +35771,6 @@ class UI extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 					),
 					" "
 				)
-			),
-			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-				"div",
-				{ id: "brushes" },
-				"Click to add data points:",
-				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-					"label",
-					{ id: "class1" },
-					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { value: __WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].class1, type: "radio", checked: this.state.brushSelected == __WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].class1, onChange: e => {
-							this.handleChange(e);
-						} })
-				),
-				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-					"label",
-					{ id: "class2" },
-					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { value: __WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].class2, type: "radio", checked: this.state.brushSelected == __WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].class2, onChange: e => {
-							this.handleChange(e);
-						} })
-				),
-				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-					"label",
-					{ id: "class3" },
-					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { value: __WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].class3, type: "radio", checked: this.state.brushSelected == __WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].class3, onChange: e => {
-							this.handleChange(e);
-						} })
-				),
-				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("br", null)
 			),
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 				"h3",
@@ -35839,28 +35838,18 @@ if(false) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_mathjs__ = __webpack_require__(136);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_mathjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_mathjs__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__mlmodel__ = __webpack_require__(721);
 
 
 
 
-class Ann {
+
+class Ann extends __WEBPACK_IMPORTED_MODULE_3__mlmodel__["a" /* default */] {
 	constructor() {
-		this.xTr = [];
-		this.yTr = [];
+		super();
 		this.hiddenCount = 20;
 		this.A = [__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.matrix(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.random([this.hiddenCount, 2], -.5, .5)), __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.matrix(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.random([1, this.hiddenCount], -.5, .5))];
 		this.b = [__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.matrix(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.random([1, this.hiddenCount], -1, 1).valueOf()[0]), 0];
-		this.isRegression = false;
-	}
-	addPt(xTr, yTr) {
-		yTr = parseInt(yTr);
-		this.xTr.push(xTr);
-		this.yTr.push(yTr);
-		return;
-	}
-	setTraining(xTr, yTr) {
-		this.xTr = xTr;
-		this.yTr = yTr;
 	}
 	relu(input) {
 		input.resize([input.size()[0], 2], 0);
@@ -35878,29 +35867,25 @@ class Ann {
 		x[2] = this.tanh(ax[1]);
 		return this.pr2cl(x[2].valueOf()[0]);
 	}
+	vvMult(v1, v2) {
+		v1 = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.transpose(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.matrix([v1]));
+		v2 = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.matrix([v2]);
+		var ret = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.multiply(v1, v2);
+		if (typeof ret == "number") return __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.matrix([[ret]]);
+		if (ret.size().length == 1) return __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.matrix([ret]);
+		return ret;
+	}
+	shuffle(a, b) {
+		for (let i = a.length; i; i--) {
+			let j = Math.floor(Math.random() * i);
+			[a[i - 1], a[j]] = [a[j], a[i - 1]];
+			[b[i - 1], b[j]] = [b[j], b[i - 1]];
+		}
+	}
 	train() {
 		this.A = [__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.matrix(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.random([this.hiddenCount, 2], -.5, .5)), __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.matrix(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.random([1, this.hiddenCount], -.5, .5))];
 		this.b = [__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.matrix(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.random([1, this.hiddenCount], -.1, .1).valueOf()[0]), __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.matrix(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.random([1, 1], -.1, .1).valueOf()[0])];
-		function vvMult(v1, v2) {
-			v1 = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.transpose(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.matrix([v1]));
-			v2 = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.matrix([v2]);
-			var ret = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.multiply(v1, v2);
-			if (typeof ret == "number") return __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.matrix([[ret]]);
-			if (ret.size().length == 1) return __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.matrix([ret]);
-			return ret;
-		}
 
-		function toArr(input) {
-			if (input.size) {
-				return __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.squeeze(input);
-			}
-			if (input.length) {
-				return input;
-			}
-			return [input];
-		}
-
-		// console.log("init")
 		var alpha = 0.03;
 		var self = this;
 		var yTr = this.yTr.map(function (i) {
@@ -35909,20 +35894,11 @@ class Ann {
 		var xTr = this.xTr.map(function (i) {
 			return __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.divide(i.slice(), 50);
 		});
-		function shuffle(a, b) {
-			for (let i = a.length; i; i--) {
-				let j = Math.floor(Math.random() * i);
-				[a[i - 1], a[j]] = [a[j], a[i - 1]];
-				[b[i - 1], b[j]] = [b[j], b[i - 1]];
-			}
-		}
 		//var g = [0, 0];
 		var err = 0;
-		// console.log("cycle")
 		for (var i = 0; i < 2000; i++) {
 			err = 0;
-			shuffle(xTr, yTr);
-			// console.log("wtf")
+			this.shuffle(xTr, yTr);
 			var _A = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.clone(this.A);
 			var _b = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.clone(this.b);
 			for (var ii = 0; ii < xTr.length; ii++) {
@@ -35938,42 +35914,24 @@ class Ann {
 				delta[1] = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.multiply(diff, __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.subtract(1, __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.square(z[2])));
 				err += Math.abs(diff);
 				for (var l = 1; l >= 0; l--) {
-					_A[l] = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.subtract(_A[l], __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.chain(alpha).multiply(vvMult(delta[l], z[l])).done());
-					// console.log("l: ", l, "A[l]: ", _A[l])
-					// console.log("_b")
-					// console.log(_b[l], delta[l])
+					_A[l] = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.subtract(_A[l], __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.chain(alpha).multiply(this.vvMult(delta[l], z[l])).done());
 					_b[l] = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.subtract(_b[l], __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.squeeze(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.multiply(alpha, delta[l])));
-					// console.log("l: ", l, "b[l]: ", _b[l])
 					if (l != 0) {
-						// console.log("bin bin bin")
 						var der = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.subtract(1, __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.square(z[l]));
-						// console.log(der)
 						var tpDelt = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.squeeze(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.multiply(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.transpose(this.A[l]), delta[l]));
-						// console.log(tpDelt)
 						var d = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.dotMultiply(der, tpDelt);
-						// console.log(d)
 						delta[l - 1] = d;
-						//g[l-1] = m.add(m.multiply(g[l-1], .2), delta[l-1]);
-						// console.log("l: ", l-1, "delta[l]: ", delta[l-1])
-
-						//g[l - 1] = m.add(m.multiply(g[l - 1], .2), delta[l - 1]);
 					}
 				}
-				//_b[1] = 0;
 			}
 			this.A = _A;
 			this.b = _b;
 			err /= xTr.length;
-			if (i % 100 == 0) console.log(err);
 			if (err < 0.05) {
 				break;
 			}
 			//alpha *= .95
 		}
-		console.log(err);
-
-		console.log(this.A, this.b);
-		console.log(xTr, yTr);
 		return;
 	}
 	pr2cl(pr) {
@@ -35983,9 +35941,6 @@ class Ann {
 	cl2pr(cl) {
 		if (cl == __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].class1) return 1;
 		return -1;
-	}
-	getClassif() {
-		return (x, y) => this.classif(x, y);
 	}
 	uiInstance() {
 		//var setK = this.setK.bind(this);//this.setK.bind(this);
@@ -36013,6 +35968,9 @@ class Ann {
 			}
 		};
 	}
+	info() {
+		return __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement("div", null);
+	}
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Ann;
 
@@ -36024,37 +35982,14 @@ class Ann {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(45);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mlmodel__ = __webpack_require__(721);
 
 
-class Knn {
+
+class Knn extends __WEBPACK_IMPORTED_MODULE_1__mlmodel__["a" /* default */] {
 	constructor() {
-		this.xTr = [];
-		this.yTr = [];
+		super();
 		this.k = 3;
-		this.isRegression = false;
-	}
-	addPt(xTr, yTr) {
-		yTr = parseInt(yTr);
-		/*console.log(yTr)
-  console.log(typeof yTr)
-  if(typeof yTr == "number"){*/
-		//might wanna include error throwing if xTr is badly formed
-		this.xTr.push(xTr);
-		this.yTr.push(yTr);
-		//}
-		return;
-	}
-	setTraining(xTr, yTr) {
-		this.xTr = xTr;
-		this.yTr = yTr;
-	}
-	batchClassif(input) {
-		return new Promise((ok, err) => {
-			var output = input.map(i => {
-				return this.classif(i[0], i[1]);
-			});
-			ok(input, output);
-		});
 	}
 	classif(x, y) {
 		var knn_xTr_dist = [];
@@ -36098,12 +36033,6 @@ class Knn {
 	dist(x1, y1, x2, y2) {
 		return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 	}
-	train() {
-		return;
-	}
-	getClassif() {
-		return (x, y) => this.classif(x, y);
-	}
 	setK(k) {
 		var _k = parseInt(k);
 		if (isNaN(_k) && k != "") return false;
@@ -36111,12 +36040,13 @@ class Knn {
 		return true;
 	}
 	uiInstance() {
-		var setK = this.setK.bind(this); //this.setK.bind(this);
+		var self = this;
+		var setK = this.setK.bind(this);
 		return class KnnUi extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 			constructor(props) {
 				super(props);
 				this.state = {
-					value: ""
+					value: self.k
 				};
 				this.onChange = this.onChange.bind(this);
 			}
@@ -36132,10 +36062,37 @@ class Knn {
 					"div",
 					null,
 					"K: ",
-					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { value: this.state.value, onChange: this.onChange })
+					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { type: "text", value: this.state.value, onChange: this.onChange })
 				);
 			}
 		};
+	}
+	info() {
+		return this.generateInfo("K Nearest Neighbors", "Birds of a feather flock together", __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+			"div",
+			null,
+			"Picks the ",
+			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+				"b",
+				null,
+				"k closest points from training data"
+			),
+			", then decides prediction via popular vote."
+		), ["k (\u2265 1): number of closest neighbors to select"], ["Binary Classification", "Multi-class Classification", "Regression"], __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+			"div",
+			null,
+			"A simple and straightforward algorithm. The underlying assumption is that ",
+			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+				"b",
+				null,
+				"datapoints close to each other share the same label"
+			),
+			".",
+			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("br", null),
+			"Analogy: if I hang out with CS majors, then I'm probably also a CS major (or that one Philosophy major who's minoring in everything.)",
+			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("br", null),
+			"Note: distance can be defined different ways, such as Manhattan (sum of all features), Euclidean (geometric distance), p-norm distance...typically Euclidean is used, but Manhattan can be faster and thus preferable."
+		), ["Simple to implement"], ["Parametric - size of model grows as training data grows. It could take a long time to compute distances for billions of datapoints.", "Curse of Dimensionality - "]);
 	}
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Knn;
@@ -36151,50 +36108,21 @@ class Knn {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_mathjs__ = __webpack_require__(136);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_mathjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_mathjs__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__mlmodel__ = __webpack_require__(721);
 
 
 
 
-class Linear {
+
+class Linear extends __WEBPACK_IMPORTED_MODULE_3__mlmodel__["a" /* default */] {
 	constructor() {
-		this.xTr = [];
-		this.yTr = [];
+		super();
 		this.w = [0, 0, 0];
-		this.isRegression = false;
-	}
-	addPt(xTr, yTr) {
-		yTr = parseInt(yTr);
-		/*console.log(yTr)
-  console.log(typeof yTr)
-  if(typeof yTr == "number"){*/
-		//might wanna include error throwing if xTr is badly formed
-		this.xTr.push(xTr);
-		this.yTr.push(yTr);
-		//}
-		return;
-	}
-	setTraining(xTr, yTr) {
-		this.xTr = xTr;
-		this.yTr = yTr;
 	}
 	classif(x, y) {
 		var result = this.w[0] * x + this.w[1] * y + this.w[2];
 		//console.log(this)
 		return this.pr2cl(result);
-	}
-	maxIndex(arr) {
-		var bestIndex = -1;
-		var bestVar = -Infinity;
-		for (var i = 0; i < arr.length; i++) {
-			if (arr[i] > bestVar) {
-				bestVar = arr[i];
-				bestIndex = i;
-			}
-		}
-		return bestIndex;
-	}
-	dist(x1, y1, x2, y2) {
-		return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 	}
 	train() {
 		var xAp = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.concat(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.matrix(this.xTr), __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.ones(this.xTr.length, 1));
@@ -36207,17 +36135,6 @@ class Linear {
 		var xy = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.multiply(xTrans, yTr_conv);
 		this.w = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.multiply(inv, xy).valueOf();
 		return;
-	}
-	pr2cl(pr) {
-		if (pr > 0) return __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].class1;
-		return __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].class2;
-	}
-	cl2pr(cl) {
-		if (cl == __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].class1) return 1;
-		return -1;
-	}
-	getClassif() {
-		return (x, y) => this.classif(x, y);
 	}
 	uiInstance() {
 		//var setK = this.setK.bind(this);//this.setK.bind(this);
@@ -36264,6 +36181,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ui__ = __webpack_require__(226);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__store__ = __webpack_require__(225);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__canvas__ = __webpack_require__(224);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__s__ = __webpack_require__(44);
 
 
 //import * as css from "main.less";
@@ -36275,15 +36193,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
+
+
 var c = document.getElementById("canvas");
 var ctx = c.getContext("2d");
 
-ctx.canvas.width = 400;
-ctx.canvas.height = 400;
+ctx.canvas.width = __WEBPACK_IMPORTED_MODULE_6__s__["a" /* default */].canvasW;
+ctx.canvas.height = __WEBPACK_IMPORTED_MODULE_6__s__["a" /* default */].canvasH;
 
 const canvas = new __WEBPACK_IMPORTED_MODULE_5__canvas__["a" /* default */](c);
 const store = new __WEBPACK_IMPORTED_MODULE_4__store__["a" /* default */]();
 canvas.linkToStore(store);
+
+var renderInfo = info => {
+	__WEBPACK_IMPORTED_MODULE_2_react_dom___default.a.render(info, document.getElementById("infoPanel"));
+};
 
 __WEBPACK_IMPORTED_MODULE_2_react_dom___default.a.render(__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__ui__["a" /* default */], { setClass: brush => {
 		canvas.setBrush(brush);
@@ -36291,7 +36215,8 @@ __WEBPACK_IMPORTED_MODULE_2_react_dom___default.a.render(__WEBPACK_IMPORTED_MODU
 	train: () => {
 		canvas.trainAndClassif();
 	},
-	store: store }), document.getElementById("options"));
+	store: store,
+	renderInfo: renderInfo }), document.getElementById("options"));
 
 c.addEventListener("click", evt => {
 	canvas.onPointAdded(evt);
@@ -36305,30 +36230,15 @@ c.addEventListener("click", evt => {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__s__ = __webpack_require__(44);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react__ = __webpack_require__(45);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__mlmodel__ = __webpack_require__(721);
 
 
 
-class Perceptron {
+
+class Perceptron extends __WEBPACK_IMPORTED_MODULE_2__mlmodel__["a" /* default */] {
 	constructor() {
-		this.xTr = [];
-		this.yTr = [];
+		super();
 		this.w = [0, 0, 0];
-		this.isRegression = false;
-	}
-	addPt(xTr, yTr) {
-		yTr = parseInt(yTr);
-		/*console.log(yTr)
-  console.log(typeof yTr)
-  if(typeof yTr == "number"){*/
-		//might wanna include error throwing if xTr is badly formed
-		this.xTr.push(xTr);
-		this.yTr.push(yTr);
-		//}
-		return;
-	}
-	setTraining(xTr, yTr) {
-		this.xTr = xTr;
-		this.yTr = yTr;
 	}
 	classif(x, y) {
 		var result = this.w[0] * x + this.w[1] * y + this.w[2];
@@ -36367,19 +36277,7 @@ class Perceptron {
 			if (misClassed === 0) allGood = true;
 			iters--;
 		}
-
 		return;
-	}
-	pr2cl(pr) {
-		if (pr > 0) return __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].class1;
-		return __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].class2;
-	}
-	cl2pr(cl) {
-		if (cl == __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].class1) return 1;
-		return -1;
-	}
-	getClassif() {
-		return (x, y) => this.classif(x, y);
 	}
 	uiInstance() {
 		//var setK = this.setK.bind(this);//this.setK.bind(this);
@@ -36421,67 +36319,27 @@ class Perceptron {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_svm__ = __webpack_require__(718);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_svm___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_svm__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__mlmodel__ = __webpack_require__(721);
 
 
 
 
-class SVM {
-	constructor() {
-		this.xTr = [];
-		this.yTr = [];
-		this.w = [0, 0, 0];
-		this.isRegression = false;
-	}
-	addPt(xTr, yTr) {
-		yTr = parseInt(yTr);
-		this.xTr.push(xTr);
-		this.yTr.push(yTr);
-		return;
-	}
-	setTraining(xTr, yTr) {
-		this.xTr = xTr;
-		this.yTr = yTr;
-	}
+
+class SVM extends __WEBPACK_IMPORTED_MODULE_3__mlmodel__["a" /* default */] {
 	classif(x, y) {
-
-		return this.int2cl(this.svm.predict([[x, y]])[0]);
-	}
-	maxIndex(arr) {
-		var bestIndex = -1;
-		var bestVar = -Infinity;
-		for (var i = 0; i < arr.length; i++) {
-			if (arr[i] > bestVar) {
-				bestVar = arr[i];
-				bestIndex = i;
-			}
-		}
-		return bestIndex;
+		return this.pr2cl(this.svm.predict([[x / 200, y / 200]])[0]);
 	}
 	train() {
 		var y = this.yTr.map(c => {
-			return this.cl2int(c);
+			return this.cl2pr(c);
 		});
-		console.log(this.xTr);
-		console.log(y);
+		var x = this.xTr.map(c => {
+			return [c[0] / 200, c[1] / 200];
+		});
 		this.svm = new __WEBPACK_IMPORTED_MODULE_2_svm___default.a.SVM();
-		this.svm.train(this.xTr, y, { C: 1, kernel: "rbf", rbfsigma: 40 });
-
-		//this.svm.train(this.xTr, y, {C: 1e5, kernel:"linear", numpasses: 500, tol: 0});
-		console.log(this.svm.margins(this.xTr));
+		this.svm.train(x, y, { C: 100, kernel: "rbf", rbfsigma: .5 });
+		//this.svm.train(x, y, {C: 100, kernel:"linear"});
 		return;
-	}
-	getClassif() {
-		return (x, y) => this.classif(x, y);
-	}
-	int2cl(n) {
-		if (n === 1) return __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].class1;
-		if (n === -1) return __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].class2;
-		return null;
-	}
-	cl2int(cl) {
-		if (cl == __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].class1) return 1;
-		if (cl == __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].class2) return -1;
-		return null;
 	}
 	uiInstance() {
 		//var setK = this.setK.bind(this);//this.setK.bind(this);
@@ -39630,7 +39488,7 @@ exports = module.exports = __webpack_require__(239)(undefined);
 
 
 // module
-exports.push([module.i, "body,\nhtml {\n  margin: 0;\n  font-family: 'Roboto Slab', serif;\n}\n#canvasDiv {\n  text-align: center;\n}\n#options {\n  margin: 10px;\n  line-height: 120%;\n}\ncanvas {\n  display: inline;\n  margin: 20px;\n  width: 400px;\n  height: 400px;\n  box-shadow: 0 0 2px 0 black;\n}\n#brushes > label {\n  color: white;\n  padding: 8px;\n  margin: 8px;\n  border-radius: 4px;\n}\n#brushes > #class1 {\n  background-color: #FF5400;\n}\n#brushes > #class1:hover {\n  background-color: #FF9059;\n}\n#brushes > #class2 {\n  background-color: #9900D8;\n}\n#brushes > #class2:hover {\n  background-color: #CA49FF;\n}\n#brushes > #class3 {\n  background-color: #4444FF;\n}\n#brushes > #class3:hover {\n  background-color: #8686FF;\n}\nh1 {\n  margin-top: 5%;\n  margin-bottom: 5%;\n  padding-bottom: 2%;\n  border: black solid;\n  border-width: 0 0 5px 0;\n}\n#model-selector > div {\n  display: inline-block;\n  padding: 10px;\n  width: 108px;\n  height: 160px;\n  border-width: 4px;\n  border-style: solid;\n  border-color: #DDD;\n  border-radius: 5px;\n  margin: 5px;\n  text-align: center;\n  background-color: #FFFFFF;\n  float: left;\n}\n#model-selector > div h4 {\n  font-size: 14px;\n}\n#model-selector > div.true {\n  border-color: #000;\n}\n#model-selector > div:hover {\n  border-color: #777;\n}\n#model-selector > div img {\n  width: 80px;\n}\n", ""]);
+exports.push([module.i, "body,\nhtml {\n  margin: 0;\n  font-family: 'Roboto Slab', serif;\n}\n* {\n  transition: all 0.2s ease;\n}\n#canvasDiv {\n  text-align: center;\n}\ninput[type=text] {\n  border: none;\n  border-bottom: 2px solid;\n  border-color: black;\n  outline: none;\n  padding: 6px;\n  width: 30px;\n  text-align: center;\n}\ninput[type=text]:focus {\n  border-color: #FF5400;\n}\n#options {\n  padding: 10px;\n  line-height: 120%;\n}\ncanvas {\n  display: inline;\n  margin: 20px;\n  width: 400px;\n  height: 400px;\n  box-shadow: 0 0 3px 0 black;\n}\n#brushes div {\n  display: inline-block;\n  vertical-align: middle;\n}\n#brushes div input {\n  display: none;\n}\n#brushes div label {\n  box-sizing: border-box;\n  color: white;\n  width: 32px;\n  height: 32px;\n  margin: 8px;\n  border-radius: 4px;\n}\n#brushes div label:hover {\n  box-shadow: 0 0 3px 0 black;\n}\n#brushes div #br-1 ~ label {\n  background-color: #FF5400;\n}\n#brushes div #br-1 ~ label:hover {\n  background-color: #FF9059;\n}\n#brushes div #br-2 ~ label {\n  background-color: #9900D8;\n}\n#brushes div #br-2 ~ label:hover {\n  background-color: #CA49FF;\n}\n#brushes div #br-3 ~ label {\n  background-color: #4444FF;\n}\n#brushes div #br-3 ~ label:hover {\n  background-color: #8686FF;\n}\n#brushes div input:checked ~ label {\n  border: 2px solid white;\n  box-shadow: 0 0 6px 0 black;\n}\n#topbar {\n  padding-top: 2%;\n  margin-bottom: 50px;\n  margin-top: 0;\n  padding-bottom: 2%;\n  padding-left: 5%;\n  box-shadow: 0 0 4px 0 black;\n}\n#model-selector {\n  display: inline-block;\n  width: 100%;\n}\n#model-selector > div {\n  display: inline-block;\n  padding: 10px;\n  width: 108px;\n  height: 160px;\n  border-width: 2px;\n  border-style: solid;\n  border-color: #DDD;\n  border-radius: 5px;\n  margin: 5px;\n  text-align: center;\n  background-color: #FFFFFF;\n  float: left;\n}\n#model-selector > div h4 {\n  font-size: 14px;\n}\n#model-selector > div:hover {\n  border-color: #FFF;\n  box-shadow: 0 0 5px 0 black;\n}\n#model-selector > div.true {\n  border-color: #FFF;\n  box-shadow: 0 0 10px 0 black;\n}\n#model-selector > div img {\n  width: 80px;\n}\n#infoPanel {\n  margin-top: 50px;\n  margin-bottom: 120px;\n}\n#infoPanel div,\n#infoPanel ul {\n  font-size: 18px;\n  line-height: 32px;\n  white-space: pre-line;\n}\n#infoPanel ul {\n  list-style: none;\n}\n#infoPanel ul > li:before {\n  content: \"-  \";\n}\n", ""]);
 
 // exports
 
@@ -83949,6 +83807,153 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
   return create();
 }));
+
+
+/***/ }),
+/* 721 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__s__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react__ = __webpack_require__(45);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_react__);
+
+
+
+class MLModel {
+	constructor() {
+		this.xTr = [];
+		this.yTr = [];
+		this.isRegression = false;
+	}
+	setTraining(xTr, yTr) {
+		this.xTr = xTr;
+		this.yTr = yTr;
+	}
+	batchClassif(input) {
+		return new Promise((ok, err) => {
+			var output = input.map(i => {
+				return this.classif(i[0], i[1]);
+			});
+			ok([input, output]);
+		});
+	}
+	classif(x, y) {
+		return;
+	}
+	train() {
+		return;
+	}
+	getClassif() {
+		return this.batchClassif.bind(this);
+	}
+	uiInstance() {
+		return __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+			"div",
+			null,
+			"No options yet."
+		);
+	}
+	info() {
+		return __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+			"div",
+			null,
+			"No info yet."
+		);
+	}
+	pr2cl(pr) {
+		if (pr > 0) return __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].class1;
+		return __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].class2;
+	}
+	cl2pr(cl) {
+		if (cl == __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].class1) return 1;
+		return -1;
+	}
+	generateInfo(name, tldr, expl1, params, usecase, expl2, pros, cons) {
+		return __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+			"div",
+			null,
+			__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				"h1",
+				null,
+				name
+			),
+			__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				"h2",
+				null,
+				"TL;DR - ",
+				tldr
+			),
+			expl1,
+			__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				"h2",
+				null,
+				"Parameters"
+			),
+			__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				"ul",
+				null,
+				params.map(i => {
+					return __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+						"li",
+						null,
+						i
+					);
+				})
+			),
+			__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				"h2",
+				null,
+				"Use Cases:"
+			),
+			__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				"ul",
+				null,
+				usecase.map(i => {
+					return __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+						"li",
+						null,
+						i
+					);
+				})
+			),
+			expl2,
+			__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				"h2",
+				null,
+				"The Good"
+			),
+			__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				"ul",
+				null,
+				pros.map(i => {
+					return __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+						"li",
+						null,
+						i
+					);
+				})
+			),
+			__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				"h2",
+				null,
+				"The Bad"
+			),
+			__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				"ul",
+				null,
+				cons.map(i => {
+					return __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+						"li",
+						null,
+						i
+					);
+				})
+			)
+		);
+	}
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = MLModel;
 
 
 /***/ })

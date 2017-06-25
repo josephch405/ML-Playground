@@ -1,27 +1,11 @@
 import S from "./s";
 import React from "react";
+import MLModel from "./mlmodel";
 
-export default class Perceptron {
+export default class Perceptron extends MLModel {
 	constructor(){
-		this.xTr = [];
-		this.yTr = [];
+		super();
 		this.w = [0, 0, 0];
-		this.isRegression = false;
-	}
-	addPt(xTr, yTr){
-		yTr = parseInt(yTr);
-		/*console.log(yTr)
-		console.log(typeof yTr)
-		if(typeof yTr == "number"){*/
-			//might wanna include error throwing if xTr is badly formed
-		this.xTr.push(xTr);
-		this.yTr.push(yTr);
-		//}
-		return;
-	}
-	setTraining(xTr, yTr){
-		this.xTr = xTr;
-		this.yTr = yTr;
 	}
 	classif(x, y){
 		var result = this.w[0] * x + this.w[1] * y + this.w[2];
@@ -61,21 +45,7 @@ export default class Perceptron {
 				allGood = true;
 			iters --;
 		}
-
 		return;
-	}
-	pr2cl(pr){
-		if (pr > 0)
-			return S.class1;
-		return S.class2;
-	}
-	cl2pr(cl){
-		if(cl == S.class1)
-			return 1;
-		return -1;
-	}
-	getClassif(){
-		return (x, y) => this.classif(x, y);
 	}
 	uiInstance(){
 		//var setK = this.setK.bind(this);//this.setK.bind(this);

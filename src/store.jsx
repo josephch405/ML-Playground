@@ -24,8 +24,10 @@ export default class Store{
 		this.classif = classif;
 		this.classif.setTraining(this.xTr, this.yTr);
 	}
-	trainAndClassif(){
-		this.classif.train();
-		return this.classif.getClassif();
+	batchTrainAndClassif(){
+		return new Promise((ok, err)=>{
+			this.classif.train();
+			ok(this.classif.getClassif());
+		});
 	}
 }

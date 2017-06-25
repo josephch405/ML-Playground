@@ -14,7 +14,11 @@ let S = {
 	},
 	model: [
 		"knn", "perceptron", "svm", "ann"
-	]
+	],
+	canvasW: 400,
+	canvasH: 400,
+	ptSize: 6,
+	bgReso: 2
 };
 
 export default S;

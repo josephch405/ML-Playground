@@ -1,10 +1,14 @@
-let WIDTH = 400;
-let HEIGHT = 400;
-let PSIZE = 6;
-
 import S from "./s";
 
+let WIDTH = S.canvasW;
+let HEIGHT = S.canvasH;
+let PSIZE = S.ptSize;
+let BGRESO = S.bgReso;
+let H_INTERV = HEIGHT / BGRESO;
+let W_INTERV = WIDTH / BGRESO;
+
 export default class Canvas {
+	//setup and simple helpers
 	constructor(canvas){
 		this.canvasElem = canvas;
 		this.ctx = canvas.getContext("2d");
@@ -12,11 +16,14 @@ export default class Canvas {
 		this.rect = canvas.getBoundingClientRect();
 		this.brush = S.class1;
 		this.bgInput = [];
-		for (var i = -WIDTH / 2; i <= WIDTH / 2; i += 2){
-			for (var ii = -HEIGHT / 2; ii <= HEIGHT / 2; ii += 2){
+		for (var i = - W_INTERV; i <= W_INTERV; i += BGRESO){
+			for (var ii = - H_INTERV; ii <= H_INTERV; ii += BGRESO){
 				this.bgInput.push([i, ii]);
 			}
 		}
+		this.batchEvalPixels = this.batchEvalPixels.bind(this);
+		this.batchDrawPixels = this.batchDrawPixels.bind(this);
+		this.drawStoreTr = this.drawStoreTr.bind(this);
 	}
 	getMousePos(evt){
 		this.rect = this.canvasElem.getBoundingClientRect();
@@ -27,6 +34,9 @@ export default class Canvas {
 	clearCtx(){
 		this.ctx.clearRect(0, 0, WIDTH, HEIGHT);
 	}
+	//---
+
+	//used by main.jsx
 	setBrush(brush){
 		this.brush = brush;
 	}
@@ -40,24 +50,18 @@ export default class Canvas {
 		this.clearCtx();
 		this.drawStoreTr();
 	}
-	drawStoreTr(){
-		let xTr = this.store.xTr;
-		let yTr = this.store.yTr;
-		for(var i = 0; i < xTr.length; i ++){
-			this.drawPoint(xTr[i][0], xTr[i][1], yTr[i]);
-		}
-	}
-	drawBgWithClassif(classif){
-		for (var i = -WIDTH / 2; i <= WIDTH / 2; i += 2){
-			for (var ii = -HEIGHT / 2; ii <= HEIGHT / 2; ii += 2){
-				this.drawPixel(i, ii, classif(i, ii));
-			}
-		}
-	}
-	batchDrawBg(batchClassif, callback){
-		var err = () => {console.log("Error!")}
-		var ok = () => {console.log("Error!")}
-		batchClassif(this.bgInput).then(this.batchDrawPoint);
+	//---
+
+
+	//synchronous drawing functions
+	drawPixel(x, y, cl){
+		this.ctx.fillStyle = S.bgColors[cl];
+		this.ctx.fillRect(
+			x + WIDTH / 2, 
+			- y + HEIGHT / 2, 
+			BGRESO, 
+			BGRESO
+		);
 	}
 	drawPoint(x, y, cl){
 		this.ctx.fillStyle = S.colors[cl];
@@ -68,30 +72,38 @@ export default class Canvas {
 			PSIZE
 		);
 	}
-	batchDrawPoint(xTr, yTr){
+	//---
+
+	//promise based functions
+	drawStoreTr(){
+		let xTr = this.store.xTr;
+		let yTr = this.store.yTr;
+		for(var i = 0; i < xTr.length; i ++){
+			this.drawPoint(xTr[i][0], xTr[i][1], yTr[i]);
+		}
+	}
+	batchEvalPixels(batchClassif){
+		return new Promise((ok)=>{
+			batchClassif(this.bgInput).then(ok);
+		});
+	}
+	batchDrawPixels(input){
+		var xTr = input[0];
+		var yTr = input[1];
 		return new Promise((ok, err)=>{
 			for(var i = 0; i < xTr.length; i ++){
-				this.drawPoint(xTr[i][0], xTr[i][1], yTr[i]);
+				this.drawPixel(xTr[i][0], xTr[i][1], yTr[i]);
 			}
 			ok();
 		});
 	}
-	//draws background pixel at x, y, of class cl
-	//synchronous
-	drawPixel(x, y, cl){
-		this.ctx.fillStyle = S.bgColors[cl];
-		this.ctx.fillRect(
-			x + WIDTH / 2, 
-			- y + HEIGHT / 2, 
-			2, 
-			2
-		);
-	}
-	trainAndClassif(callback){
+	//---
+
+	trainAndClassif(){
 		this.clearCtx();
-		this.currentClassif = this.store.trainAndClassif();
-		this.drawBgWithClassif(this.currentClassif);
-		
-		this.drawStoreTr();
+		this.store.batchTrainAndClassif()
+			.then(this.batchEvalPixels)
+			.then(this.batchDrawPixels)
+			.then(this.drawStoreTr);
 	}
 }

@@ -1,34 +1,10 @@
 import React from "react";
+import MLModel from "./mlmodel";
 
-export default class Knn {
+export default class Knn extends MLModel{
 	constructor(){
-		this.xTr = [];
-		this.yTr = [];
+		super();
 		this.k = 3;
-		this.isRegression = false;
-	}
-	addPt(xTr, yTr){
-		yTr = parseInt(yTr);
-		/*console.log(yTr)
-		console.log(typeof yTr)
-		if(typeof yTr == "number"){*/
-			//might wanna include error throwing if xTr is badly formed
-		this.xTr.push(xTr);
-		this.yTr.push(yTr);
-		//}
-		return;
-	}
-	setTraining(xTr, yTr){
-		this.xTr = xTr;
-		this.yTr = yTr;
-	}
-	batchClassif(input){
-		return new Promise((ok, err) => {
-			var output = input.map((i)=>{
-				return this.classif(i[0], i[1]);
-			});
-			ok(input, output);
-		});
 	}
 	classif(x, y){
 		var knn_xTr_dist = [];
@@ -73,12 +49,6 @@ export default class Knn {
 	dist(x1, y1, x2, y2){
 		return Math.sqrt((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2));
 	}
-	train(){
-		return;
-	}
-	getClassif(){
-		return (x, y) => this.classif(x, y);
-	}
 	setK(k){
 		var _k = parseInt(k);
 		if(isNaN(_k) && k != "") return false;
@@ -87,13 +57,14 @@ export default class Knn {
 		return true;
 	}
 	uiInstance(){
-		var setK = this.setK.bind(this);//this.setK.bind(this);
+		var self = this;
+		var setK = this.setK.bind(this);
 		return(
 			class KnnUi extends React.Component{
 				constructor(props){
 					super(props);
 					this.state = {
-						value: ""
+						value: self.k
 					};
 					this.onChange = this.onChange.bind(this);
 				}
@@ -107,11 +78,27 @@ export default class Knn {
 				render(){
 					return(
 						<div>
-							K: <input value = {this.state.value} onChange = {this.onChange}/>
+							K: <input type = "text" value = {this.state.value} onChange = {this.onChange}/>
 						</div>
 					);
 				}
 			}
 		);
+	}
+	info(){
+		return this.generateInfo(
+			"K Nearest Neighbors",
+			"Birds of a feather flock together",
+			<div>Picks the <b>k closest points from training data</b>, then decides prediction via popular vote.</div>,
+			["k (\u2265 1): number of closest neighbors to select"],
+			["Binary Classification", "Multi-class Classification", "Regression"],
+			<div>A simple and straightforward algorithm. The underlying assumption is that <b>datapoints close to each other share the same label</b>.<br/>
+			Analogy: if I hang out with CS majors, then I'm probably also a CS major (or that one Philosophy major who's minoring in everything.)<br/>
+			Note: distance can be defined different ways, such as Manhattan (sum of all features), Euclidean (geometric distance),
+			p-norm distance...typically Euclidean is used, but Manhattan can be faster and thus preferable.</div>,
+			["Simple to implement"],
+			["Parametric - size of model grows as training data grows. It could take a long time to compute distances for billions of datapoints.",
+			"Curse of Dimensionality - "]
+			);
 	}
 }

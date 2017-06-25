@@ -1,68 +1,23 @@
 import S from "./s";
 import React from "react";
 import NodeSvm from "svm";
+import MLModel from "./mlmodel";
 
-export default class SVM {
-	constructor(){
-		this.xTr = [];
-		this.yTr = [];
-		this.w = [0, 0, 0];
-		this.isRegression = false;
-	}
-	addPt(xTr, yTr){
-		yTr = parseInt(yTr);
-		this.xTr.push(xTr);
-		this.yTr.push(yTr);
-		return;
-	}
-	setTraining(xTr, yTr){
-		this.xTr = xTr;
-		this.yTr = yTr;
-	}
+export default class SVM extends MLModel {
 	classif(x, y){
-
-		return this.int2cl(this.svm.predict([[x, y]])[0]);
-	}
-	maxIndex(arr){
-		var bestIndex = -1;
-		var bestVar = -Infinity;
-		for (var i = 0; i < arr.length; i ++){
-			if(arr[i] > bestVar){
-				bestVar = arr[i];
-				bestIndex = i;
-			}
-		}
-		return bestIndex;
+		return this.pr2cl(this.svm.predict([[x/200, y/200]])[0]);
 	}
 	train(){
 		var y = this.yTr.map((c)=>{
-			return this.cl2int(c);
+			return this.cl2pr(c);
 		});
-		console.log(this.xTr);
-		console.log(y);
+		var x = this.xTr.map((c)=>{
+			return [c[0] / 200, c[1] / 200]
+		})
 		this.svm = new NodeSvm.SVM();
-		this.svm.train(this.xTr, y, {C: 1, kernel:"rbf", rbfsigma: 40});
-
-		//this.svm.train(this.xTr, y, {C: 1e5, kernel:"linear", numpasses: 500, tol: 0});
-		console.log(this.svm.margins(this.xTr));
+		this.svm.train(x, y, {C: 100, kernel:"rbf", rbfsigma: .5});
+		//this.svm.train(x, y, {C: 100, kernel:"linear"});
 		return;
-	}
-	getClassif(){
-		return (x, y) => this.classif(x, y);
-	}
-	int2cl(n){
-		if (n === 1)
-			return S.class1;
-		if (n === -1)
-			return S.class2;
-		return null;
-	}
-	cl2int(cl){
-		if (cl == S.class1)
-			return 1;
-		if (cl == S.class2)
-			return -1;
-		return null;
 	}
 	uiInstance(){
 		//var setK = this.setK.bind(this);//this.setK.bind(this);

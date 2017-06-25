@@ -1,67 +1,106 @@
-body, html{
-	margin:0;
-	font-family: 'Roboto Slab', serif;;
+body,
+html {
+	margin: 0;
+	font-family: 'Roboto Slab', serif;
 }
 
-#canvasDiv{
+*{
+	transition: all 0.2s ease;
+}
+
+#canvasDiv {
 	text-align: center;
 }
 
-#options{
-	margin: 10px;
+input[type=text]{
+	border: none;
+	border-bottom: 2px solid;
+	border-color: black;
+	outline: none;
+	padding: 6px;
+	width: 30px;
+	text-align: center;
+	&:focus{
+		border-color: #FF5400;
+	}
+}
+
+#options {
+	padding: 10px;
 	line-height: 120%;
 }
 
-canvas{
-	display:inline;
+canvas {
+	display: inline;
 	margin: 20px;
-	width:400px;
-	height:400px;
-	box-shadow: 0 0 2px 0 black;
+	width: 400px;
+	height: 400px;
+	box-shadow: 0 0 3px 0 black;
 }
 
 #brushes {
-	>label{
-		color:white;
-		padding: 8px;
-		margin: 8px;
-		border-radius: 4px;
-	}
-	>#class1{
-		background-color: #FF5400;
-		&:hover{
-			background-color: #FF9059;
+	div {
+		display: inline-block;
+		vertical-align: middle;
+		input {
+			display: none;
 		}
-	}
-	>#class2{
-		background-color: #9900D8;
-		&:hover{
-			background-color: #CA49FF;
+		label {
+			box-sizing: border-box;
+			color: white;
+			width: 32px;
+			height: 32px;
+			margin: 8px;
+			border-radius: 4px;
+			&:hover{
+				box-shadow: 0 0 3px 0 black;
+			}
 		}
-	}
-	>#class3{
-		background-color: #4444FF;
-		&:hover{
-			background-color: #8686FF;
+		#br-1 ~ label {
+			background-color: #FF5400;
+			&:hover {
+				background-color: #FF9059;
+			}
+		}
+		#br-2 ~ label {
+			background-color: #9900D8;
+			&:hover {
+				background-color: #CA49FF;
+			}
+		}
+		#br-3 ~ label {
+			background-color: #4444FF;
+			&:hover {
+				background-color: #8686FF;
+			}
+		}
+		input:checked ~ label{
+			border: 2px solid white;
+			box-shadow: 0 0 6px 0 black;
 		}
 	}
 }
 
-h1{
-	margin-top: 5%;
-	margin-bottom: 5%;
+#topbar {
+	padding-top: 2%;
+	margin-bottom: 50px;
+	margin-top: 0;
 	padding-bottom: 2%;
-	border: black solid;
-	border-width: 0 0 5px 0;
+	padding-left: 5%;
+	box-shadow: 0 0 4px 0 black;
+	//border: black solid;
+	//border-width: 0 0 5px 0;
 }
 
-#model-selector{
-	> div{
+#model-selector {
+	display: inline-block;
+	width: 100%;
+	> div {
 		display: inline-block;
 		padding: 10px;
 		width: 108px;
 		height: 160px;
-		border-width: 4px;
+		border-width: 2px;
 		border-style: solid;
 		border-color: #DDD;
 		border-radius: 5px;
@@ -69,21 +108,35 @@ h1{
 		text-align: center;
 		background-color: #FFFFFF;
 		float: left;
-
-		h4{
+		h4 {
 			font-size: 14px;
 		}
-
-		&.true{
-			border-color: #000;
+		&:hover {
+			border-color: #FFF;
+			box-shadow: 0 0 5px 0 black;
 		}
-
-		&:hover{
-			border-color: #777;
+		&.true {
+			border-color: #FFF;
+			box-shadow: 0 0 10px 0 black;
 		}
-
-		img{
+		img {
 			width: 80px;
 		}
 	}
+}
+
+#infoPanel{
+	div, ul{
+		font-size: 18px;
+		line-height: 32px;
+		white-space: pre-line;
+	}
+	ul{
+		list-style: none;
+		>li:before{
+			content: "-  "
+		}
+	}
+	margin-top: 50px;
+	margin-bottom: 120px;
 }
