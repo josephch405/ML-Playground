@@ -12,11 +12,11 @@ export default class SVM extends MLModel {
 			return this.cl2pr(c);
 		});
 		var x = this.xTr.map((c)=>{
-			return [c[0] / 200, c[1] / 200]
-		})
+			return [c[0] / 200, c[1] / 200];
+		});
 		this.svm = new NodeSvm.SVM();
-		this.svm.train(x, y, {C: 100, kernel:"rbf", rbfsigma: .5});
-		//this.svm.train(x, y, {C: 100, kernel:"linear"});
+		//this.svm.train(x, y, {C: 1, kernel:"rbf", rbfsigma: .5});
+		this.svm.train(x, y, {C: 10, kernel:"linear"});
 		return;
 	}
 	uiInstance(){
@@ -46,5 +46,18 @@ export default class SVM extends MLModel {
 				}
 			}
 		);
+	}
+	info(){
+		return this.generateInfo(
+			"Support Vector Machines",
+			"Personal space, please",
+			<div>Picks a hyperplane separating the data, but maximizes margin.</div>,
+			["k (\u2265 1): number of closest neighbors to select"],
+			["Binary Classification", "Multi-class Classification", "Regression"],
+			[`Basically a perceptron on steroids. By "margin", we mean "the distance between plane and point closest to plane". So by maximizing the margin, we are making sure that all points are as far away from the decision boundary as they can be.`],
+			["Option to regularize - ie. reduce overfitting by preferring 'simpler' models"],
+			["Parametric - size of model grows as training data grows. It could take a long time to compute distances for billions of datapoints.",
+				"Curse of Dimensionality - "]
+			);
 	}
 }

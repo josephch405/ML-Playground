@@ -51,28 +51,22 @@ export default class MLModel{
 			{expl1}
 			<h2>Parameters</h2>
 			<ul>
-				{params.map((i)=>{
-					return <li>{i}</li>;
-				})}
+				{params.map((i)=><li>{i}</li>)}
 			</ul>
 			<h2>Use Cases:</h2>
 			<ul>
-				{usecase.map((i)=>{
-					return <li>{i}</li>;
-				})}
+				{usecase.map((i)=><li>{i}</li>)}
 			</ul>
-			{expl2}
+			<div className = "para">
+				{expl2.map((i)=><div>{i}</div>)}
+			</div>
 			<h2>The Good</h2>
 			<ul>
-				{pros.map((i)=>{
-					return <li>{i}</li>;
-				})}
+				{pros.map((i)=><li>{i}</li>)}
 			</ul>
 			<h2>The Bad</h2>
 			<ul>
-				{cons.map((i)=>{
-					return <li>{i}</li>;
-				})}
+				{cons.map((i)=><li>{i}</li>)}
 			</ul>
 
 		</div>);
