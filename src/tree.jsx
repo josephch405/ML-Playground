@@ -2,11 +2,33 @@ import S from "./s";
 import React from "react";
 import MLModel from "./mlmodel";
 
-export default class Perceptron extends MLModel {
+class Node{
+	constructor(data, layer){
+		this.data = data;
+		this.layer = layer;
+		this.isLeaf = true;
+		this.feature = null;
+		this.splitVal = null;
+		this.children = [];
+	}
+	calculateEntropy(){
+		if (this.isLeaf){
+			var counts = [0, 0];
+			for (var i = 0; i < this.data.length; i ++){
+				
+			}
+		}
+		else
+			return this.children[0].calculateEntropy * this.children[0].data.length / this.data.length
+				+ this.children[1].calculateEntropy * this.children[1].data.length / this.data.length;
+	}
+}
+
+export default class Tree extends MLModel {
 	constructor(){
 		super();
-		this.w = [0, 0, 0];
-		this.maxIters = 20;
+		this.tree = null;
+		this.maxDepth = 5;
 	}
 	classif(x, y){
 		var result = this.w[0] * x + this.w[1] * y + this.w[2];

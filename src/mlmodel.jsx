@@ -51,24 +51,27 @@ export default class MLModel{
 			{expl1}
 			<h2>Parameters</h2>
 			<ul>
-				{params.map((i)=><li>{i}</li>)}
+				{this.liGen(params)}
 			</ul>
 			<h2>Use Cases:</h2>
 			<ul>
-				{usecase.map((i)=><li>{i}</li>)}
+				{this.liGen(usecase)}
 			</ul>
 			<div className = "para">
-				{expl2.map((i)=><div>{i}</div>)}
+				{expl2.map((i, j)=><div key = {j}>{i}</div>)}
 			</div>
 			<h2>The Good</h2>
 			<ul>
-				{pros.map((i)=><li>{i}</li>)}
+				{this.liGen(pros)}
 			</ul>
 			<h2>The Bad</h2>
 			<ul>
-				{cons.map((i)=><li>{i}</li>)}
+				{this.liGen(cons)}
 			</ul>
 
 		</div>);
+	}
+	liGen(arr){
+		return arr.map((i, j)=><li key = {j}>{i}</li>);
 	}
 }

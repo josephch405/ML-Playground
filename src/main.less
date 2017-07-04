@@ -28,6 +28,21 @@ input[type=text]{
 #options {
 	padding: 10px;
 	line-height: 120%;
+	#trainAndDisplay{
+		width: 100px;
+    	background: linear-gradient(to right, black 50%, white 50%);
+    	background-position:right bottom;
+    	background-size: 200% 100%;
+		border: 0;
+		font-size: 20px;
+		box-shadow: 0 0 10px 0 rgba(0,0,0,.4);
+		padding: 12px;
+		border-radius: 4px;
+		&:hover{
+    		background-position:left bottom;
+			color: white;
+		}
+	}
 }
 
 canvas {
@@ -35,7 +50,7 @@ canvas {
 	margin: 20px;
 	width: 400px;
 	height: 400px;
-	box-shadow: 0 0 3px 0 black;
+	box-shadow: 0 0 10px 0 rgba(0,0,0,.2);
 }
 
 #brushes {
@@ -53,7 +68,7 @@ canvas {
 			margin: 8px;
 			border-radius: 4px;
 			&:hover{
-				box-shadow: 0 0 3px 0 black;
+				box-shadow: 0 0 10px 0 rgba(0,0,0,.2);
 			}
 		}
 		#br-1 ~ label {
@@ -76,7 +91,7 @@ canvas {
 		}
 		input:checked ~ label{
 			border: 2px solid white;
-			box-shadow: 0 0 6px 0 black;
+			box-shadow: 0 0 10px 0 rgba(0,0,0,.5);
 		}
 	}
 }
@@ -87,7 +102,7 @@ canvas {
 	margin-top: 0;
 	padding-bottom: 2%;
 	padding-left: 5%;
-	box-shadow: 0 0 4px 0 black;
+	box-shadow: 0 0 15px 0 rgba(0,0,0,.4);
 	//border: black solid;
 	//border-width: 0 0 5px 0;
 }
@@ -102,22 +117,23 @@ canvas {
 		height: 160px;
 		border-width: 2px;
 		border-style: solid;
-		border-color: #DDD;
+		border-color: #EEE;
 		border-radius: 5px;
-		margin: 5px;
+		margin: 10px;
 		text-align: center;
 		background-color: #FFFFFF;
 		float: left;
+		box-shadow: 0 0 0 0 rgba(0,0,0,.3);
 		h4 {
 			font-size: 14px;
 		}
 		&:hover {
 			border-color: #FFF;
-			box-shadow: 0 0 5px 0 black;
+			box-shadow: 0 0 15px 0 rgba(0,0,0,.3);
 		}
 		&.true {
 			border-color: #FFF;
-			box-shadow: 0 0 10px 0 black;
+			box-shadow: 0 0 15px 0 rgba(0,0,0,.3);
 		}
 		img {
 			width: 80px;

@@ -137,8 +137,15 @@ export default class Ann extends MLModel{
 		);
 	}
 	info(){
-		return (
-			<div></div>
-		);
+		return this.generateInfo(
+			"Artificial Neural Network",
+			"Perceptrons! More Perceptrons!",
+			"Chain a lot of perceptrons together, in layers. Forward-propogate to solve for a prediction. Train by using backpropogation and updating weights of the neurons.",
+			["Layers and neurons - just keep it reasonable! Don't train a 1000 layers each with 1000 neurons - you'll shoot your eye out."],
+			["Pretty much anything - if you wire it up correctly"],
+			[""],
+			["Surprisingly flexible"],
+			["Bulky", "Mysterious"]
+			);
 	}
 }

@@ -10897,11 +10897,7 @@ class MLModel {
 			__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
 				"ul",
 				null,
-				params.map(i => __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
-					"li",
-					null,
-					i
-				))
+				this.liGen(params)
 			),
 			__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
 				"h2",
@@ -10911,18 +10907,14 @@ class MLModel {
 			__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
 				"ul",
 				null,
-				usecase.map(i => __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
-					"li",
-					null,
-					i
-				))
+				this.liGen(usecase)
 			),
 			__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
 				"div",
 				{ className: "para" },
-				expl2.map(i => __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				expl2.map((i, j) => __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
 					"div",
-					null,
+					{ key: j },
 					i
 				))
 			),
@@ -10934,11 +10926,7 @@ class MLModel {
 			__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
 				"ul",
 				null,
-				pros.map(i => __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
-					"li",
-					null,
-					i
-				))
+				this.liGen(pros)
 			),
 			__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
 				"h2",
@@ -10948,13 +10936,16 @@ class MLModel {
 			__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
 				"ul",
 				null,
-				cons.map(i => __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
-					"li",
-					null,
-					i
-				))
+				this.liGen(cons)
 			)
 		);
+	}
+	liGen(arr) {
+		return arr.map((i, j) => __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+			"li",
+			{ key: j },
+			i
+		));
 	}
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = MLModel;
@@ -35909,7 +35900,7 @@ class UI extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 					"div",
 					{ className: this.state.modelSelected == __WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].model[3], onClick: () => this.changeModel(__WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].model[3]) },
-					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("img", { src: "./build/img/linear.png" }),
+					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("img", { src: "./build/img/ann.png" }),
 					" ",
 					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 						"h4",
@@ -35928,7 +35919,7 @@ class UI extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("br", null),
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 				"button",
-				{ onClick: () => {
+				{ id: "trainAndDisplay", onClick: () => {
 						this.train();
 					} },
 				"Train"
@@ -36116,7 +36107,7 @@ class Ann extends __WEBPACK_IMPORTED_MODULE_3__mlmodel__["a" /* default */] {
 		};
 	}
 	info() {
-		return __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement("div", null);
+		return this.generateInfo("Artificial Neural Network", "Perceptrons! More Perceptrons!", "Chain a lot of perceptrons together, in layers. Forward-propogate to solve for a prediction. Train by using backpropogation and updating weights of the neurons.", ["Layers and neurons - just keep it reasonable! Don't train a 1000 layers each with 1000 neurons - you'll shoot your eye out."], ["Pretty much anything - if you wire it up correctly"], [""], ["Surprisingly flexible"], ["Bulky", "Mysterious"]);
 	}
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Ann;
@@ -36373,6 +36364,7 @@ class Perceptron extends __WEBPACK_IMPORTED_MODULE_2__mlmodel__["a" /* default *
 	constructor() {
 		super();
 		this.w = [0, 0, 0];
+		this.maxIters = 20;
 	}
 	classif(x, y) {
 		var result = this.w[0] * x + this.w[1] * y + this.w[2];
@@ -36393,9 +36385,9 @@ class Perceptron extends __WEBPACK_IMPORTED_MODULE_2__mlmodel__["a" /* default *
 		return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 	}
 	train() {
-		this.w = [0, 0, 0];
+		this.w = [(Math.random() - .5) * 10, (Math.random() - .5) * 10, (Math.random() - .5) * 1000];
 		var allGood = false;
-		var iters = 10000;
+		var iters = this.maxIters;
 		while (!allGood && iters > 0) {
 			var misClassed = 0;
 			for (var i = 0; i < this.xTr.length; i++) {
@@ -36413,28 +36405,37 @@ class Perceptron extends __WEBPACK_IMPORTED_MODULE_2__mlmodel__["a" /* default *
 		}
 		return;
 	}
+	setMaxIters(iters) {
+		if (iters < 100) {
+			this.maxIters = iters;
+			return true;
+		}
+		return false;
+	}
 	uiInstance() {
-		//var setK = this.setK.bind(this);//this.setK.bind(this);
+		var self = this;
+		var setMaxIters = this.setMaxIters.bind(this);
 		return class PerceptronUI extends __WEBPACK_IMPORTED_MODULE_1_react___default.a.Component {
 			constructor(props) {
 				super(props);
-				// this.state = {
-				// 	value: ""
-				// };
-				// this.onChange = this.onChange.bind(this);
+				this.state = {
+					maxIters: self.maxIters
+				};
+				this.onChange = this.onChange.bind(this);
 			}
-			// onChange(e){
-			// 	if(setK(e.target.value)) {
-			// 		this.setState({
-			// 			value: e.target.value
-			// 		});
-			// 	}
-			// }
+			onChange(e) {
+				if (setMaxIters(e.target.value)) {
+					this.setState({
+						maxIters: e.target.value
+					});
+				}
+			}
 			render() {
 				return __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
 					"div",
 					null,
-					"Non yet"
+					"Max Iters: ",
+					__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement("input", { type: "text", value: this.state.maxIters, onChange: this.onChange })
 				);
 			}
 		};
@@ -36450,7 +36451,7 @@ class Perceptron extends __WEBPACK_IMPORTED_MODULE_2__mlmodel__["a" /* default *
 				"flat space that cleanly separates the data"
 			),
 			"."
-		), ["Max Iters (\u2264 100): Maximum number of updates for training"], ["Binary Classification", "Regression"], [`One of the oldest algorithms out there - cause it's a very simple one. In mathematical terms, we simply solve for a linear combination of the inputs (ie. h = ax + by + cz..., where x, y, z are inputs and a, b, c are constants), then use this output h to predict - positive h for Class A , negative h for Class B. In an intuitive sense, we're finding a straight boundary that exactly cuts through the data.`, `It's easy to visualize it as a line if the data is two-dimensional - as in our case. In three dimensions, it's a plane. In four dimensions, it's an entire 3d space - not so easy to visualize anymore.`, `The history behind the perceptron is quite an interesting one. Soon after its invention by Rosenblatt in 1957, it was hyped up to be the "next big thing" - the New York Times, for example, reported that the perceptron "will be able to walk, talk, see, write, reproduce itself and be conscious of its existence." However, it became rather clear that it could achieve non of these feats - it couldn't even recognize a circle, for example (try it!). This led to an abrupt end in perceptron research in 1969 - what we now call one of several "AI winters". Perhaps this serves as a cautionary tale for our own golden age of Machine Learning...`], ["Simple to implement", "Tiny, tiny model (boils down to small list of numbers!)"], ["Assumes linearly separable data - does poorly otherwise", "Can end up with bad fits with points right on the 'edge'"]);
+		), ["Max Iters (\u2264 100): Maximum number of updates for training"], ["Binary Classification", "Regression"], ["One of the oldest algorithms out there - cause it's a very simple one. In mathematical terms, we simply solve for a linear combination of the inputs (ie. h = ax + by + cz..., where x, y, z are inputs and a, b, c are constants), then use this output h to predict - positive h for Class A , negative h for Class B. In an intuitive sense, we're finding a straight boundary that exactly cuts through the data.", "It's easy to visualize it as a line if the data is two-dimensional - as in our case. In three dimensions, it's a plane. In four dimensions, it's an entire 3d space - not so easy to visualize anymore.", "The history behind the perceptron is quite an interesting one. Soon after its invention by Rosenblatt in 1957, it was hyped up to be the \"next big thing\" - the New York Times, for example, reported that the perceptron \"will be able to walk, talk, see, write, reproduce itself and be conscious of its existence.\"", "However, it became rather clear that it could achieve non of these feats - it couldn't even recognize a circle, for example (try it!). This led to an abrupt end in perceptron research in 1969 - what we now call one of several \"AI winters\". Perhaps this serves as a cautionary tale for our own golden age of Machine Learning..."], ["Simple to implement", "Tiny, tiny model (boils down to small list of numbers!)"], ["Assumes linearly separable data - does poorly otherwise", "Can end up with bad fits with points right on the 'edge'"]);
 	}
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Perceptron;
@@ -36473,6 +36474,10 @@ class Perceptron extends __WEBPACK_IMPORTED_MODULE_2__mlmodel__["a" /* default *
 
 
 class SVM extends __WEBPACK_IMPORTED_MODULE_3__mlmodel__["a" /* default */] {
+	constructor() {
+		super();
+		this.isRbf = false;
+	}
 	classif(x, y) {
 		return this.pr2cl(this.svm.predict([[x / 200, y / 200]])[0]);
 	}
@@ -36484,42 +36489,47 @@ class SVM extends __WEBPACK_IMPORTED_MODULE_3__mlmodel__["a" /* default */] {
 			return [c[0] / 200, c[1] / 200];
 		});
 		this.svm = new __WEBPACK_IMPORTED_MODULE_2_svm___default.a.SVM();
-		//this.svm.train(x, y, {C: 1, kernel:"rbf", rbfsigma: .5});
-		this.svm.train(x, y, { C: 10, kernel: "linear" });
+		this.isRbf ? this.svm.train(x, y, { C: 10, kernel: "rbf", rbfsigma: .5 }) : this.svm.train(x, y, { C: 10, kernel: "linear" });
 		return;
 	}
+	setRbf(bool) {
+		this.isRbf = bool;
+		return true;
+	}
 	uiInstance() {
-		//var setK = this.setK.bind(this);//this.setK.bind(this);
-		return class PerceptronUI extends __WEBPACK_IMPORTED_MODULE_1_react___default.a.Component {
+		var self = this;
+		var setRbf = this.setRbf.bind(this);
+		return class SvmUI extends __WEBPACK_IMPORTED_MODULE_1_react___default.a.Component {
 			constructor(props) {
 				super(props);
-				// this.state = {
-				// 	value: ""
-				// };
-				// this.onChange = this.onChange.bind(this);
+				this.state = {
+					isRbf: self.isRbf
+				};
+				this.onChange = this.onChange.bind(this);
 			}
-			// onChange(e){
-			// 	if(setK(e.target.value)) {
-			// 		this.setState({
-			// 			value: e.target.value
-			// 		});
-			// 	}
-			// }
+			onChange(e) {
+				if (setRbf(e.target.checked)) {
+					this.setState({
+						isRbf: e.target.checked
+					});
+				}
+			}
 			render() {
 				return __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
 					"div",
 					null,
-					"Non yet"
+					"RBF Kernel?: ",
+					__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement("input", { name: "rbf", type: "checkbox", checked: this.state.isRbf, onChange: this.onChange })
 				);
 			}
 		};
 	}
 	info() {
-		return this.generateInfo("Support Vector Machines", "Personal space, please", __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+		return this.generateInfo("Support Vector Machine", "Personal space, please", __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
 			"div",
 			null,
 			"Picks a hyperplane separating the data, but maximizes margin."
-		), ["k (\u2265 1): number of closest neighbors to select"], ["Binary Classification", "Multi-class Classification", "Regression"], [`Basically a perceptron on steroids. By "margin", we mean "the distance between plane and point closest to plane". So by maximizing the margin, we are making sure that all points are as far away from the decision boundary as they can be.`], ["Option to regularize - ie. reduce overfitting by preferring 'simpler' models"], ["Parametric - size of model grows as training data grows. It could take a long time to compute distances for billions of datapoints.", "Curse of Dimensionality - "]);
+		), ["k (\u2265 1): number of closest neighbors to select"], ["Binary Classification", "Multi-class Classification", "Regression"], ["Basically a perceptron on steroids. By \"margin\", we mean \"the distance between plane and point closest to plane\". So by maximizing the margin, we are making sure that all points are as far away from the decision boundary as they can be.", "Originally, we start with a linear SVM - meaning that our dividing hyperplane, much like the perceptron, \"operates\" with straight lines as boundaries. Obviously this is a bit limiting - we still can't recognize circles! Not all is lost, however - we can introduce some helpful changes.", "First, we change the way we look at the problem. Initially, the math behind an SVM roughly depends on MINIMIZING the sum of weighted errors, while keeping a low w vector.", "The Kernel Trick (makes it sound almost like magic...) is when we "], ["Option to regularize - ie. reduce overfitting by preferring 'simpler' models"], ["Parametric - size of model grows as training data grows. It could take a long time to compute distances for billions of datapoints.", "Curse of Dimensionality - "]);
 	}
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = SVM;
@@ -39642,7 +39652,7 @@ exports = module.exports = __webpack_require__(240)(undefined);
 
 
 // module
-exports.push([module.i, "body,\nhtml {\n  margin: 0;\n  font-family: 'Roboto Slab', serif;\n}\n* {\n  transition: all 0.2s ease;\n}\n#canvasDiv {\n  text-align: center;\n}\ninput[type=text] {\n  border: none;\n  border-bottom: 2px solid;\n  border-color: black;\n  outline: none;\n  padding: 6px;\n  width: 30px;\n  text-align: center;\n}\ninput[type=text]:focus {\n  border-color: #FF5400;\n}\n#options {\n  padding: 10px;\n  line-height: 120%;\n}\ncanvas {\n  display: inline;\n  margin: 20px;\n  width: 400px;\n  height: 400px;\n  box-shadow: 0 0 3px 0 black;\n}\n#brushes div {\n  display: inline-block;\n  vertical-align: middle;\n}\n#brushes div input {\n  display: none;\n}\n#brushes div label {\n  box-sizing: border-box;\n  color: white;\n  width: 32px;\n  height: 32px;\n  margin: 8px;\n  border-radius: 4px;\n}\n#brushes div label:hover {\n  box-shadow: 0 0 3px 0 black;\n}\n#brushes div #br-1 ~ label {\n  background-color: #FF5400;\n}\n#brushes div #br-1 ~ label:hover {\n  background-color: #FF9059;\n}\n#brushes div #br-2 ~ label {\n  background-color: #9900D8;\n}\n#brushes div #br-2 ~ label:hover {\n  background-color: #CA49FF;\n}\n#brushes div #br-3 ~ label {\n  background-color: #4444FF;\n}\n#brushes div #br-3 ~ label:hover {\n  background-color: #8686FF;\n}\n#brushes div input:checked ~ label {\n  border: 2px solid white;\n  box-shadow: 0 0 6px 0 black;\n}\n#topbar {\n  padding-top: 2%;\n  margin-bottom: 50px;\n  margin-top: 0;\n  padding-bottom: 2%;\n  padding-left: 5%;\n  box-shadow: 0 0 4px 0 black;\n}\n#model-selector {\n  display: inline-block;\n  width: 100%;\n}\n#model-selector > div {\n  display: inline-block;\n  padding: 10px;\n  width: 108px;\n  height: 160px;\n  border-width: 2px;\n  border-style: solid;\n  border-color: #DDD;\n  border-radius: 5px;\n  margin: 5px;\n  text-align: center;\n  background-color: #FFFFFF;\n  float: left;\n}\n#model-selector > div h4 {\n  font-size: 14px;\n}\n#model-selector > div:hover {\n  border-color: #FFF;\n  box-shadow: 0 0 5px 0 black;\n}\n#model-selector > div.true {\n  border-color: #FFF;\n  box-shadow: 0 0 10px 0 black;\n}\n#model-selector > div img {\n  width: 80px;\n}\n#infoPanel {\n  margin-top: 50px;\n  margin-bottom: 120px;\n}\n#infoPanel div,\n#infoPanel ul {\n  font-size: 18px;\n  line-height: 32px;\n  white-space: pre-line;\n}\n#infoPanel ul {\n  list-style: none;\n}\n#infoPanel ul > li:before {\n  content: \"-  \";\n}\n#infoPanel .para {\n  text-indent: 5%;\n}\n#infoPanel .para * {\n  margin-top: 10px;\n}\n", ""]);
+exports.push([module.i, "body,\nhtml {\n  margin: 0;\n  font-family: 'Roboto Slab', serif;\n}\n* {\n  transition: all 0.2s ease;\n}\n#canvasDiv {\n  text-align: center;\n}\ninput[type=text] {\n  border: none;\n  border-bottom: 2px solid;\n  border-color: black;\n  outline: none;\n  padding: 6px;\n  width: 30px;\n  text-align: center;\n}\ninput[type=text]:focus {\n  border-color: #FF5400;\n}\n#options {\n  padding: 10px;\n  line-height: 120%;\n}\n#options #trainAndDisplay {\n  width: 100px;\n  background: linear-gradient(to right, black 50%, white 50%);\n  background-position: right bottom;\n  background-size: 200% 100%;\n  border: 0;\n  font-size: 20px;\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);\n  padding: 12px;\n  border-radius: 4px;\n}\n#options #trainAndDisplay:hover {\n  background-position: left bottom;\n  color: white;\n}\ncanvas {\n  display: inline;\n  margin: 20px;\n  width: 400px;\n  height: 400px;\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);\n}\n#brushes div {\n  display: inline-block;\n  vertical-align: middle;\n}\n#brushes div input {\n  display: none;\n}\n#brushes div label {\n  box-sizing: border-box;\n  color: white;\n  width: 32px;\n  height: 32px;\n  margin: 8px;\n  border-radius: 4px;\n}\n#brushes div label:hover {\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);\n}\n#brushes div #br-1 ~ label {\n  background-color: #FF5400;\n}\n#brushes div #br-1 ~ label:hover {\n  background-color: #FF9059;\n}\n#brushes div #br-2 ~ label {\n  background-color: #9900D8;\n}\n#brushes div #br-2 ~ label:hover {\n  background-color: #CA49FF;\n}\n#brushes div #br-3 ~ label {\n  background-color: #4444FF;\n}\n#brushes div #br-3 ~ label:hover {\n  background-color: #8686FF;\n}\n#brushes div input:checked ~ label {\n  border: 2px solid white;\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);\n}\n#topbar {\n  padding-top: 2%;\n  margin-bottom: 50px;\n  margin-top: 0;\n  padding-bottom: 2%;\n  padding-left: 5%;\n  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.4);\n}\n#model-selector {\n  display: inline-block;\n  width: 100%;\n}\n#model-selector > div {\n  display: inline-block;\n  padding: 10px;\n  width: 108px;\n  height: 160px;\n  border-width: 2px;\n  border-style: solid;\n  border-color: #EEE;\n  border-radius: 5px;\n  margin: 10px;\n  text-align: center;\n  background-color: #FFFFFF;\n  float: left;\n  box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.3);\n}\n#model-selector > div h4 {\n  font-size: 14px;\n}\n#model-selector > div:hover {\n  border-color: #FFF;\n  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.3);\n}\n#model-selector > div.true {\n  border-color: #FFF;\n  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.3);\n}\n#model-selector > div img {\n  width: 80px;\n}\n#infoPanel {\n  margin-top: 50px;\n  margin-bottom: 120px;\n}\n#infoPanel div,\n#infoPanel ul {\n  font-size: 18px;\n  line-height: 32px;\n  white-space: pre-line;\n}\n#infoPanel ul {\n  list-style: none;\n}\n#infoPanel ul > li:before {\n  content: \"-  \";\n}\n#infoPanel .para {\n  text-indent: 5%;\n}\n#infoPanel .para * {\n  margin-top: 10px;\n}\n", ""]);
 
 // exports
 

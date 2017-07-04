@@ -68,12 +68,12 @@ export default class UI extends React.Component{
 				<div className = {this.state.modelSelected == S.model[0]} onClick = {() => this.changeModel(S.model[0])}><img src = "./build/img/knn.png"/> <h4>K-NN</h4> </div>
 				<div className = {this.state.modelSelected == S.model[1]} onClick = {() => this.changeModel(S.model[1])}><img src = "./build/img/perceptron.png"/> <h4> Perceptron </h4> </div>
 				<div className = {this.state.modelSelected == S.model[2]} onClick = {() => this.changeModel(S.model[2])}><img src = "./build/img/linear.png"/> <h4> SVM</h4> </div>
-				<div className = {this.state.modelSelected == S.model[3]} onClick = {() => this.changeModel(S.model[3])}><img src = "./build/img/linear.png"/> <h4> ANN </h4> </div>
+				<div className = {this.state.modelSelected == S.model[3]} onClick = {() => this.changeModel(S.model[3])}><img src = "./build/img/ann.png"/> <h4> ANN </h4> </div>
 			</div>
 
 			<h3>Parameters:</h3>
 			<this.state.modelUi/><br/>
-			<button onClick = {() => {this.train();}}>Train</button>
+			<button id = "trainAndDisplay" onClick = {() => {this.train();}}>Train</button>
 
 			</div>
 		);
