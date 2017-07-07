@@ -9,7 +9,7 @@ export default class Perceptron extends MLModel {
 		this.maxIters = 20;
 	}
 	classif(x, y){
-		var result = this.w[0] * x + this.w[1] * y + this.w[2];
+		var result = this.w[0] * x + this.w[1] * y + this.w[2] * 100;
 		return this.pr2cl(result);
 	}
 	maxIndex(arr){
@@ -27,7 +27,7 @@ export default class Perceptron extends MLModel {
 		return Math.sqrt((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2));
 	}
 	train(){
-		this.w = [(Math.random() - .5) * 10, (Math.random() - .5) * 10, (Math.random() - .5) * 10000];
+		this.w = [(Math.random() - .5) * 10, (Math.random() - .5) * 10, 0];
 		var allGood = false;
 		var iters = this.maxIters;
 		while(!allGood && iters > 0){
@@ -39,7 +39,7 @@ export default class Perceptron extends MLModel {
 					let y = this.cl2pr(this.yTr[i]);
 					this.w[0] += y * this.xTr[i][0];
 					this.w[1] += y * this.xTr[i][1];
-					this.w[2] += y * 1;
+					this.w[2] += y * 100;
 				}
 			}
 			if(misClassed === 0)
