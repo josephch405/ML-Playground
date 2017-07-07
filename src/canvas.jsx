@@ -27,8 +27,10 @@ export default class Canvas {
 	}
 	getMousePos(evt){
 		this.rect = this.canvasElem.getBoundingClientRect();
-		return [evt.clientX - this.rect.left - WIDTH / 2, 
-			-(evt.clientY - this.rect.top - HEIGHT / 2)
+		var left = (evt.clientX - this.rect.left) / this.canvasElem.scrollWidth * WIDTH;
+		var top = (evt.clientY - this.rect.top) / this.canvasElem.scrollHeight * HEIGHT;
+		return [left - WIDTH / 2, 
+			-(top - HEIGHT / 2)
 		];
 	}
 	clearCtx(){

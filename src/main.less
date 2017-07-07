@@ -47,10 +47,15 @@ input[type=text]{
 
 canvas {
 	display: inline;
+	box-sizing: border-box;
 	margin: 20px;
 	width: 400px;
 	height: 400px;
 	box-shadow: 0 0 10px 0 rgba(0,0,0,.2);
+	@media only screen and (max-width : 768px) { 
+		width: 80%;
+		height: auto;
+	}
 }
 
 #brushes {
@@ -97,12 +102,11 @@ canvas {
 }
 
 #topbar {
-	padding-top: 2%;
-	margin-bottom: 50px;
+	padding: 2vh;
+	margin-bottom: 2vh;
 	margin-top: 0;
-	padding-bottom: 2%;
-	padding-left: 5%;
 	box-shadow: 0 0 15px 0 rgba(0,0,0,.4);
+	font-size: 5vh;
 	//border: black solid;
 	//border-width: 0 0 5px 0;
 }

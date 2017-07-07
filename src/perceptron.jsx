@@ -27,7 +27,7 @@ export default class Perceptron extends MLModel {
 		return Math.sqrt((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2));
 	}
 	train(){
-		this.w = [(Math.random() - .5) * 10, (Math.random() - .5) * 10, (Math.random() - .5) * 1000];
+		this.w = [(Math.random() - .5) * 10, (Math.random() - .5) * 10, (Math.random() - .5) * 10000];
 		var allGood = false;
 		var iters = this.maxIters;
 		while(!allGood && iters > 0){
