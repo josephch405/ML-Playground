@@ -3,13 +3,22 @@ import React from "react";
 import {default as m} from "mathjs";
 import MLModel from "./mlmodel";
 
+const norm = 100;
+
 export default class Ann extends MLModel{
 	constructor(){
 		super();
-		this.hiddenCount = 20;
-		this.A = [m.matrix(m.random([this.hiddenCount, 2], -.5, .5)),
-			m.matrix(m.random([1, this.hiddenCount], -.5, .5))];
-		this.b = [m.matrix(m.random([1, this.hiddenCount], -1, 1).valueOf()[0]), 0];
+		this.layers = [2, 4, 1];
+		this.shuffleWeights();
+		this.classif = this.classif.bind(this);
+	}
+	shuffleWeights(){
+		this.A = [];
+		this.b = [];
+		for (var i = 0; i < this.layers.length - 1; i ++){
+			this.A[i] = m.matrix(m.random([this.layers[i + 1], this.layers[i]], -.5, .5));
+			this.b[i] = m.matrix(m.random([1, this.layers[i + 1]], -.2, .2).valueOf()[0]);
+		}
 	}
 	relu(input){
 		input.resize([input.size()[0], 2], 0);
@@ -19,13 +28,13 @@ export default class Ann extends MLModel{
 		return m.tanh(input);
 	}
 	classif(x, y){
-		x = [[x/50, y/50], 0, 0];
+		var z = [[x/norm, y/norm], 0, 0];
 		var ax = [0, 0];
-		ax[0] = m.add(m.multiply(this.A[0], x[0]), this.b[0]);
-		x[1] = this.tanh(ax[0]);
-		ax[1] = m.add(m.multiply(this.A[1], x[1]), this.b[1]);
-		x[2] = this.tanh(ax[1]);
-		return this.pr2cl(x[2].valueOf()[0]);
+		for(var i = 0; i < this.layers.length - 1; i ++){
+			ax[i] = m.add(m.multiply(this.A[i], z[i]), this.b[i]);
+			z[i + 1] = this.tanh(ax[i]);
+		}
+		return this.pr2cl(z[this.layers.length - 1].valueOf()[0]);
 	}
 	vvMult(v1, v2){
 		v1 = m.transpose(m.matrix([v1]));
@@ -45,18 +54,15 @@ export default class Ann extends MLModel{
 		}
 	}
 	train(){
-		this.A = [m.matrix(m.random([this.hiddenCount, 2], -.5, .5)),
-			m.matrix(m.random([1, this.hiddenCount], -.5, .5))];
-		this.b = [m.matrix(m.random([1, this.hiddenCount], -.1, .1).valueOf()[0]), 
-			m.matrix(m.random([1, 1], -.1, .1).valueOf()[0])];
+		this.shuffleWeights();
 
-		var alpha = 0.03;
+		var alpha = 0.015;
 		var self = this;
 		var yTr = this.yTr.map(function(i){
 			return self.cl2pr(i);
 		});
 		var xTr = this.xTr.map(function(i){
-			return m.divide(i.slice(), 50);
+			return m.divide(i.slice(), norm);
 		});
 		//var g = [0, 0];
 		var err = 0;
@@ -68,16 +74,23 @@ export default class Ann extends MLModel{
 			for(var ii = 0; ii < xTr.length; ii ++){
 				var z = [0, 0, 0];
 				var ax = [0, 0];
+
 				z[0] = [xTr[ii][0], xTr[ii][1]];
-				ax[0] = m.squeeze(m.add(m.multiply(this.A[0], z[0]), this.b[0]));
-				z[1] = this.tanh(ax[0]);
-				ax[1] = m.squeeze(m.add(m.squeeze(m.multiply(this.A[1], z[1])), this.b[1]));
-				z[2] = this.tanh(ax[1]);
-				var diff = z[2] - yTr[ii];
+					
+				for(var j = 0; j < this.layers.length - 1; j ++){
+					ax[j] = m.squeeze(m.add(m.squeeze(m.multiply(this.A[j], z[j])), this.b[j]));
+					z[j + 1] = this.tanh(ax[j]);
+				}
+				
+
 				var delta = [0, 0];
-				delta[1] = m.multiply(diff, m.subtract(1, m.square(z[2])));
+				var lmax = this.layers.length;
+				var diff = z[lmax - 1] - yTr[ii];
+
+				delta[lmax - 2] = m.multiply(diff, m.subtract(1, m.square(z[lmax - 1])));
 				err += Math.abs(diff);
-				for(var l = 1; l >= 0; l--){
+
+				for(var l = lmax - 2; l >= 0; l--){
 					_A[l] = m.subtract(_A[l], m.chain(alpha).multiply(this.vvMult(delta[l], z[l])).done());
 					_b[l] = m.subtract(_b[l], m.squeeze(m.multiply(alpha, delta[l])));
 					if(l != 0){
@@ -87,10 +100,12 @@ export default class Ann extends MLModel{
 						delta[l - 1] = d;
 					}
 				}
+
 			}
 			this.A = _A;
 			this.b = _b;
 			err /= xTr.length;
+			console.log("ANN error: ", err);
 			if(err < 0.05){
 				break;
 			}
@@ -137,15 +152,21 @@ export default class Ann extends MLModel{
 		);
 	}
 	info(){
-		return this.generateInfo(
-			"Artificial Neural Network",
-			"Perceptrons! More Perceptrons!",
-			"Chain a lot of perceptrons together, in layers. Forward-propogate to solve for a prediction. Train by using backpropogation and updating weights of the neurons.",
-			["Layers and neurons - just keep it reasonable! Don't train a 1000 layers each with 1000 neurons - you'll shoot your eye out."],
-			["Pretty much anything - if you wire it up correctly"],
-			[""],
-			["Surprisingly flexible"],
-			["Bulky", "Mysterious"]
-			);
+		return this.generateInfo({
+			name: "Artificial Neural Network",
+			tldr: "Perceptrons! More Perceptrons!",
+			expl1: "Chain a lot of perceptrons together, in layers. Forward-propogate to solve for a prediction. Train by using backpropogation and updating weights of the neurons.",
+			params: ["Layers and neurons - just keep it reasonable! Don't train a 1000 layers each with 1000 neurons - you'll shoot your eye out."],
+			usecase: ["Binray Classification", "Multi-class Classification","Regression"],
+			expl2: ["The hottest thing out there (note: written in 2017). Who knows how long this trend will go on for.",
+				"The basic premise is that ",
+				"A lot of cooler applications of Neural Networks revolve around using more complex forms than a simple Dense network (as presented here).",
+				"Convolutional Networks (ConvNets) are experts at image processing, as they 'Convolve' across the whole image, ie. scan the image with a smaller moving window.", 
+				"Recurrent Neural Networks (RNNs) are powerful for data generation, both for images and text, because of their power to 'remember' data from previous entries in a time series."],
+			pros: ["Universal Approximator - any continuous function can be approximated by a finite amount of neurons in one layer. No guarantees about learnability though - ie. there's a good fit out there, but it's kinda on you to find it. Somehow."],
+			cons: ["Bulky - training can take a bit of time, and the number of layers people are training these days are sort of ridiculous", 
+				"Mysterious - in some ways, we're not entirely sure why they're so effective, especially within certain fields such as Vision."],
+			links: []
+		});
 	}
 }

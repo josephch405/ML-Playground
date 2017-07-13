@@ -85,19 +85,24 @@ export default class Perceptron extends MLModel {
 		);
 	}
 	info(){
-		return this.generateInfo(
-			"Perceptron",
-			"Drawing a line in the sand",
-			<div>Comes up with a <b>flat space that cleanly separates the data</b>.</div>,
-			["Max Iters (\u2264 100): Maximum number of updates for training"],
-			["Binary Classification", "Regression"],
-			["One of the oldest algorithms out there - cause it's a very simple one. In mathematical terms, we simply solve for a linear combination of the inputs (ie. h = ax + by + cz..., where x, y, z are inputs and a, b, c are constants), then use this output h to predict - positive h for Class A , negative h for Class B. In an intuitive sense, we're finding a straight boundary that exactly cuts through the data.",
+		return this.generateInfo({
+			name: "Perceptron",
+			tldr: "Drawing a line in the sand",
+			expl: <div>Comes up with a <b>flat space that cleanly separates the data</b>.</div>,
+			params: ["Max Iters (\u2264 100): Maximum number of updates for training"],
+			usecase: ["Binary Classification", "Regression"],
+			expl2: ["One of the oldest algorithms out there - cause it's a very simple one. In mathematical terms, we simply solve for a linear combination of the inputs (ie. h = ax + by + cz..., where x, y, z are inputs and a, b, c are constants), then use this output h to predict - positive h for Class A , negative h for Class B. In an intuitive sense, we're finding a straight boundary that exactly cuts through the data.",
 				"It's easy to visualize it as a line if the data is two-dimensional - as in our case. In three dimensions, it's a plane. In four dimensions, it's an entire 3d space - not so easy to visualize anymore.",
-				"The history behind the perceptron is quite an interesting one. Soon after its invention by Rosenblatt in 1957, it was hyped up to be the \"next big thing\" - the New York Times, for example, reported that the perceptron \"will be able to walk, talk, see, write, reproduce itself and be conscious of its existence.\"", 
+				"The history behind the perceptron is quite an interesting one. Soon after its invention by Rosenblatt at Cornell in 1957, it was hyped up to be the \"next big thing\" - the New York Times, for example, reported that the perceptron \"will be able to walk, talk, see, write, reproduce itself and be conscious of its existence.\"", 
 				"However, it became rather clear that it could achieve non of these feats - it couldn't even recognize a circle, for example (try it!). This led to an abrupt end in perceptron research in 1969 - what we now call one of several \"AI winters\". Perhaps this serves as a cautionary tale for our own golden age of Machine Learning..."],
-			["Simple to implement", "Tiny, tiny model (boils down to small list of numbers!)"],
-			["Assumes linearly separable data - does poorly otherwise",
-				"Can end up with bad fits with points right on the 'edge'"]
-			);
+			pros: ["Simple to implement", "Tiny, tiny model (boils down to small list of numbers!)"],
+			cons: ["Assumes linearly separable data - does poorly otherwise",
+				"Can end up with bad fits with points right on the 'edge'"],
+			links: [
+				<a target = "_blank" href = "https://en.wikipedia.org/wiki/Perceptron">Wikipedia: Perceptron</a>,
+				<a target = "_blank" href = "http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Perceptron.html">SKlearn perceptron package</a>,
+				<a target = "_blank" href = "http://www.cs.cornell.edu/courses/cs4780/2017sp/lectures/lecturenote03.html">Perceptron math notes (Cornell CS 4780, Weinberger)</a>
+			]
+		});
 	}
 }

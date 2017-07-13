@@ -10873,7 +10873,7 @@ class MLModel {
 		if (cl == __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].class1) return 1;
 		return -1;
 	}
-	generateInfo(name, tldr, expl1, params, usecase, expl2, pros, cons) {
+	generateInfo({ name, tldr, expl1, params, usecase, expl2, pros, cons, links }) {
 		return __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
 			"div",
 			null,
@@ -10894,21 +10894,13 @@ class MLModel {
 				null,
 				"Parameters"
 			),
-			__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
-				"ul",
-				null,
-				this.liGen(params)
-			),
+			this.liGen(params),
 			__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
 				"h2",
 				null,
 				"Use Cases:"
 			),
-			__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
-				"ul",
-				null,
-				this.liGen(usecase)
-			),
+			this.liGen(usecase),
 			__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
 				"div",
 				{ className: "para" },
@@ -10923,29 +10915,31 @@ class MLModel {
 				null,
 				"The Good"
 			),
-			__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
-				"ul",
-				null,
-				this.liGen(pros)
-			),
+			this.liGen(pros),
 			__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
 				"h2",
 				null,
 				"The Bad"
 			),
+			this.liGen(cons),
 			__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
-				"ul",
+				"h2",
 				null,
-				this.liGen(cons)
-			)
+				"Learn more..."
+			),
+			this.liGen(links)
 		);
 	}
 	liGen(arr) {
-		return arr.map((i, j) => __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
-			"li",
-			{ key: j },
-			i
-		));
+		return __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+			"ul",
+			null,
+			arr.map((i, j) => __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				"li",
+				{ key: j },
+				i
+			))
+		);
 	}
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = MLModel;
@@ -35655,6 +35649,7 @@ class Canvas {
 	constructor(canvas) {
 		this.canvasElem = canvas;
 		this.ctx = canvas.getContext("2d");
+		this.ctx.imageSmoothingEnabled = false;
 		//rect is offset of canvas in window
 		this.rect = canvas.getBoundingClientRect();
 		this.brush = __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].class1;
@@ -35851,7 +35846,7 @@ class UI extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 				"div",
 				{ id: "brushes" },
 				"Click to add data points:",
-				[__WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].class1, __WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].class2, __WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].class3].map(i => {
+				[__WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].class1, __WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].class2].map(i => {
 					return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 						"div",
 						{ key: i },
@@ -35871,7 +35866,7 @@ class UI extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 						"h4",
 						null,
-						"K-NN"
+						"K Nearest Neighbors"
 					),
 					" "
 				),
@@ -35895,7 +35890,7 @@ class UI extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 						"h4",
 						null,
-						" SVM"
+						" Support Vector Machine"
 					),
 					" "
 				),
@@ -35907,7 +35902,7 @@ class UI extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 						"h4",
 						null,
-						" ANN "
+						" Artificial Neural Network "
 					),
 					" "
 				)
@@ -35984,12 +35979,22 @@ if(false) {
 
 
 
+const norm = 100;
+
 class Ann extends __WEBPACK_IMPORTED_MODULE_3__mlmodel__["a" /* default */] {
 	constructor() {
 		super();
-		this.hiddenCount = 20;
-		this.A = [__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.matrix(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.random([this.hiddenCount, 2], -.5, .5)), __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.matrix(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.random([1, this.hiddenCount], -.5, .5))];
-		this.b = [__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.matrix(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.random([1, this.hiddenCount], -1, 1).valueOf()[0]), 0];
+		this.layers = [2, 4, 1];
+		this.shuffleWeights();
+		this.classif = this.classif.bind(this);
+	}
+	shuffleWeights() {
+		this.A = [];
+		this.b = [];
+		for (var i = 0; i < this.layers.length - 1; i++) {
+			this.A[i] = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.matrix(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.random([this.layers[i + 1], this.layers[i]], -.5, .5));
+			this.b[i] = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.matrix(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.random([1, this.layers[i + 1]], -.2, .2).valueOf()[0]);
+		}
 	}
 	relu(input) {
 		input.resize([input.size()[0], 2], 0);
@@ -35999,13 +36004,13 @@ class Ann extends __WEBPACK_IMPORTED_MODULE_3__mlmodel__["a" /* default */] {
 		return __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.tanh(input);
 	}
 	classif(x, y) {
-		x = [[x / 50, y / 50], 0, 0];
+		var z = [[x / norm, y / norm], 0, 0];
 		var ax = [0, 0];
-		ax[0] = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.add(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.multiply(this.A[0], x[0]), this.b[0]);
-		x[1] = this.tanh(ax[0]);
-		ax[1] = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.add(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.multiply(this.A[1], x[1]), this.b[1]);
-		x[2] = this.tanh(ax[1]);
-		return this.pr2cl(x[2].valueOf()[0]);
+		for (var i = 0; i < this.layers.length - 1; i++) {
+			ax[i] = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.add(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.multiply(this.A[i], z[i]), this.b[i]);
+			z[i + 1] = this.tanh(ax[i]);
+		}
+		return this.pr2cl(z[this.layers.length - 1].valueOf()[0]);
 	}
 	vvMult(v1, v2) {
 		v1 = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.transpose(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.matrix([v1]));
@@ -36023,16 +36028,15 @@ class Ann extends __WEBPACK_IMPORTED_MODULE_3__mlmodel__["a" /* default */] {
 		}
 	}
 	train() {
-		this.A = [__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.matrix(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.random([this.hiddenCount, 2], -.5, .5)), __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.matrix(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.random([1, this.hiddenCount], -.5, .5))];
-		this.b = [__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.matrix(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.random([1, this.hiddenCount], -.1, .1).valueOf()[0]), __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.matrix(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.random([1, 1], -.1, .1).valueOf()[0])];
+		this.shuffleWeights();
 
-		var alpha = 0.03;
+		var alpha = 0.015;
 		var self = this;
 		var yTr = this.yTr.map(function (i) {
 			return self.cl2pr(i);
 		});
 		var xTr = this.xTr.map(function (i) {
-			return __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.divide(i.slice(), 50);
+			return __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.divide(i.slice(), norm);
 		});
 		//var g = [0, 0];
 		var err = 0;
@@ -36044,16 +36048,22 @@ class Ann extends __WEBPACK_IMPORTED_MODULE_3__mlmodel__["a" /* default */] {
 			for (var ii = 0; ii < xTr.length; ii++) {
 				var z = [0, 0, 0];
 				var ax = [0, 0];
+
 				z[0] = [xTr[ii][0], xTr[ii][1]];
-				ax[0] = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.squeeze(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.add(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.multiply(this.A[0], z[0]), this.b[0]));
-				z[1] = this.tanh(ax[0]);
-				ax[1] = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.squeeze(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.add(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.squeeze(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.multiply(this.A[1], z[1])), this.b[1]));
-				z[2] = this.tanh(ax[1]);
-				var diff = z[2] - yTr[ii];
+
+				for (var j = 0; j < this.layers.length - 1; j++) {
+					ax[j] = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.squeeze(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.add(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.squeeze(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.multiply(this.A[j], z[j])), this.b[j]));
+					z[j + 1] = this.tanh(ax[j]);
+				}
+
 				var delta = [0, 0];
-				delta[1] = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.multiply(diff, __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.subtract(1, __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.square(z[2])));
+				var lmax = this.layers.length;
+				var diff = z[lmax - 1] - yTr[ii];
+
+				delta[lmax - 2] = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.multiply(diff, __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.subtract(1, __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.square(z[lmax - 1])));
 				err += Math.abs(diff);
-				for (var l = 1; l >= 0; l--) {
+
+				for (var l = lmax - 2; l >= 0; l--) {
 					_A[l] = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.subtract(_A[l], __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.chain(alpha).multiply(this.vvMult(delta[l], z[l])).done());
 					_b[l] = __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.subtract(_b[l], __WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.squeeze(__WEBPACK_IMPORTED_MODULE_2_mathjs___default.a.multiply(alpha, delta[l])));
 					if (l != 0) {
@@ -36067,6 +36077,7 @@ class Ann extends __WEBPACK_IMPORTED_MODULE_3__mlmodel__["a" /* default */] {
 			this.A = _A;
 			this.b = _b;
 			err /= xTr.length;
+			console.log("ANN error: ", err);
 			if (err < 0.05) {
 				break;
 			}
@@ -36109,7 +36120,17 @@ class Ann extends __WEBPACK_IMPORTED_MODULE_3__mlmodel__["a" /* default */] {
 		};
 	}
 	info() {
-		return this.generateInfo("Artificial Neural Network", "Perceptrons! More Perceptrons!", "Chain a lot of perceptrons together, in layers. Forward-propogate to solve for a prediction. Train by using backpropogation and updating weights of the neurons.", ["Layers and neurons - just keep it reasonable! Don't train a 1000 layers each with 1000 neurons - you'll shoot your eye out."], ["Pretty much anything - if you wire it up correctly"], [""], ["Surprisingly flexible"], ["Bulky", "Mysterious"]);
+		return this.generateInfo({
+			name: "Artificial Neural Network",
+			tldr: "Perceptrons! More Perceptrons!",
+			expl1: "Chain a lot of perceptrons together, in layers. Forward-propogate to solve for a prediction. Train by using backpropogation and updating weights of the neurons.",
+			params: ["Layers and neurons - just keep it reasonable! Don't train a 1000 layers each with 1000 neurons - you'll shoot your eye out."],
+			usecase: ["Binray Classification", "Multi-class Classification", "Regression"],
+			expl2: ["The hottest thing out there (note: written in 2017). Who knows how long this trend will go on for.", "The basic premise is that ", "A lot of cooler applications of Neural Networks revolve around using more complex forms than a simple Dense network (as presented here).", "Convolutional Networks (ConvNets) are experts at image processing, as they 'Convolve' across the whole image, ie. scan the image with a smaller moving window.", "Recurrent Neural Networks (RNNs) are powerful for data generation, both for images and text, because of their power to 'remember' data from previous entries in a time series."],
+			pros: ["Universal Approximator - any continuous function can be approximated by a finite amount of neurons in one layer. No guarantees about learnability though - ie. there's a good fit out there, but it's kinda on you to find it. Somehow."],
+			cons: ["Bulky - training can take a bit of time, and the number of layers people are training these days are sort of ridiculous", "Mysterious - in some ways, we're not entirely sure why they're so effective, especially within certain fields such as Vision."],
+			links: []
+		});
 	}
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Ann;
@@ -36208,18 +36229,44 @@ class Knn extends __WEBPACK_IMPORTED_MODULE_1__mlmodel__["a" /* default */] {
 		};
 	}
 	info() {
-		return this.generateInfo("K Nearest Neighbors", "Birds of a feather flock together", __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-			"div",
-			null,
-			"Picks the ",
-			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-				"b",
+		return this.generateInfo({
+			name: "K Nearest Neighbors",
+			tldr: "Birds of a feather flock together",
+			expl1: __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+				"div",
 				null,
-				"k closest points from training data"
+				"Picks the ",
+				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+					"b",
+					null,
+					"k closest points from training data"
+				),
+				", then decides prediction via popular vote."
 			),
-			", then decides prediction via popular vote."
-		), ["k (\u2265 1): number of closest neighbors to select"], ["Binary Classification", "Multi-class Classification", "Regression"], ["A simple and straightforward algorithm. The underlying assumption is that datapoints close to each other share the same label.", "Analogy: if I hang out with CS majors, then I'm probably also a CS major (or that one Philosophy major who's minoring in everything.)", "Note that distance can be defined different ways, such as Manhattan (sum of all features), Euclidean (geometric distance), p-norm distance...typically Euclidean is used, but Manhattan can be faster and thus preferable."], ["Simple to implement"], ["Non-Parametric - size of model grows as training data grows. It could take a long time to compute distances for billions of datapoints.", "Curse of Dimensionality - as number of features increase (ie. more dimensions), the average distance between randomly distributed \
-				points converge to a fixed value. This means that most points end up equidistant to each other - so distance becomes less meaningful as a metric"]);
+			params: ["k (\u2265 1): number of closest neighbors to select"],
+			usecase: ["Binary Classification", "Multi-class Classification", "Regression"],
+			expl2: ["A simple and straightforward algorithm. The underlying assumption is that datapoints close to each other share the same label.", "Analogy: if I hang out with CS majors, then I'm probably also a CS major (or that one Philosophy major who's minoring in everything.)", "Note that distance can be defined different ways, such as Manhattan (sum of all features), Euclidean (geometric distance), p-norm distance...typically Euclidean is used (like in this demo), but Manhattan can be faster and thus preferable."],
+			pros: ["Simple to implement"],
+			cons: ["Non-Parametric - size of model grows as training data grows. It could take a long time to compute distances for billions of datapoints.", "Curse of Dimensionality - as number of features increase (ie. more dimensions), the average distance between randomly distributed \
+				points converge to a fixed value. This means that most points end up equidistant to each other - so distance becomes less meaningful as a metric"],
+			links: [__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+				"a",
+				{ target: "_blank", href: "https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm" },
+				"Wikipedia: k-nearest neighbors algorithm"
+			), __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+				"a",
+				{ target: "_blank", href: "http://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html" },
+				"SKlearn KNN classifier package"
+			), __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+				"a",
+				{ target: "_blank", href: "http://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsRegressor.html" },
+				"SKlearn KNN regressor package"
+			), __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+				"a",
+				{ target: "_blank", href: "http://www.cs.cornell.edu/courses/cs4780/2017sp/lectures/lecturenote02_kNN.html" },
+				"KNN math notes (Cornell CS 4780, Weinberger)"
+			)]
+		});
 	}
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Knn;
@@ -36443,17 +36490,39 @@ class Perceptron extends __WEBPACK_IMPORTED_MODULE_2__mlmodel__["a" /* default *
 		};
 	}
 	info() {
-		return this.generateInfo("Perceptron", "Drawing a line in the sand", __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
-			"div",
-			null,
-			"Comes up with a ",
-			__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
-				"b",
+		return this.generateInfo({
+			name: "Perceptron",
+			tldr: "Drawing a line in the sand",
+			expl: __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				"div",
 				null,
-				"flat space that cleanly separates the data"
+				"Comes up with a ",
+				__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+					"b",
+					null,
+					"flat space that cleanly separates the data"
+				),
+				"."
 			),
-			"."
-		), ["Max Iters (\u2264 100): Maximum number of updates for training"], ["Binary Classification", "Regression"], ["One of the oldest algorithms out there - cause it's a very simple one. In mathematical terms, we simply solve for a linear combination of the inputs (ie. h = ax + by + cz..., where x, y, z are inputs and a, b, c are constants), then use this output h to predict - positive h for Class A , negative h for Class B. In an intuitive sense, we're finding a straight boundary that exactly cuts through the data.", "It's easy to visualize it as a line if the data is two-dimensional - as in our case. In three dimensions, it's a plane. In four dimensions, it's an entire 3d space - not so easy to visualize anymore.", "The history behind the perceptron is quite an interesting one. Soon after its invention by Rosenblatt in 1957, it was hyped up to be the \"next big thing\" - the New York Times, for example, reported that the perceptron \"will be able to walk, talk, see, write, reproduce itself and be conscious of its existence.\"", "However, it became rather clear that it could achieve non of these feats - it couldn't even recognize a circle, for example (try it!). This led to an abrupt end in perceptron research in 1969 - what we now call one of several \"AI winters\". Perhaps this serves as a cautionary tale for our own golden age of Machine Learning..."], ["Simple to implement", "Tiny, tiny model (boils down to small list of numbers!)"], ["Assumes linearly separable data - does poorly otherwise", "Can end up with bad fits with points right on the 'edge'"]);
+			params: ["Max Iters (\u2264 100): Maximum number of updates for training"],
+			usecase: ["Binary Classification", "Regression"],
+			expl2: ["One of the oldest algorithms out there - cause it's a very simple one. In mathematical terms, we simply solve for a linear combination of the inputs (ie. h = ax + by + cz..., where x, y, z are inputs and a, b, c are constants), then use this output h to predict - positive h for Class A , negative h for Class B. In an intuitive sense, we're finding a straight boundary that exactly cuts through the data.", "It's easy to visualize it as a line if the data is two-dimensional - as in our case. In three dimensions, it's a plane. In four dimensions, it's an entire 3d space - not so easy to visualize anymore.", "The history behind the perceptron is quite an interesting one. Soon after its invention by Rosenblatt at Cornell in 1957, it was hyped up to be the \"next big thing\" - the New York Times, for example, reported that the perceptron \"will be able to walk, talk, see, write, reproduce itself and be conscious of its existence.\"", "However, it became rather clear that it could achieve non of these feats - it couldn't even recognize a circle, for example (try it!). This led to an abrupt end in perceptron research in 1969 - what we now call one of several \"AI winters\". Perhaps this serves as a cautionary tale for our own golden age of Machine Learning..."],
+			pros: ["Simple to implement", "Tiny, tiny model (boils down to small list of numbers!)"],
+			cons: ["Assumes linearly separable data - does poorly otherwise", "Can end up with bad fits with points right on the 'edge'"],
+			links: [__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				"a",
+				{ target: "_blank", href: "https://en.wikipedia.org/wiki/Perceptron" },
+				"Wikipedia: Perceptron"
+			), __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				"a",
+				{ target: "_blank", href: "http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Perceptron.html" },
+				"SKlearn perceptron package"
+			), __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				"a",
+				{ target: "_blank", href: "http://www.cs.cornell.edu/courses/cs4780/2017sp/lectures/lecturenote03.html" },
+				"Perceptron math notes (Cornell CS 4780, Weinberger)"
+			)]
+		});
 	}
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Perceptron;
@@ -36479,6 +36548,7 @@ class SVM extends __WEBPACK_IMPORTED_MODULE_3__mlmodel__["a" /* default */] {
 	constructor() {
 		super();
 		this.isRbf = false;
+		this.C = 10;
 	}
 	classif(x, y) {
 		return this.pr2cl(this.svm.predict([[x / 200, y / 200]])[0]);
@@ -36491,28 +36561,41 @@ class SVM extends __WEBPACK_IMPORTED_MODULE_3__mlmodel__["a" /* default */] {
 			return [c[0] / 200, c[1] / 200];
 		});
 		this.svm = new __WEBPACK_IMPORTED_MODULE_2_svm___default.a.SVM();
-		this.isRbf ? this.svm.train(x, y, { C: 10, kernel: "rbf", rbfsigma: .5 }) : this.svm.train(x, y, { C: 10, kernel: "linear" });
+		this.isRbf ? this.svm.train(x, y, { C: this.C, kernel: "rbf", rbfsigma: .5 }) : this.svm.train(x, y, { C: this.C, kernel: "linear" });
 		return;
 	}
 	setRbf(bool) {
 		this.isRbf = bool;
 		return true;
 	}
+	setC(c) {
+		if (!isNaN(parseFloat(c))) {
+			this.C = parseFloat(c);
+			return true;
+		}
+		return false;
+	}
 	uiInstance() {
 		var self = this;
-		var setRbf = this.setRbf.bind(this);
 		return class SvmUI extends __WEBPACK_IMPORTED_MODULE_1_react___default.a.Component {
 			constructor(props) {
 				super(props);
 				this.state = {
-					isRbf: self.isRbf
+					isRbf: self.isRbf,
+					C: self.C
 				};
-				this.onChange = this.onChange.bind(this);
 			}
-			onChange(e) {
-				if (setRbf(e.target.checked)) {
+			onChangeRbf(e) {
+				if (self.setRbf(e.target.checked)) {
 					this.setState({
 						isRbf: e.target.checked
+					});
+				}
+			}
+			onChangeC(e) {
+				if (self.setC(e.target.value)) {
+					this.setState({
+						C: e.target.value
 					});
 				}
 			}
@@ -36520,18 +36603,57 @@ class SVM extends __WEBPACK_IMPORTED_MODULE_3__mlmodel__["a" /* default */] {
 				return __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
 					"div",
 					null,
+					"C: ",
+					__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement("input", { type: "text", value: this.state.C, onChange: e => this.onChangeC(e) }),
+					__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement("br", null),
 					"RBF Kernel?: ",
-					__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement("input", { name: "rbf", type: "checkbox", checked: this.state.isRbf, onChange: this.onChange })
+					__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement("input", { name: "rbf", type: "checkbox", checked: this.state.isRbf, onChange: e => this.onChangeRbf(e) })
 				);
 			}
 		};
 	}
 	info() {
-		return this.generateInfo("Support Vector Machine", "Personal space, please", __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
-			"div",
-			null,
-			"Picks a hyperplane separating the data, but maximizes margin."
-		), ["k (\u2265 1): number of closest neighbors to select"], ["Binary Classification", "Multi-class Classification", "Regression"], ["Basically a perceptron on steroids. By \"margin\", we mean \"the distance between plane and point closest to plane\". So by maximizing the margin, we are making sure that all points are as far away from the decision boundary as they can be.", "Originally, we start with a linear SVM - meaning that our dividing hyperplane, much like the perceptron, \"operates\" with straight lines as boundaries. Obviously this is a bit limiting - we still can't recognize circles! Not all is lost, however - we can introduce some helpful changes.", "First, we change the way we look at the problem. Initially, the math behind an SVM roughly depends on MINIMIZING the sum of weighted errors, while keeping a low w vector.", "The Kernel Trick (makes it sound almost like magic...) is when we "], ["Option to regularize - ie. reduce overfitting by preferring 'simpler' models"], ["Parametric - size of model grows as training data grows. It could take a long time to compute distances for billions of datapoints.", "Curse of Dimensionality - "]);
+		return this.generateInfo({
+			name: "Support Vector Machine",
+			tldr: "Personal space, please",
+			expl1: __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				"div",
+				null,
+				"Picks a hyperplane separating the data, but maximizes margin. (Credits: Andrej Karpathy's ",
+				__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+					"a",
+					{ href: "https://www.npmjs.com/package/svm" },
+					"svm"
+				),
+				" Node package)"
+			),
+			params: ["C (\u2265 0): Regularization constant. How hard the SVM will try to fit all your data at risk of overfitting with overly complex model", "RBF Kernel: Default is unselected - uses Linear SVM. Toggle to use RBF Kernel SVM"],
+			usecase: ["Binary Classification", "Multi-class Classification", "Regression"],
+			expl2: ["Basically a perceptron on steroids. By \"margin\", we mean \"the distance between plane and point closest to plane\". So by maximizing the margin, we are making sure that all points are as far away from the decision boundary as they can be.", "Originally, we start with a linear SVM - meaning that our dividing hyperplane, much like the perceptron, \"operates\" with straight lines as boundaries. Obviously this is a bit limiting - we still can't recognize circles! Not all is lost, however - we can introduce some helpful changes.", "The Kernel Trick (makes it sound almost like magic...) is when we go from a Primal SVM formation to a Dual formation. Complicated math aside, this effectively means that you're 'multiplying' a test vector by select Support Vectors, then combining the products to form a good prediction. (Refer to resources for complex definition)", "With a Linear SVM, we are essentially using a Dot Product as the 'Multiplication' for the Dual. We could replace this with other forms of 'multiplication' methods, which are called Kernels. A very popular choice is the RBF kernel - the 'multiplications' end up relying on net distance between test points, so in effect it's actually sort of like KNN, but much more regularized."],
+			pros: ["Option to regularize - ie. reduce overfitting by preferring 'simpler' models over complex ones. Try tweaking C to see its effects!", "Parametric (Linear SVM): model remains same size regardless of dataset size"],
+			cons: ["Non-parametric (RBF Kernel SVM): model itself may get more complicated as data set grows"],
+			links: [__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				"a",
+				{ href: "https://en.wikipedia.org/wiki/Support_vector_machine" },
+				"Wikipedia: Support vector machine"
+			), __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				"a",
+				{ href: "http://scikit-learn.org/stable/modules/svm.html" },
+				"SKlearn Support Vector Machines overview "
+			), __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				"a",
+				{ href: "http://www.cs.cornell.edu/courses/cs4780/2017sp/lectures/lecturenote09.html" },
+				"SVM math notes (Cornell CS 4780, Weinberger)"
+			), __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				"a",
+				{ href: "http://www.cs.cornell.edu/courses/cs4780/2017sp/lectures/lecturenote13.html" },
+				"Kernels math notes (Cornell CS 4780, Weinberger)"
+			), __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				"a",
+				{ href: "http://cs229.stanford.edu/materials/smo.pdf" },
+				"Math behind simplified SMO SVM algorithm used in the Karpathy package"
+			)]
+		});
 	}
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = SVM;
@@ -39654,7 +39776,7 @@ exports = module.exports = __webpack_require__(240)(undefined);
 
 
 // module
-exports.push([module.i, "body,\nhtml {\n  margin: 0;\n  font-family: 'Roboto Slab', serif;\n}\n* {\n  transition: all 0.2s ease;\n}\n#canvasDiv {\n  text-align: center;\n}\ninput[type=text] {\n  border: none;\n  border-bottom: 2px solid;\n  border-color: black;\n  outline: none;\n  padding: 6px;\n  width: 30px;\n  text-align: center;\n}\ninput[type=text]:focus {\n  border-color: #FF5400;\n}\n#options {\n  padding: 1vh;\n  line-height: 120%;\n}\n#options #trainAndDisplay {\n  width: 100px;\n  background: linear-gradient(to right, black 50%, white 50%);\n  background-position: right bottom;\n  background-size: 200% 100%;\n  border: 0;\n  font-size: 2vh;\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);\n  padding: 12px;\n  border-radius: 4px;\n}\n#options #trainAndDisplay:hover {\n  background-position: left bottom;\n  color: white;\n}\ncanvas {\n  display: inline;\n  box-sizing: border-box;\n  margin-top: 6vh;\n  width: 400px;\n  height: 400px;\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);\n  width: 100%;\n  height: auto;\n}\n#brushes {\n  font-size: 2vh;\n}\n#brushes div {\n  display: inline-block;\n  vertical-align: middle;\n}\n#brushes div input {\n  display: none;\n}\n#brushes div label {\n  box-sizing: border-box;\n  color: white;\n  width: 4vh;\n  height: 4vh;\n  margin: 1vh;\n  border-radius: 4px;\n}\n#brushes div label:hover {\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);\n}\n#brushes div #br-1 ~ label {\n  background-color: #FF5400;\n}\n#brushes div #br-1 ~ label:hover {\n  background-color: #FF9059;\n}\n#brushes div #br-2 ~ label {\n  background-color: #9900D8;\n}\n#brushes div #br-2 ~ label:hover {\n  background-color: #CA49FF;\n}\n#brushes div #br-3 ~ label {\n  background-color: #4444FF;\n}\n#brushes div #br-3 ~ label:hover {\n  background-color: #8686FF;\n}\n#brushes div input:checked ~ label {\n  border: 2px solid white;\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);\n}\n#topbar {\n  padding: 2vh;\n  padding-left: 4vh;\n  margin-bottom: 2vh;\n  margin-top: 0;\n  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.4);\n  font-size: 5vh;\n}\n#model-selector {\n  display: inline-block;\n  width: 100%;\n}\n#model-selector > div {\n  display: inline-block;\n  padding: 1.5vh;\n  width: 14vh;\n  height: 17vh;\n  border-width: 2px;\n  border-style: solid;\n  border-color: #EEE;\n  border-radius: 5px;\n  margin: .5vh;\n  text-align: center;\n  background-color: #FFFFFF;\n  float: left;\n  box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.3);\n}\n#model-selector > div h4 {\n  font-size: 2vh;\n}\n#model-selector > div:hover {\n  border-color: #FFF;\n  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.3);\n}\n#model-selector > div.true {\n  border-color: #FFF;\n  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.3);\n}\n#model-selector > div img {\n  width: 8vh;\n}\n#infoPanel {\n  margin-top: 50px;\n  margin-bottom: 120px;\n}\n#infoPanel div,\n#infoPanel ul {\n  font-size: 2vh;\n  line-height: 4vh;\n  white-space: pre-line;\n}\n#infoPanel ul {\n  list-style: none;\n}\n#infoPanel ul > li:before {\n  content: \"-  \";\n}\n#infoPanel .para {\n  text-indent: 5%;\n}\n#infoPanel .para * {\n  margin-top: 10px;\n}\n", ""]);
+exports.push([module.i, "body,\nhtml {\n  margin: 0;\n  font-family: 'Roboto Slab', serif;\n}\n* {\n  transition: all 0.2s ease;\n}\n#canvasDiv {\n  text-align: center;\n}\ninput[type=text] {\n  border: none;\n  border-bottom: 2px solid;\n  border-color: black;\n  outline: none;\n  padding: 6px;\n  width: 50px;\n  text-align: center;\n}\ninput[type=text]:focus {\n  border-color: #FF5400;\n}\n#options {\n  padding: 1vh;\n  line-height: 120%;\n}\n#options #trainAndDisplay {\n  width: 100px;\n  background: linear-gradient(to right, black 50%, white 50%);\n  background-position: right bottom;\n  background-size: 200% 100%;\n  border: 0;\n  font-size: 2vh;\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);\n  padding: 12px;\n  border-radius: 4px;\n}\n#options #trainAndDisplay:hover {\n  background-position: left bottom;\n  color: white;\n}\ncanvas {\n  display: inline;\n  box-sizing: border-box;\n  margin-top: 6vh;\n  width: 400px;\n  height: 400px;\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);\n  width: 100%;\n  height: auto;\n}\n#brushes {\n  font-size: 2vh;\n}\n#brushes div {\n  display: inline-block;\n  vertical-align: middle;\n}\n#brushes div input {\n  display: none;\n}\n#brushes div label {\n  box-sizing: border-box;\n  color: white;\n  width: 4vh;\n  height: 4vh;\n  margin: 1vh;\n  border-radius: 4px;\n}\n#brushes div label:hover {\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);\n}\n#brushes div #br-1 ~ label {\n  background-color: #FF5400;\n}\n#brushes div #br-1 ~ label:hover {\n  background-color: #FF9059;\n}\n#brushes div #br-2 ~ label {\n  background-color: #9900D8;\n}\n#brushes div #br-2 ~ label:hover {\n  background-color: #CA49FF;\n}\n#brushes div #br-3 ~ label {\n  background-color: #4444FF;\n}\n#brushes div #br-3 ~ label:hover {\n  background-color: #8686FF;\n}\n#brushes div input:checked ~ label {\n  border: 2px solid white;\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);\n}\n#topbar {\n  padding: 2vh;\n  padding-left: 4vh;\n  margin-bottom: 2vh;\n  margin-top: 0;\n  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.4);\n  font-size: 5vh;\n}\n#model-selector {\n  display: inline-block;\n  width: 100%;\n}\n#model-selector > div {\n  display: inline-block;\n  padding: 1.5vh;\n  width: 14vh;\n  height: 20vh;\n  border-width: 2px;\n  border-style: solid;\n  border-color: #EEE;\n  border-radius: 5px;\n  margin: .5vh;\n  text-align: center;\n  background-color: #FFFFFF;\n  float: left;\n  box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.3);\n}\n#model-selector > div h4 {\n  font-size: 2vh;\n}\n#model-selector > div:hover {\n  border-color: #FFF;\n  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.3);\n}\n#model-selector > div.true {\n  border-color: #FFF;\n  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.3);\n}\n#model-selector > div img {\n  width: 8vh;\n}\n#infoPanel {\n  margin-top: 50px;\n  margin-bottom: 120px;\n}\n#infoPanel div,\n#infoPanel ul {\n  font-size: 2vh;\n  line-height: 4vh;\n  white-space: pre-line;\n}\n#infoPanel ul {\n  list-style: none;\n}\n#infoPanel ul > li:before {\n  content: \"-  \";\n}\n#infoPanel .para {\n  text-indent: 5%;\n}\n#infoPanel .para * {\n  margin-top: 10px;\n}\n", ""]);
 
 // exports
 

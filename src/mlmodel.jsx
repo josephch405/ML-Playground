@@ -44,34 +44,28 @@ export default class MLModel{
 			return 1;
 		return -1;
 	}
-	generateInfo(name, tldr, expl1, params, usecase, expl2, pros, cons){
+	generateInfo({name, tldr, expl1, params, usecase, expl2, pros, cons, links}){
 		return (<div>
 			<h1>{name}</h1>
 			<h2>TL;DR - {tldr}</h2>
 			{expl1}
 			<h2>Parameters</h2>
-			<ul>
-				{this.liGen(params)}
-			</ul>
+			{this.liGen(params)}
 			<h2>Use Cases:</h2>
-			<ul>
-				{this.liGen(usecase)}
-			</ul>
+			{this.liGen(usecase)}
 			<div className = "para">
 				{expl2.map((i, j)=><div key = {j}>{i}</div>)}
 			</div>
 			<h2>The Good</h2>
-			<ul>
-				{this.liGen(pros)}
-			</ul>
+			{this.liGen(pros)}
 			<h2>The Bad</h2>
-			<ul>
-				{this.liGen(cons)}
-			</ul>
+			{this.liGen(cons)}
+			<h2>Learn more...</h2>
+			{this.liGen(links)}
 
 		</div>);
 	}
 	liGen(arr){
-		return arr.map((i, j)=><li key = {j}>{i}</li>);
+		return <ul>{arr.map((i, j)=><li key = {j}>{i}</li>)}</ul>;
 	}
 }

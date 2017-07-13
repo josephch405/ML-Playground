@@ -12,6 +12,7 @@ export default class Canvas {
 	constructor(canvas){
 		this.canvasElem = canvas;
 		this.ctx = canvas.getContext("2d");
+		this.ctx.imageSmoothingEnabled = false;
 		//rect is offset of canvas in window
 		this.rect = canvas.getBoundingClientRect();
 		this.brush = S.class1;
