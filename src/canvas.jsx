@@ -17,11 +17,12 @@ export default class Canvas {
 		this.rect = canvas.getBoundingClientRect();
 		this.brush = S.class1;
 		this.bgInput = [];
-		for (var i = - W_INTERV; i <= W_INTERV; i += BGRESO){
-			for (var ii = - H_INTERV; ii <= H_INTERV; ii += BGRESO){
+		for (var i = - W_INTERV * BGRESO / 2; i <= W_INTERV * BGRESO / 2; i += BGRESO){
+			for (var ii = - H_INTERV * BGRESO / 2; ii <= H_INTERV * BGRESO / 2; ii += BGRESO){
 				this.bgInput.push([i, ii]);
 			}
 		}
+		console.log(this.bgInput)
 		this.batchEvalPixels = this.batchEvalPixels.bind(this);
 		this.batchDrawPixels = this.batchDrawPixels.bind(this);
 		this.drawStoreTr = this.drawStoreTr.bind(this);

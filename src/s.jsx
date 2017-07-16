@@ -8,8 +8,8 @@ let S = {
 		3: "#4444FF" 
 	},
 	bgColors: {
-		1: "#FFBE7B",
-		2: "#F763FF",
+		1: "#FFD9B1",
+		2: "#FA99FF",
 		3: "#BBBBFF" 
 	},
 	model: [
@@ -18,7 +18,7 @@ let S = {
 	canvasW: 400,
 	canvasH: 400,
 	ptSize: 6,
-	bgReso: 2
+	bgReso: 4
 };
 
 export default S;

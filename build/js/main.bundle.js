@@ -6566,15 +6566,15 @@ let S = {
 		3: "#4444FF"
 	},
 	bgColors: {
-		1: "#FFBE7B",
-		2: "#F763FF",
+		1: "#FFD9B1",
+		2: "#FA99FF",
 		3: "#BBBBFF"
 	},
 	model: ["knn", "perceptron", "svm", "ann"],
 	canvasW: 400,
 	canvasH: 400,
 	ptSize: 6,
-	bgReso: 2
+	bgReso: 4
 };
 
 /* harmony default export */ __webpack_exports__["a"] = (S);
@@ -35654,11 +35654,12 @@ class Canvas {
 		this.rect = canvas.getBoundingClientRect();
 		this.brush = __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].class1;
 		this.bgInput = [];
-		for (var i = -W_INTERV; i <= W_INTERV; i += BGRESO) {
-			for (var ii = -H_INTERV; ii <= H_INTERV; ii += BGRESO) {
+		for (var i = -W_INTERV * BGRESO / 2; i <= W_INTERV * BGRESO / 2; i += BGRESO) {
+			for (var ii = -H_INTERV * BGRESO / 2; ii <= H_INTERV * BGRESO / 2; ii += BGRESO) {
 				this.bgInput.push([i, ii]);
 			}
 		}
+		console.log(this.bgInput);
 		this.batchEvalPixels = this.batchEvalPixels.bind(this);
 		this.batchDrawPixels = this.batchDrawPixels.bind(this);
 		this.drawStoreTr = this.drawStoreTr.bind(this);
@@ -36125,11 +36126,27 @@ class Ann extends __WEBPACK_IMPORTED_MODULE_3__mlmodel__["a" /* default */] {
 			tldr: "Perceptrons! More Perceptrons!",
 			expl1: "Chain a lot of perceptrons together, in layers. Forward-propogate to solve for a prediction. Train by using backpropogation and updating weights of the neurons.",
 			params: ["Layers and neurons - just keep it reasonable! Don't train a 1000 layers each with 1000 neurons - you'll shoot your eye out."],
-			usecase: ["Binray Classification", "Multi-class Classification", "Regression"],
-			expl2: ["The hottest thing out there (note: written in 2017). Who knows how long this trend will go on for.", "The basic premise is that ", "A lot of cooler applications of Neural Networks revolve around using more complex forms than a simple Dense network (as presented here).", "Convolutional Networks (ConvNets) are experts at image processing, as they 'Convolve' across the whole image, ie. scan the image with a smaller moving window.", "Recurrent Neural Networks (RNNs) are powerful for data generation, both for images and text, because of their power to 'remember' data from previous entries in a time series."],
-			pros: ["Universal Approximator - any continuous function can be approximated by a finite amount of neurons in one layer. No guarantees about learnability though - ie. there's a good fit out there, but it's kinda on you to find it. Somehow."],
+			usecase: ["Binary Classification", "Multi-class Classification", "Regression"],
+			expl2: ["The hottest thing out there (note: written in 2017). Who knows how long this trend will go on for.", "The basic premise is that you have multiple layers of perceptrons. Each layer takes in input from the last, and each neuron outputs one number - ie. 'fires'. We then apply some activation function to this 'fired' output, and then we move onto the next layer.", "The activation function is crucial in this - if you didn't push outputs through an activation function, you're effectively training a simple perceptron. In other words, activation functions are what gives Neural Networks their magic. In this case, we use a tanh activation function that scales outputs between -1 to 1 - a variety of others are used, such as Rectified Linear Units (ReLU) and the logistic function.", "Another key component is the backpropogation algorithm. Because of the network's straightforward structure, we can mathematically find a way to optimize our network. We calculate a 'gradient', which involves calculating derivatives for each individual neuron, and then adjusting all the weights accordingly. We adjust the weights by going back from the last layer to the first - hence 'back propogation' of weight updates.", "A lot of cooler applications of Neural Networks revolve around using more complex forms than a simple Dense network (as presented here).", "Convolutional Networks (ConvNets) are experts at image processing, as they 'Convolve' across the whole image, ie. scan the image with a smaller moving window.", "Recurrent Neural Networks (RNNs) are powerful for data generation, both for images and text, because of their power to 'remember' data from previous entries in a time series."],
+			pros: ["Universal Approximator - any continuous function can be approximated by a finite amount of neurons in one layer. No guarantees about learnability though - ie. there's a good fit out there, but it's kinda on you to find it. Somehow.", "As stated, very effective at certain problems such as visual or linguistic problems."],
 			cons: ["Bulky - training can take a bit of time, and the number of layers people are training these days are sort of ridiculous", "Mysterious - in some ways, we're not entirely sure why they're so effective, especially within certain fields such as Vision."],
-			links: []
+			links: [__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				"a",
+				{ target: "_blank", href: "https://en.wikipedia.org/wiki/Artificial_neural_network" },
+				"Wikipedia: Artificial neural network"
+			), __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				"a",
+				{ target: "_blank", href: "http://cs231n.github.io/optimization-2/" },
+				"Intuitions on backpropogation (Stanford CS 231n, Karpathy)"
+			), __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				"a",
+				{ target: "_blank", href: "https://ujjwalkarn.me/2016/08/11/intuitive-explanation-convnets/" },
+				"Intuitive explanation of ConvNets (Karn)"
+			), __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				"a",
+				{ target: "_blank", href: "http://karpathy.github.io/2015/05/21/rnn-effectiveness/" },
+				"The Unreasonable Effectiveness of Recurrent Neural Networks (Karpathy)"
+			)]
 		});
 	}
 }
