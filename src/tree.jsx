@@ -49,26 +49,7 @@ export default class Tree extends MLModel {
 		return Math.sqrt((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2));
 	}
 	train(){
-		this.w = [(Math.random() - .5) * 10, (Math.random() - .5) * 10, (Math.random() - .5) * 1000];
-		var allGood = false;
-		var iters = this.maxIters;
-		while(!allGood && iters > 0){
-			var misClassed = 0;
-			for(var i = 0; i< this.xTr.length; i ++){
-				var pred = this.classif(this.xTr[i][0], this.xTr[i][1]);
-				if(this.yTr[i] != pred){
-					misClassed += 1;
-					let y = this.cl2pr(this.yTr[i]);
-					this.w[0] += y * this.xTr[i][0];
-					this.w[1] += y * this.xTr[i][1];
-					this.w[2] += y * 1;
-				}
-			}
-			if(misClassed === 0)
-				allGood = true;
-			iters --;
-		}
-		return;
+
 	}
 	setMaxIters(iters){
 		if(iters < 100){
@@ -108,10 +89,10 @@ export default class Tree extends MLModel {
 	}
 	info(){
 		return this.generateInfo(
-			"Perceptron",
-			"Drawing a line in the sand",
-			<div>Comes up with a <b>flat space that cleanly separates the data</b>.</div>,
-			["Max Iters (\u2264 100): Maximum number of updates for training"],
+			"Decision Tree",
+			"If computers played 21 questions.",
+			<div>Design a tree that tries to put data into buckets, using certain thresholds on features</div>,
+			["Max depth (\u2264 10): Maximum number of updates for training"],
 			["Binary Classification", "Regression"],
 			["One of the oldest algorithms out there - cause it's a very simple one. In mathematical terms, we simply solve for a linear combination of the inputs (ie. h = ax + by + cz..., where x, y, z are inputs and a, b, c are constants), then use this output h to predict - positive h for Class A , negative h for Class B. In an intuitive sense, we're finding a straight boundary that exactly cuts through the data.",
 				"It's easy to visualize it as a line if the data is two-dimensional - as in our case. In three dimensions, it's a plane. In four dimensions, it's an entire 3d space - not so easy to visualize anymore.",
