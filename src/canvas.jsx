@@ -22,7 +22,6 @@ export default class Canvas {
 				this.bgInput.push([i, ii]);
 			}
 		}
-		console.log(this.bgInput)
 		this.batchEvalPixels = this.batchEvalPixels.bind(this);
 		this.batchDrawPixels = this.batchDrawPixels.bind(this);
 		this.drawStoreTr = this.drawStoreTr.bind(this);

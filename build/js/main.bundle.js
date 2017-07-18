@@ -35659,7 +35659,6 @@ class Canvas {
 				this.bgInput.push([i, ii]);
 			}
 		}
-		console.log(this.bgInput);
 		this.batchEvalPixels = this.batchEvalPixels.bind(this);
 		this.batchDrawPixels = this.batchDrawPixels.bind(this);
 		this.drawStoreTr = this.drawStoreTr.bind(this);
@@ -35981,11 +35980,13 @@ if(false) {
 
 
 const norm = 100;
+const MAX_PER_LAYER = 10;
+const MAX_LAYERS = 8;
 
 class Ann extends __WEBPACK_IMPORTED_MODULE_3__mlmodel__["a" /* default */] {
 	constructor() {
 		super();
-		this.layers = [2, 4, 1];
+		this.layers = [2, 4, 4, 1];
 		this.shuffleWeights();
 		this.classif = this.classif.bind(this);
 	}
@@ -36094,27 +36095,133 @@ class Ann extends __WEBPACK_IMPORTED_MODULE_3__mlmodel__["a" /* default */] {
 		if (cl == __WEBPACK_IMPORTED_MODULE_0__s__["a" /* default */].class1) return 1;
 		return -1;
 	}
+	addNeuron(layer) {
+		console.log(layer);
+		if (layer && layer > 0 && layer < this.layers.length - 1 && this.layers[layer] < MAX_PER_LAYER) {
+			this.layers[layer] += 1;
+		}
+		return this.layers;
+	}
+	removeNeuron(layer) {
+		if (layer && layer > 0 && layer < this.layers.length - 1 && this.layers[layer] > 1) {
+			this.layers[layer] -= 1;
+		}
+		return this.layers;
+	}
+	addLayer() {
+		if (this.layers.length - 2 < MAX_LAYERS) {
+			this.layers.push(1);
+			this.layers[this.layers.length - 2] = 3;
+		}
+		return this.layers;
+	}
+	removeLayer() {
+		if (this.layers.length > 3) {
+			this.layers.splice(this.layers.length - 1, 1);
+			this.layers[this.layers.length - 1] = 1;
+		}
+		return this.layers;
+	}
 	uiInstance() {
 		//var setK = this.setK.bind(this);//this.setK.bind(this);
+		var self = this;
 		return class PerceptronUI extends __WEBPACK_IMPORTED_MODULE_1_react___default.a.Component {
 			constructor(props) {
 				super(props);
-				// this.state = {
-				// 	value: ""
-				// };
-				// this.onChange = this.onChange.bind(this);
+				this.state = {
+					layers: self.layers
+				};
 			}
-			// onChange(e){
-			// 	if(setK(e.target.value)) {
-			// 		this.setState({
-			// 			value: e.target.value
-			// 		});
-			// 	}
-			// }
+			dispatch(type, n) {
+				switch (type) {
+					case "n+":
+						this.setState({ layers: self.addNeuron(n) });
+						break;
+					case "n-":
+						this.setState({ layers: self.removeNeuron(n) });
+						break;
+					case "l+":
+						this.setState({ layers: self.addLayer() });
+						break;
+					case "l-":
+						this.setState({ layers: self.removeLayer() });
+						break;
+				}
+				console.log(self.layers);
+			}
+			createDispatch(type, n) {
+				return () => {
+					this.dispatch(type, n);
+				};
+			}
+
 			render() {
+				var layers = [];
+				//first input layer
+				layers.push(__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+					"div",
+					{ key: 0, className: "layer" },
+					__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+						"button",
+						null,
+						"X"
+					),
+					__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+						"button",
+						null,
+						"Y"
+					)
+				));
+				//middle layers
+				for (var i = 1; i < self.layers.length - 1; i++) {
+					var layer = [];
+					var l = i;
+					for (var ii = 0; ii < self.layers[i]; ii++) {
+						layer.push(__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement("button", { onClick: this.createDispatch("n-", l) }));
+					}
+					layer.push(__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+						"button",
+						{ className: "flipped", onClick: this.createDispatch("n+", l) },
+						"+"
+					));
+					layers.push(__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+						"div",
+						{ key: i, className: "layer" },
+						layer
+					));
+				}
+				//last layer
+				layers.push(__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+					"div",
+					{ key: self.layers.length - 1, className: "layer" },
+					__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement("button", null)
+				));
+				layers.push(__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+					"div",
+					{ key: self.layers.length, className: "layer" },
+					"Layers:",
+					__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+						"button",
+						{ className: "flipped", onClick: this.createDispatch("l+") },
+						"+"
+					),
+					__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+						"button",
+						{ className: "flipped", onClick: this.createDispatch("l-") },
+						"-"
+					)
+				));
+				var annContainer = __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+					"div",
+					{ id: "ANN-panel" },
+					layers
+				);
 				return __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
 					"div",
 					null,
+					"Click on neurons to remove",
+					__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement("br", null),
+					annContainer,
 					"Non yet"
 				);
 			}
@@ -39793,7 +39900,7 @@ exports = module.exports = __webpack_require__(240)(undefined);
 
 
 // module
-exports.push([module.i, "body,\nhtml {\n  margin: 0;\n  font-family: 'Roboto Slab', serif;\n}\n* {\n  transition: all 0.2s ease;\n}\n#canvasDiv {\n  text-align: center;\n}\ninput[type=text] {\n  border: none;\n  border-bottom: 2px solid;\n  border-color: black;\n  outline: none;\n  padding: 6px;\n  width: 50px;\n  text-align: center;\n}\ninput[type=text]:focus {\n  border-color: #FF5400;\n}\n#options {\n  padding: 1vh;\n  line-height: 120%;\n}\n#options #trainAndDisplay {\n  width: 100px;\n  background: linear-gradient(to right, black 50%, white 50%);\n  background-position: right bottom;\n  background-size: 200% 100%;\n  border: 0;\n  font-size: 2vh;\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);\n  padding: 12px;\n  border-radius: 4px;\n}\n#options #trainAndDisplay:hover {\n  background-position: left bottom;\n  color: white;\n}\ncanvas {\n  display: inline;\n  box-sizing: border-box;\n  margin-top: 6vh;\n  width: 400px;\n  height: 400px;\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);\n  width: 100%;\n  height: auto;\n}\n#brushes {\n  font-size: 2vh;\n}\n#brushes div {\n  display: inline-block;\n  vertical-align: middle;\n}\n#brushes div input {\n  display: none;\n}\n#brushes div label {\n  box-sizing: border-box;\n  color: white;\n  width: 4vh;\n  height: 4vh;\n  margin: 1vh;\n  border-radius: 4px;\n}\n#brushes div label:hover {\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);\n}\n#brushes div #br-1 ~ label {\n  background-color: #FF5400;\n}\n#brushes div #br-1 ~ label:hover {\n  background-color: #FF9059;\n}\n#brushes div #br-2 ~ label {\n  background-color: #9900D8;\n}\n#brushes div #br-2 ~ label:hover {\n  background-color: #CA49FF;\n}\n#brushes div #br-3 ~ label {\n  background-color: #4444FF;\n}\n#brushes div #br-3 ~ label:hover {\n  background-color: #8686FF;\n}\n#brushes div input:checked ~ label {\n  border: 2px solid white;\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);\n}\n#topbar {\n  padding: 2vh;\n  padding-left: 4vh;\n  margin-bottom: 2vh;\n  margin-top: 0;\n  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.4);\n  font-size: 5vh;\n}\n#model-selector {\n  display: inline-block;\n  width: 100%;\n}\n#model-selector > div {\n  display: inline-block;\n  padding: 1.5vh;\n  width: 14vh;\n  height: 20vh;\n  border-width: 2px;\n  border-style: solid;\n  border-color: #EEE;\n  border-radius: 5px;\n  margin: .5vh;\n  text-align: center;\n  background-color: #FFFFFF;\n  float: left;\n  box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.3);\n}\n#model-selector > div h4 {\n  font-size: 2vh;\n}\n#model-selector > div:hover {\n  border-color: #FFF;\n  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.3);\n}\n#model-selector > div.true {\n  border-color: #FFF;\n  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.3);\n}\n#model-selector > div img {\n  width: 8vh;\n}\n#infoPanel {\n  margin-top: 50px;\n  margin-bottom: 120px;\n}\n#infoPanel div,\n#infoPanel ul {\n  font-size: 2vh;\n  line-height: 4vh;\n  white-space: pre-line;\n}\n#infoPanel ul {\n  list-style: none;\n}\n#infoPanel ul > li:before {\n  content: \"-  \";\n}\n#infoPanel .para {\n  text-indent: 5%;\n}\n#infoPanel .para * {\n  margin-top: 10px;\n}\n", ""]);
+exports.push([module.i, "body,\nhtml {\n  margin: 0;\n  font-family: 'Roboto Slab', serif;\n}\n* {\n  transition: all 0.2s ease;\n}\n#canvasDiv {\n  text-align: center;\n}\ninput[type=text] {\n  border: none;\n  border-bottom: 2px solid;\n  border-color: black;\n  outline: none;\n  padding: 6px;\n  width: 50px;\n  text-align: center;\n}\ninput[type=text]:focus {\n  border-color: #FF5400;\n}\n#options {\n  padding: 1vh;\n  line-height: 120%;\n}\n#options #trainAndDisplay {\n  width: 100px;\n  background: linear-gradient(to right, black 50%, white 50%);\n  background-position: right bottom;\n  background-size: 200% 100%;\n  border: 0;\n  border-radius: 4px;\n  font-size: 2vh;\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);\n  padding: 12px;\n}\n#options #trainAndDisplay:hover {\n  background-position: left bottom;\n  color: white;\n}\n#options #ANN-panel {\n  display: flex;\n  flex-direction: row;\n}\n#options #ANN-panel .layer {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n}\n#options #ANN-panel .layer button {\n  width: 3vh;\n  height: 3vh;\n  margin: .5vh 1.5vh .5vh 1.5vh;\n  border: 0;\n  border-radius: 4px;\n  background-color: black;\n  color: white;\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);\n}\n#options #ANN-panel .layer .flipped {\n  background-color: white;\n  color: black;\n}\ncanvas {\n  display: inline;\n  box-sizing: border-box;\n  margin-top: 6vh;\n  width: 400px;\n  height: 400px;\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);\n  width: 100%;\n  height: auto;\n}\n#brushes {\n  font-size: 2vh;\n}\n#brushes div {\n  display: inline-block;\n  vertical-align: middle;\n}\n#brushes div input {\n  display: none;\n}\n#brushes div label {\n  box-sizing: border-box;\n  color: white;\n  width: 4vh;\n  height: 4vh;\n  margin: 1vh;\n  border-radius: 4px;\n}\n#brushes div label:hover {\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);\n}\n#brushes div #br-1 ~ label {\n  background-color: #FF5400;\n}\n#brushes div #br-1 ~ label:hover {\n  background-color: #FF9059;\n}\n#brushes div #br-2 ~ label {\n  background-color: #9900D8;\n}\n#brushes div #br-2 ~ label:hover {\n  background-color: #CA49FF;\n}\n#brushes div #br-3 ~ label {\n  background-color: #4444FF;\n}\n#brushes div #br-3 ~ label:hover {\n  background-color: #8686FF;\n}\n#brushes div input:checked ~ label {\n  border: 2px solid white;\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);\n}\n#topbar {\n  padding: 2vh;\n  padding-left: 4vh;\n  margin-bottom: 2vh;\n  margin-top: 0;\n  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.4);\n  font-size: 5vh;\n}\n#model-selector {\n  display: inline-block;\n  width: 100%;\n}\n#model-selector > div {\n  display: inline-block;\n  padding: 1.5vh;\n  width: 14vh;\n  height: 20vh;\n  border-width: 2px;\n  border-style: solid;\n  border-color: #EEE;\n  border-radius: 5px;\n  margin: .5vh;\n  text-align: center;\n  background-color: #FFFFFF;\n  float: left;\n  box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.3);\n}\n#model-selector > div h4 {\n  font-size: 2vh;\n}\n#model-selector > div:hover {\n  border-color: #FFF;\n  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.3);\n}\n#model-selector > div.true {\n  border-color: #FFF;\n  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.3);\n}\n#model-selector > div img {\n  width: 8vh;\n}\n#infoPanel {\n  margin-top: 50px;\n  margin-bottom: 120px;\n}\n#infoPanel div,\n#infoPanel ul {\n  font-size: 2vh;\n  line-height: 4vh;\n  white-space: pre-line;\n}\n#infoPanel ul {\n  list-style: none;\n}\n#infoPanel ul > li:before {\n  content: \"-  \";\n}\n#infoPanel .para {\n  text-indent: 5%;\n}\n#infoPanel .para * {\n  margin-top: 10px;\n}\n", ""]);
 
 // exports
 

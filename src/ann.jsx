@@ -4,11 +4,14 @@ import {default as m} from "mathjs";
 import MLModel from "./mlmodel";
 
 const norm = 100;
+const MAX_PER_LAYER = 10;
+const MAX_LAYERS = 8;
+
 
 export default class Ann extends MLModel{
 	constructor(){
 		super();
-		this.layers = [2, 4, 1];
+		this.layers = [2, 4, 4, 1];
 		this.shuffleWeights();
 		this.classif = this.classif.bind(this);
 	}
@@ -123,27 +126,98 @@ export default class Ann extends MLModel{
 			return 1;
 		return -1;
 	}
+	addNeuron(layer){
+		console.log(layer)
+		if (layer && layer > 0 && layer < this.layers.length - 1 && this.layers[layer] < MAX_PER_LAYER){
+			this.layers[layer] += 1;
+		}
+		return this.layers;
+	}
+	removeNeuron(layer){
+		if (layer && layer > 0 && layer < this.layers.length - 1 && this.layers[layer] > 1){
+			this.layers[layer] -= 1;
+		}
+		return this.layers;
+	}
+	addLayer(){
+		if(this.layers.length - 2 < MAX_LAYERS){
+			this.layers.push(1);
+			this.layers[this.layers.length - 2] = 3;
+		}
+		return this.layers;
+	}
+	removeLayer(){
+		if(this.layers.length > 3){
+			this.layers.splice(this.layers.length - 1, 1);
+			this.layers[this.layers.length - 1] = 1;
+		}
+		return this.layers;
+	}
 	uiInstance(){
 		//var setK = this.setK.bind(this);//this.setK.bind(this);
+		var self = this;
 		return(
 			class PerceptronUI extends React.Component{
 				constructor(props){
 					super(props);
-					// this.state = {
-					// 	value: ""
-					// };
-					// this.onChange = this.onChange.bind(this);
+					this.state = {
+						layers: self.layers
+					};
 				}
-				// onChange(e){
-				// 	if(setK(e.target.value)) {
-				// 		this.setState({
-				// 			value: e.target.value
-				// 		});
-				// 	}
-				// }
+				dispatch(type, n){
+					switch(type){
+					case "n+":
+						this.setState({layers: self.addNeuron(n)});
+						break;
+					case "n-":
+						this.setState({layers: self.removeNeuron(n)});
+						break;
+					case "l+":
+						this.setState({layers: self.addLayer()});
+						break;
+					case "l-":
+						this.setState({layers: self.removeLayer()});
+						break;
+					}
+					console.log(self.layers)
+				}
+				createDispatch(type, n){
+					return () => {this.dispatch(type, n)};
+				}
+
 				render(){
+					var layers = [];
+					//first input layer
+					layers.push(<div key = {0} className = "layer">
+							<button>X</button>
+							<button>Y</button>
+						</div>);
+					//middle layers
+					for(var i = 1; i < self.layers.length - 1; i ++){
+						var layer = [];
+						var l = i;
+						for(var ii = 0; ii < self.layers[i]; ii ++){
+							layer.push(<button onClick = {this.createDispatch("n-", l)}></button>);
+						}
+						layer.push(<button className = "flipped" onClick = {this.createDispatch("n+", l)}>+</button>);
+						layers.push(<div key = {i} className = "layer">
+							{layer}
+						</div>);
+					}
+					//last layer
+					layers.push(<div key = {self.layers.length - 1} className = "layer">
+							<button></button>
+						</div>);
+					layers.push(<div key = {self.layers.length} className = "layer">
+						Layers:
+							<button className = "flipped" onClick = {this.createDispatch("l+")}>+</button>
+							<button className = "flipped" onClick = {this.createDispatch("l-")}>-</button>
+						</div>);
+					var annContainer = <div id = "ANN-panel">{layers}</div>;
 					return(
 						<div>
+							Click on neurons to remove<br/>
+							{annContainer}
 							Non yet
 						</div>
 					);

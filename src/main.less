@@ -34,13 +34,36 @@ input[type=text]{
     	background-position:right bottom;
     	background-size: 200% 100%;
 		border: 0;
+		border-radius: 4px;
 		font-size: 2vh;
 		box-shadow: 0 0 10px 0 rgba(0,0,0,.4);
 		padding: 12px;
-		border-radius: 4px;
 		&:hover{
     		background-position:left bottom;
 			color: white;
+		}
+	}
+	#ANN-panel{
+		display: flex;
+		flex-direction: row;
+		.layer{
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			button{
+				width: 3vh;
+				height: 3vh;
+				margin: .5vh 1.5vh .5vh 1.5vh;
+				border: 0;
+				border-radius: 4px;
+				background-color: black;
+				color: white;
+				box-shadow: 0 0 10px 0 rgba(0,0,0,.3)
+			}
+			.flipped{
+				background-color: white;
+				color: black;
+			}
 		}
 	}
 }
