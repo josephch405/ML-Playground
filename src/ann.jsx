@@ -127,7 +127,7 @@ export default class Ann extends MLModel{
 		return -1;
 	}
 	addNeuron(layer){
-		console.log(layer)
+		console.log(layer);
 		if (layer && layer > 0 && layer < this.layers.length - 1 && this.layers[layer] < MAX_PER_LAYER){
 			this.layers[layer] += 1;
 		}
@@ -179,19 +179,19 @@ export default class Ann extends MLModel{
 						this.setState({layers: self.removeLayer()});
 						break;
 					}
-					console.log(self.layers)
+					console.log(self.layers);
 				}
 				createDispatch(type, n){
-					return () => {this.dispatch(type, n)};
+					return () => {this.dispatch(type, n);};
 				}
 
 				render(){
 					var layers = [];
 					//first input layer
 					layers.push(<div key = {0} className = "layer">
-							<button>X</button>
-							<button>Y</button>
-						</div>);
+						<button>X</button>
+						<button>Y</button>
+					</div>);
 					//middle layers
 					for(var i = 1; i < self.layers.length - 1; i ++){
 						var layer = [];
@@ -206,13 +206,13 @@ export default class Ann extends MLModel{
 					}
 					//last layer
 					layers.push(<div key = {self.layers.length - 1} className = "layer">
-							<button></button>
-						</div>);
+						<button></button>
+					</div>);
 					layers.push(<div key = {self.layers.length} className = "layer">
 						Layers:
-							<button className = "flipped" onClick = {this.createDispatch("l+")}>+</button>
-							<button className = "flipped" onClick = {this.createDispatch("l-")}>-</button>
-						</div>);
+						<button className = "flipped" onClick = {this.createDispatch("l+")}>+</button>
+						<button className = "flipped" onClick = {this.createDispatch("l-")}>-</button>
+					</div>);
 					var annContainer = <div id = "ANN-panel">{layers}</div>;
 					return(
 						<div>

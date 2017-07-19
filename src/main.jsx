@@ -26,7 +26,7 @@ var renderInfo = (info) => {
 		info,
 		document.getElementById("infoPanel")
 	);
-}
+};
 
 ReactDOM.render(
 	<UI setClass = {(brush) => {canvas.setBrush(brush);}}

@@ -25,6 +25,12 @@ var config = {
 		},{ test   : /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
 			include: APP_DIR,
 			loader : "file-loader" 
+		}, {
+			test: /\.(jpe?g|png|gif|svg)$/i,
+			loaders: [
+				"file-loader?hash=sha512&digest=hex&name=./build/[hash].[ext]",
+				"image-webpack-loader?bypassOnDebug&optimizationLevel=7&interlaced=false"
+			]
 		}]
 	},
 	resolve: {

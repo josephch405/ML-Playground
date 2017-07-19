@@ -47,9 +47,17 @@ export default class Canvas {
 		this.store = store;
 	}
 	onPointAdded(evt){
+		//	catch case here!
+
 		let xTr = this.getMousePos(evt);
-		let yTr = this.brush;
-		this.store.addPoint(xTr, yTr);
+		console.log(this.brush, S.eraser, this.brush == S.eraser);
+		if(this.brush == S.eraser){
+			this.store.erase(xTr);
+		}
+		else{
+			let yTr = this.brush;
+			this.store.addPoint(xTr, yTr);
+		}
 		this.clearCtx();
 		this.drawStoreTr();
 	}

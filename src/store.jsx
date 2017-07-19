@@ -13,16 +13,40 @@ export default class Store{
 	addPoint(xTr, yTr){
 		this.xTr.push(xTr);
 		this.yTr.push(yTr);
+		this.dispatchToClassif();
+	}
+	erase(xTr){
+		var bestInd = -1;
+		var bestDist = Infinity;
+		this.xTr.forEach((x, i)=>{
+			let dist = this.dist(xTr, x);
+			if(dist < bestDist){
+				bestInd = i;
+				bestDist = dist;
+			}
+		});
+		if(bestInd > -1){
+			this.xTr.splice(bestInd, 1);
+			this.yTr.splice(bestInd, 1);
+			this.dispatchToClassif();
+		}
+	}
+	dispatchToClassif(){
 		this.classif.setTraining(this.xTr, this.yTr);
+	}
+	dist(X, Y){
+		var d1 = X[0] - Y[0];
+		var d2 = X[1] - Y[1];
+		return Math.sqrt(d1 * d1 + d2 * d2);
 	}
 	clearStore(){
 		this.xTr = [];
 		this.yTr = [];
-		this.classif.setTraining(this.xTr, this.yTr);
+		this.dispatchToClassif();
 	}
 	linkClassif(classif){
 		this.classif = classif;
-		this.classif.setTraining(this.xTr, this.yTr);
+		this.dispatchToClassif();
 	}
 	batchTrainAndClassif(){
 		return new Promise((ok, err)=>{

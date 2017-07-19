@@ -101,6 +101,6 @@ export default class Tree extends MLModel {
 			["Simple to implement", "Tiny, tiny model (boils down to small list of numbers!)"],
 			["Assumes linearly separable data - does poorly otherwise",
 				"Can end up with bad fits with points right on the 'edge'"]
-			);
+		);
 	}
 }

@@ -2,6 +2,7 @@ let S = {
 	class1: 1,
 	class2: 2,
 	class3: 3,
+	eraser: -1,
 	colors: {
 		1: "#FF5400",
 		2: "#9900D8",
