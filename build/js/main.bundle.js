@@ -34456,7 +34456,7 @@ class UI extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 					"div",
 					{ className: this.state.modelSelected == __WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].model[0], onClick: () => this.changeModel(__WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].model[0]) },
-					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("img", { src: "./build/img/knn.png" }),
+					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("img", { src: "./img/knn.png" }),
 					" ",
 					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 						"h4",
@@ -34468,7 +34468,7 @@ class UI extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 					"div",
 					{ className: this.state.modelSelected == __WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].model[1], onClick: () => this.changeModel(__WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].model[1]) },
-					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("img", { src: "./build/img/perceptron.png" }),
+					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("img", { src: "./img/perceptron.png" }),
 					" ",
 					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 						"h4",
@@ -34480,7 +34480,7 @@ class UI extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 					"div",
 					{ className: this.state.modelSelected == __WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].model[2], onClick: () => this.changeModel(__WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].model[2]) },
-					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("img", { src: "./build/img/linear.png" }),
+					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("img", { src: "./img/linear.png" }),
 					" ",
 					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 						"h4",
@@ -34492,7 +34492,7 @@ class UI extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 					"div",
 					{ className: this.state.modelSelected == __WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].model[3], onClick: () => this.changeModel(__WEBPACK_IMPORTED_MODULE_1__s__["a" /* default */].model[3]) },
-					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("img", { src: "./build/img/ann.png" }),
+					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("img", { src: "./img/ann.png" }),
 					" ",
 					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 						"h4",
@@ -35280,7 +35280,11 @@ class SVM extends __WEBPACK_IMPORTED_MODULE_3__mlmodel__["a" /* default */] {
 			),
 			params: ["C (\u2265 0): Regularization constant. How hard the SVM will try to fit all your data at risk of overfitting with overly complex model", "RBF Kernel: Default is unselected - uses Linear SVM. Toggle to use RBF Kernel SVM"],
 			usecase: ["Binary Classification", "Multi-class Classification", "Regression"],
-			expl2: ["Basically a perceptron on steroids. By \"margin\", we mean \"the distance between plane and point closest to plane\". So by maximizing the margin, we are making sure that all points are as far away from the decision boundary as they can be.", "Originally, we start with a linear SVM - meaning that our dividing hyperplane, much like the perceptron, \"operates\" with straight lines as boundaries. Obviously this is a bit limiting - we still can't recognize circles! Not all is lost, however - we can introduce some helpful changes.", "The Kernel Trick (makes it sound almost like magic...) is when we go from a Primal SVM formation to a Dual formation. Complicated math aside, this effectively means that you're 'multiplying' a test vector by select Support Vectors, then combining the products to form a good prediction. (Refer to resources for complex definition)", "With a Linear SVM, we are essentially using a Dot Product as the 'Multiplication' for the Dual. We could replace this with other forms of 'multiplication' methods, which are called Kernels. A very popular choice is the RBF kernel - the 'multiplications' end up relying on net distance between test points, so in effect it's actually sort of like KNN, but much more regularized."],
+			expl2: ["Basically a perceptron on steroids. By \"margin\", we mean \"the distance between plane and point closest to plane\". So by maximizing the margin, we are making sure that all points are as far away from the decision boundary as they can be.", "Originally, we start with a linear SVM - meaning that our dividing hyperplane, much like the perceptron, \"operates\" with straight lines as boundaries. Obviously this is a bit limiting - we still can't recognize circles! Not all is lost, however - we can introduce some helpful changes.", "The Kernel Trick (makes it sound almost like magic...) is when we go from a Primal SVM formation to a Dual formation. Complicated math aside, this effectively means that you're 'multiplying' a test vector by select Support Vectors, then combining the products to form a good prediction. (Refer to resources for complex definition)", "With a Linear SVM, we are essentially using a Dot Product as the 'Multiplication' for the Dual. We could replace this with other forms of 'multiplication' methods, which are called Kernels. A very popular choice is the RBF kernel - the 'multiplications' end up relying on net distance between test points, so in effect it's actually sort of like KNN, but much more regularized.", __WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
+				"div",
+				{ className: "col-xs-12" },
+				__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement("img", { className: "col-xs-10 col-xs-offset-1", src: "./img/svm_dual.png" })
+			)],
 			pros: ["Option to regularize - ie. reduce overfitting by preferring 'simpler' models over complex ones. Try tweaking C to see its effects!", "Parametric (Linear SVM): model remains same size regardless of dataset size"],
 			cons: ["Non-parametric (RBF Kernel SVM): model itself may get more complicated as data set grows"],
 			links: [__WEBPACK_IMPORTED_MODULE_1_react___default.a.createElement(
@@ -39377,7 +39381,7 @@ exports = module.exports = __webpack_require__(247)(undefined);
 
 
 // module
-exports.push([module.i, "body,\nhtml {\n  margin: 0;\n  font-family: 'Roboto Slab', serif;\n}\n* {\n  transition: all 0.2s ease;\n}\n#canvasDiv {\n  text-align: center;\n}\ninput[type=text] {\n  border: none;\n  border-bottom: 2px solid;\n  border-color: black;\n  outline: none;\n  padding: 6px;\n  width: 50px;\n  text-align: center;\n}\ninput[type=text]:focus {\n  border-color: #FF5400;\n}\n#options {\n  padding: 1vh;\n  line-height: 120%;\n}\n#options #trainAndDisplay {\n  width: 100px;\n  background: linear-gradient(to right, black 50%, white 50%);\n  background-position: right bottom;\n  background-size: 200% 100%;\n  border: 0;\n  border-radius: 4px;\n  font-size: 2vh;\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);\n  padding: 12px;\n}\n#options #trainAndDisplay:hover {\n  background-position: left bottom;\n  color: white;\n}\n#options #ANN-panel {\n  display: flex;\n  flex-direction: row;\n}\n#options #ANN-panel .layer {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n}\n#options #ANN-panel .layer button {\n  width: 3vh;\n  height: 3vh;\n  margin: .5vh 1.5vh .5vh 1.5vh;\n  border: 0;\n  border-radius: 4px;\n  background-color: black;\n  color: white;\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);\n}\n#options #ANN-panel .layer .flipped {\n  background-color: white;\n  color: black;\n}\ncanvas {\n  display: inline;\n  box-sizing: border-box;\n  margin-top: 6vh;\n  width: 400px;\n  height: 400px;\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);\n  width: 100%;\n  height: auto;\n}\n#brushes {\n  font-size: 2vh;\n}\n#brushes div {\n  display: inline-block;\n  vertical-align: middle;\n}\n#brushes div input {\n  display: none;\n}\n#brushes div label {\n  box-sizing: border-box;\n  color: white;\n  width: 4vh;\n  height: 4vh;\n  margin: 1vh;\n  border-radius: 4px;\n}\n#brushes div label:hover {\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);\n}\n#brushes div #br-1 ~ label {\n  background-color: #FF5400;\n}\n#brushes div #br-1 ~ label:hover {\n  background-color: #FF9059;\n}\n#brushes div #br-2 ~ label {\n  background-color: #9900D8;\n}\n#brushes div #br-2 ~ label:hover {\n  background-color: #CA49FF;\n}\n#brushes div #br-3 ~ label {\n  background-color: #4444FF;\n}\n#brushes div #br-3 ~ label:hover {\n  background-color: #8686FF;\n}\n#brushes div #br--1 ~ label {\n  background: url(" + __webpack_require__(748) + ") no-repeat center center;\n  background-size: cover;\n}\n#brushes div input:checked ~ label {\n  border: 2px solid white;\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);\n}\n#topbar {\n  padding: 2vh;\n  padding-left: 4vh;\n  margin-bottom: 2vh;\n  margin-top: 0;\n  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.4);\n  font-size: 5vh;\n}\n#model-selector {\n  display: inline-block;\n  width: 100%;\n}\n#model-selector > div {\n  display: inline-block;\n  padding: 1.5vh;\n  width: 14vh;\n  height: 20vh;\n  border-width: 2px;\n  border-style: solid;\n  border-color: #EEE;\n  border-radius: 5px;\n  margin: .5vh;\n  text-align: center;\n  background-color: #FFFFFF;\n  float: left;\n  box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.3);\n}\n#model-selector > div h4 {\n  font-size: 2vh;\n}\n#model-selector > div:hover {\n  border-color: #FFF;\n  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.3);\n}\n#model-selector > div.true {\n  border-color: #FFF;\n  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.3);\n}\n#model-selector > div img {\n  width: 8vh;\n}\n#infoPanel {\n  margin-top: 50px;\n  margin-bottom: 120px;\n}\n#infoPanel div,\n#infoPanel ul {\n  font-size: 2vh;\n  line-height: 4vh;\n  white-space: pre-line;\n}\n#infoPanel ul {\n  list-style: none;\n}\n#infoPanel ul > li:before {\n  content: \"-  \";\n}\n#infoPanel .para {\n  text-indent: 5%;\n}\n#infoPanel .para * {\n  margin-top: 10px;\n}\n", ""]);
+exports.push([module.i, "body,\nhtml {\n  margin: 0;\n  font-family: 'Roboto Slab', serif;\n}\n* {\n  transition: all 0.2s ease;\n}\n#canvasDiv {\n  text-align: center;\n}\ninput[type=text] {\n  border: none;\n  border-bottom: 2px solid;\n  border-color: black;\n  outline: none;\n  padding: 6px;\n  width: 50px;\n  text-align: center;\n}\ninput[type=text]:focus {\n  border-color: #FF5400;\n}\n#options {\n  padding: 1vh;\n  line-height: 120%;\n}\n#options #trainAndDisplay {\n  width: 100px;\n  background: linear-gradient(to right, black 50%, white 50%);\n  background-position: right bottom;\n  background-size: 200% 100%;\n  border: 0;\n  border-radius: 4px;\n  font-size: 2vh;\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);\n  padding: 12px;\n}\n#options #trainAndDisplay:hover {\n  background-position: left bottom;\n  color: white;\n}\n#options #ANN-panel {\n  display: flex;\n  flex-direction: row;\n}\n#options #ANN-panel .layer {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n}\n#options #ANN-panel .layer button {\n  width: 3vh;\n  height: 3vh;\n  margin: .5vh 1.5vh .5vh 1.5vh;\n  border: 0;\n  border-radius: 4px;\n  background-color: black;\n  color: white;\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);\n}\n#options #ANN-panel .layer .flipped {\n  background-color: white;\n  color: black;\n}\ncanvas {\n  display: inline;\n  box-sizing: border-box;\n  margin-top: 6vh;\n  width: 400px;\n  height: 400px;\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);\n  width: 100%;\n  height: auto;\n}\n#brushes {\n  font-size: 2vh;\n}\n#brushes div {\n  display: inline-block;\n  vertical-align: middle;\n}\n#brushes div input {\n  display: none;\n}\n#brushes div label {\n  box-sizing: border-box;\n  color: white;\n  width: 4vh;\n  height: 4vh;\n  margin: 1vh;\n  border-radius: 4px;\n}\n#brushes div label:hover {\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);\n}\n#brushes div #br-1 ~ label {\n  background-color: #FF5400;\n}\n#brushes div #br-1 ~ label:hover {\n  background-color: #FF9059;\n}\n#brushes div #br-2 ~ label {\n  background-color: #9900D8;\n}\n#brushes div #br-2 ~ label:hover {\n  background-color: #CA49FF;\n}\n#brushes div #br-3 ~ label {\n  background-color: #4444FF;\n}\n#brushes div #br-3 ~ label:hover {\n  background-color: #8686FF;\n}\n#brushes div #br--1 ~ label {\n  background: url(" + __webpack_require__(263) + ") no-repeat center center;\n  background-size: cover;\n}\n#brushes div input:checked ~ label {\n  border: 2px solid white;\n  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);\n}\n#topbar {\n  padding: 2vh;\n  padding-left: 4vh;\n  margin-bottom: 2vh;\n  margin-top: 0;\n  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.4);\n  font-size: 5vh;\n}\n#model-selector {\n  display: inline-block;\n  width: 100%;\n}\n#model-selector > div {\n  display: inline-block;\n  padding: 1.5vh;\n  width: 14vh;\n  height: 20vh;\n  border-width: 2px;\n  border-style: solid;\n  border-color: #EEE;\n  border-radius: 5px;\n  margin: .5vh;\n  text-align: center;\n  background-color: #FFFFFF;\n  float: left;\n  box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.3);\n}\n#model-selector > div h4 {\n  font-size: 2vh;\n}\n#model-selector > div:hover {\n  border-color: #FFF;\n  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.3);\n}\n#model-selector > div.true {\n  border-color: #FFF;\n  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.3);\n}\n#model-selector > div img {\n  width: 8vh;\n}\n#infoPanel {\n  margin-top: 50px;\n  margin-bottom: 120px;\n}\n#infoPanel div,\n#infoPanel ul {\n  font-size: 2vh;\n  line-height: 4vh;\n  white-space: pre-line;\n}\n#infoPanel ul {\n  list-style: none;\n}\n#infoPanel ul > li:before {\n  content: \"-  \";\n}\n#infoPanel .para {\n  text-indent: 5%;\n}\n#infoPanel .para * {\n  margin-top: 10px;\n}\n", ""]);
 
 // exports
 
@@ -45024,7 +45028,12 @@ if (performance.now) {
 module.exports = performanceNow;
 
 /***/ }),
-/* 263 */,
+/* 263 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "./img/80929d370174bd1ce0fb05290701ef13.png";
+
+/***/ }),
 /* 264 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -86409,12 +86418,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   return create();
 }));
 
-
-/***/ }),
-/* 748 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "./build/80929d370174bd1ce0fb05290701ef13.png";
 
 /***/ })
 /******/ ]);
