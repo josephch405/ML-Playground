@@ -19,6 +19,17 @@ export default class MLModel{
 			ok([input, output]);
 		});
 	}
+	maxIndex(arr) {
+		var bestIndex = -1;
+		var bestVar = -Infinity;
+		for (var i = 0; i < arr.length; i++) {
+			if (arr[i] > bestVar) {
+				bestVar = arr[i];
+				bestIndex = i;
+			}
+		}
+		return bestIndex;
+	}
 	classif(x, y){
 		return;
 	}

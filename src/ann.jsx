@@ -157,7 +157,7 @@ export default class Ann extends MLModel{
 		//var setK = this.setK.bind(this);//this.setK.bind(this);
 		var self = this;
 		return(
-			class PerceptronUI extends React.Component{
+			class AnnUI extends React.Component{
 				constructor(props){
 					super(props);
 					this.state = {

@@ -14,7 +14,7 @@ let S = {
 		3: "#BBBBFF" 
 	},
 	model: [
-		"knn", "perceptron", "svm", "ann"
+		"knn", "perceptron", "svm", "ann", "tree"
 	],
 	canvasW: 400,
 	canvasH: 400,

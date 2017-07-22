@@ -2,105 +2,178 @@ import S from "./s";
 import React from "react";
 import MLModel from "./mlmodel";
 
-class Node{
-	constructor(data, layer){
+class Node {
+	// data: [[[x, y], [x, y]....], [1, 0, 0, 1, 1,...]]
+	constructor(data, layer) {
 		this.data = data;
 		this.layer = layer;
 		this.isLeaf = true;
+		this.pred = null;
 		this.feature = null;
 		this.splitVal = null;
 		this.children = [];
 	}
-	calculateEntropy(){
-		if (this.isLeaf){
-			var counts = [0, 0];
-			for (var i = 0; i < this.data.length; i ++){
-				
+	fire(xTr) {
+		if (this.isLeaf)
+			return this.pred;
+		if (xTr[this.feature] <= this.splitVal)
+			return this.children[0].fire(xTr);
+		return this.children[1].fire(xTr);
+	}
+	train(layersLeft) {
+		if (layersLeft <= 0 || this.homogenous(this.data[1])) {
+			this.pred = this.majorityLabel(this.data[1]);
+			this.isLeaf = true;
+			return;
+		}
+		var bestSplit = this.bestSplit(this.data);
+
+		this.isLeaf = false;
+		this.feature = bestSplit.feature;
+		this.splitVal = bestSplit.value;
+
+		this.children[0] = new Node(bestSplit.left, this.layer + 1);
+		this.children[1] = new Node(bestSplit.right, this.layer + 1);
+
+		this.children[0].train(layersLeft - 1);
+		this.children[1].train(layersLeft - 1);
+	}
+	homogenous(arr) {
+		var poten = arr[0];
+		for (var i = 1; i < arr.length; i++) {
+			if (arr[i] != poten)
+				return false
+		}
+		return true;
+	}
+	majorityLabel(arr) {
+		var counter = [0, 0];
+		arr.forEach((entry) => {
+			if (entry == S.class1)
+				counter[0] += 1;
+			else
+				counter[1] += 1;
+		});
+		return counter[0] > counter[1] ? S.class1 : S.class2;
+	}
+	// ONLY yTr
+	gini(arr) {
+		var counter = [0, 0];
+		arr.forEach((entry) => {
+			if (entry == S.class1)
+				counter[0] += 1;
+			else
+				counter[1] += 1;
+		});
+		var p = counter[0] / (counter[0] + counter[1]);
+		return p * (1 - p);
+	}
+	// split by going from 0 -> split - 1 vs split -> end
+	// ONLY yTr
+	entropyAtSplit(arr, split) {
+		var arr1 = arr.slice(0, split);
+		var arr2 = arr.slice(split, arr.length);
+		return arr1.length * this.gini(arr1) + arr2.length * this.gini(arr2);
+	}
+	bestSplit(data) {
+		var xTr = data[0];
+		var yTr = data[1];
+		var bestFeature = -1;
+		var bestSplitIndex;
+		var bestEntropy = Infinity;
+		for (var f = 0; f < 2; f++) {
+			var sortedData = this.sortByX(data, f);
+			for (var i = 1; i < sortedData[0].length; i++) {
+				var _e = this.entropyAtSplit(sortedData[1], i);
+				if (_e < bestEntropy) {
+					bestEntropy = _e;
+					bestSplitIndex = i;
+					bestFeature = f;
+				}
 			}
 		}
-		else
-			return this.children[0].calculateEntropy * this.children[0].data.length / this.data.length
-				+ this.children[1].calculateEntropy * this.children[1].data.length / this.data.length;
+		var sortedData = this.sortByX(data, bestFeature);
+		xTr = sortedData[0];
+		yTr = sortedData[1];
+		console.log("xTr", xTr);
+		console.log("bestSplit", bestSplitIndex);
+		return {
+			feature: bestFeature,
+			value: (xTr[bestSplitIndex - 1][bestFeature] + xTr[bestSplitIndex][bestFeature]) / 2,
+			left: [xTr.slice(0, bestSplitIndex), yTr.slice(0, bestSplitIndex)],
+			right: [xTr.slice(bestSplitIndex, xTr.length), yTr.slice(bestSplitIndex, yTr.length)]
+		};
+	}
+	sortByX(data, feature) {
+		var xTr = data[0];
+		var yTr = data[1];
+		var concatted = xTr.map((val, ind) => [...val, yTr[ind]]);
+		concatted.sort((a, b) => a[feature] - b[feature]);
+		var xTrNew = concatted.map((val) => [val[0], val[1]]);
+		var yTrNew = concatted.map((val) => val[2]);
+		return [xTrNew, yTrNew];
 	}
 }
 
 export default class Tree extends MLModel {
-	constructor(){
+	constructor() {
 		super();
-		this.tree = null;
+		this.root = null;
 		this.maxDepth = 5;
 	}
-	classif(x, y){
-		var result = this.w[0] * x + this.w[1] * y + this.w[2];
-		return this.pr2cl(result);
+	classif(x, y) {
+		return this.root.fire([x, y]);
 	}
-	maxIndex(arr){
-		var bestIndex = -1;
-		var bestVar = -Infinity;
-		for (var i = 0; i < arr.length; i ++){
-			if(arr[i] > bestVar){
-				bestVar = arr[i];
-				bestIndex = i;
-			}
-		}
-		return bestIndex;
+	dist(x1, y1, x2, y2) {
+		return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 	}
-	dist(x1, y1, x2, y2){
-		return Math.sqrt((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2));
+	train() {
+		this.root = new Node([this.xTr, this.yTr], 0);
+		this.root.train(2);
+		console.log(this.root)
 	}
-	train(){
-
-	}
-	setMaxIters(iters){
-		if(iters < 100){
-			this.maxIters = iters;
-			return true;
-		}
-		return false;
-	}
-	uiInstance(){
+	uiInstance() {
 		var self = this;
-		var setMaxIters = this.setMaxIters.bind(this);
-		return(
-			class PerceptronUI extends React.Component{
-				constructor(props){
+		return (
+			class TreeUI extends React.Component {
+				constructor(props) {
 					super(props);
-					this.state = {
-						maxIters: self.maxIters
-					};
-					this.onChange = this.onChange.bind(this);
 				}
-				onChange(e){
-					if(setMaxIters(e.target.value)) {
-						this.setState({
-							maxIters: e.target.value
-						});
-					}
-				}
-				render(){
-					return(
-						<div>
-							Max Iters: <input type = "text" value = {this.state.maxIters} onChange = {this.onChange}/>
-						</div>
-					);
+				render() {
+					return (<div>
+							None yet
+						</div>);
 				}
 			}
 		);
 	}
-	info(){
-		return this.generateInfo(
-			"Decision Tree",
-			"If computers played 21 questions.",
-			<div>Design a tree that tries to put data into buckets, using certain thresholds on features</div>,
-			["Max depth (\u2264 10): Maximum number of updates for training"],
-			["Binary Classification", "Regression"],
-			["One of the oldest algorithms out there - cause it's a very simple one. In mathematical terms, we simply solve for a linear combination of the inputs (ie. h = ax + by + cz..., where x, y, z are inputs and a, b, c are constants), then use this output h to predict - positive h for Class A , negative h for Class B. In an intuitive sense, we're finding a straight boundary that exactly cuts through the data.",
-				"It's easy to visualize it as a line if the data is two-dimensional - as in our case. In three dimensions, it's a plane. In four dimensions, it's an entire 3d space - not so easy to visualize anymore.",
-				"The history behind the perceptron is quite an interesting one. Soon after its invention by Rosenblatt in 1957, it was hyped up to be the \"next big thing\" - the New York Times, for example, reported that the perceptron \"will be able to walk, talk, see, write, reproduce itself and be conscious of its existence.\"", 
-				"However, it became rather clear that it could achieve non of these feats - it couldn't even recognize a circle, for example (try it!). This led to an abrupt end in perceptron research in 1969 - what we now call one of several \"AI winters\". Perhaps this serves as a cautionary tale for our own golden age of Machine Learning..."],
-			["Simple to implement", "Tiny, tiny model (boils down to small list of numbers!)"],
-			["Assumes linearly separable data - does poorly otherwise",
-				"Can end up with bad fits with points right on the 'edge'"]
-		);
+	info() {
+		return this.generateInfo({
+			name: "Decision Tree",
+			tldr: "If computers played 21 questions",
+			expl1: "Design a tree that tries to put data into buckets, using certain thresholds on features",
+			params: ["Max depth (\u2264 10): Maximum number of updates for training"],
+			usecase: ["Binary Classification", "Multi-class Classification", "Regression"],
+			expl2: ["The hottest thing out there (note: written in 2017). Who knows how long this trend will go on for.",
+				"The basic premise is that you have multiple layers of perceptrons. Each layer takes in input from the last, and each neuron outputs one number - ie. 'fires'. We then apply some activation function to this 'fired' output, and then we move onto the next layer.",
+				"The activation function is crucial in this - if you didn't push outputs through an activation function, you're effectively training a simple perceptron. In other words, activation functions are what gives Neural Networks their magic. In this case, we use a tanh activation function that scales outputs between -1 to 1 - a variety of others are used, such as Rectified Linear Units (ReLU) and the logistic function.",
+				"Another key component is the backpropogation algorithm. Because of the network's straightforward structure, we can mathematically find a way to optimize our network. We calculate a 'gradient', which involves calculating derivatives for each individual neuron, and then adjusting all the weights accordingly. We adjust the weights by going back from the last layer to the first - hence 'back propogation' of weight updates.",
+				"A lot of cooler applications of Neural Networks revolve around using more complex forms than a simple Dense network (as presented here).",
+				"Convolutional Networks (ConvNets) are experts at image processing, as they 'Convolve' across the whole image, ie. scan the image with a smaller moving window.",
+				"Recurrent Neural Networks (RNNs) are powerful for data generation, both for images and text, because of their power to 'remember' data from previous entries in a time series."
+			],
+			pros: ["Universal Approximator - any continuous function can be approximated by a finite amount of neurons in one layer. No guarantees about learnability though - ie. there's a good fit out there, but it's kinda on you to find it. Somehow.",
+				"As stated, very effective at certain problems such as visual or linguistic problems."
+			],
+			cons: ["Bulky - training can take a bit of time, and the number of layers people are training these days are sort of ridiculous",
+				"Mysterious - in some ways, we're not entirely sure why they're so effective, especially within certain fields such as Vision."
+			],
+			links: [
+				<a target = "_blank" href = "https://en.wikipedia.org/wiki/Artificial_neural_network">Wikipedia: Artificial neural network</a>,
+				<a target = "_blank" href = "http://cs231n.github.io/optimization-2/">Intuitions on backpropogation (Stanford CS 231n, Karpathy)</a>,
+				<a target = "_blank" href = "https://ujjwalkarn.me/2016/08/11/intuitive-explanation-convnets/">Intuitive explanation of ConvNets (Karn)</a>,
+				<a target = "_blank" href = "http://karpathy.github.io/2015/05/21/rnn-effectiveness/">The Unreasonable Effectiveness of Recurrent Neural Networks (Karpathy)</a>
+			]
+		});
 	}
 }

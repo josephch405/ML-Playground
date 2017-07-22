@@ -9,8 +9,9 @@ import Perceptron from "./perceptron";
 //import Linear from "./linear";
 import SVM from "./svm";
 import Ann from "./ann";
+import Tree from "./tree";
 
-const modelList = [new Knn(), new Perceptron(), new SVM(), new Ann()];
+const modelList = [new Knn(), new Perceptron(), new SVM(), new Ann(), new Tree()];
 const modelUiList = modelList.map(function(model){
 	return model.uiInstance();
 });
@@ -69,6 +70,7 @@ export default class UI extends React.Component{
 					<div className = {this.state.modelSelected == S.model[1]} onClick = {() => this.changeModel(S.model[1])}><img src = "./img/perceptron.png"/> <h4> Perceptron </h4> </div>
 					<div className = {this.state.modelSelected == S.model[2]} onClick = {() => this.changeModel(S.model[2])}><img src = "./img/linear.png"/> <h4> Support Vector Machine</h4> </div>
 					<div className = {this.state.modelSelected == S.model[3]} onClick = {() => this.changeModel(S.model[3])}><img src = "./img/ann.png"/> <h4> Artificial Neural Network </h4> </div>
+					<div className = {this.state.modelSelected == S.model[4]} onClick = {() => this.changeModel(S.model[4])}><img src = "./img/ann.png"/> <h4> Decision Tree </h4> </div>
 				</div>
 
 				<h3>Parameters:</h3>
