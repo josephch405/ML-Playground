@@ -129,8 +129,14 @@ export default class Tree extends MLModel {
 	}
 	train() {
 		this.root = new Node([this.xTr, this.yTr], 0);
-		this.root.train(2);
-		console.log(this.root)
+		this.root.train(this.maxDepth);
+	}
+	setMaxDepth(val){
+		if(val >= 0 && val <= 100){
+			this.maxDepth = val;
+			return true;
+		}
+		return false;
 	}
 	uiInstance() {
 		var self = this;
@@ -138,10 +144,18 @@ export default class Tree extends MLModel {
 			class TreeUI extends React.Component {
 				constructor(props) {
 					super(props);
+					this.state = {
+						maxDepth: self.maxDepth
+					};
+				}
+				onChangeDepth(e){
+					if(self.setMaxDepth(e.target.value)){
+						this.setState({maxDepth: e.target.value});
+					}
 				}
 				render() {
 					return (<div>
-							None yet
+							Max Tree Depth: <input type = "text" value = {this.state.maxDepth} onChange = {(e)=>this.onChangeDepth(e)}/>
 						</div>);
 				}
 			}

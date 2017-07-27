@@ -83,7 +83,7 @@ export default class SVM extends MLModel {
 				"Originally, we start with a linear SVM - meaning that our dividing hyperplane, much like the perceptron, \"operates\" with straight lines as boundaries. Obviously this is a bit limiting - we still can't recognize circles! Not all is lost, however - we can introduce some helpful changes.",
 				"The Kernel Trick (makes it sound almost like magic...) is when we go from a Primal SVM formation to a Dual formation. Complicated math aside, this effectively means that you're 'multiplying' a test vector by select Support Vectors, then combining the products to form a good prediction. (Refer to resources for complex definition)",
 				"With a Linear SVM, we are essentially using a Dot Product as the 'Multiplication' for the Dual. We could replace this with other forms of 'multiplication' methods, which are called Kernels. A very popular choice is the RBF kernel - the 'multiplications' end up relying on net distance between test points, so in effect it's actually sort of like KNN, but much more regularized.",
-				<div className = "col-xs-12"><img className = "col-xs-10 col-xs-offset-1" src = "./img/svm_dual.png"/></div>],
+				<img className = "col-xs-10 col-xs-offset-1" src = "./img/svm_dual.png"/>],
 			pros: ["Option to regularize - ie. reduce overfitting by preferring 'simpler' models over complex ones. Try tweaking C to see its effects!",
 				"Parametric (Linear SVM): model remains same size regardless of dataset size"],
 			cons: ["Non-parametric (RBF Kernel SVM): model itself may get more complicated as data set grows"],

@@ -95,7 +95,7 @@ export default class Perceptron extends MLModel {
 				"It's easy to visualize it as a line if the data is two-dimensional - as in our case. In three dimensions, it's a plane. In four dimensions, it's an entire 3d space - not so easy to visualize anymore.",
 				"The history behind the perceptron is quite an interesting one. Soon after its invention by Rosenblatt at Cornell in 1957, it was hyped up to be the \"next big thing\" - the New York Times, for example, reported that the perceptron \"will be able to walk, talk, see, write, reproduce itself and be conscious of its existence.\"", 
 				"However, it became rather clear that it could achieve non of these feats - it couldn't even recognize a circle, for example (try it!). This led to an abrupt end in perceptron research in 1969 - what we now call one of several \"AI winters\". Perhaps this serves as a cautionary tale for our own golden age of Machine Learning...", 
-				<div className = "col-xs-12"><img className = "col-xs-10 col-xs-offset-1" src = "./img/percep_eqn.png"/></div>],
+				<img className = "col-xs-10 col-xs-offset-1" src = "./img/percep_eqn.png"/>],
 			pros: ["Simple to implement", "Tiny, tiny model (boils down to small list of numbers!)"],
 			cons: ["Assumes linearly separable data - does poorly otherwise",
 				"Can end up with bad fits with points right on the 'edge'"],
