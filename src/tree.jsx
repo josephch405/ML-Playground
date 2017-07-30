@@ -131,8 +131,8 @@ export default class Tree extends MLModel {
 		this.root = new Node([this.xTr, this.yTr], 0);
 		this.root.train(this.maxDepth);
 	}
-	setMaxDepth(val){
-		if(val >= 0 && val <= 100){
+	setMaxDepth(val) {
+		if (val >= 0 && val <= 100) {
 			this.maxDepth = val;
 			return true;
 		}
@@ -148,9 +148,9 @@ export default class Tree extends MLModel {
 						maxDepth: self.maxDepth
 					};
 				}
-				onChangeDepth(e){
-					if(self.setMaxDepth(e.target.value)){
-						this.setState({maxDepth: e.target.value});
+				onChangeDepth(e) {
+					if (self.setMaxDepth(e.target.value)) {
+						this.setState({ maxDepth: e.target.value });
 					}
 				}
 				render() {
@@ -166,27 +166,28 @@ export default class Tree extends MLModel {
 			name: "Decision Tree",
 			tldr: "If computers played 21 questions",
 			expl1: "Design a tree that tries to put data into buckets, using certain thresholds on features",
-			params: ["Max depth (\u2264 10): Maximum number of splits for the tree"],
+			params: ["Max depth (\u2264 100): Maximum number of splits for the tree"],
 			usecase: ["Binary Classification", "Multi-class Classification", "Regression"],
 			expl2: ["Basically flowcharts. You begin at the root node. Based on the value of one feature (or sometimes more), we go to the left or right child of the tree. Et cetera, until we arrive at a leaf node, and then we make a prediction based on that leaf.",
 				"It's easy to follow a tree once you've constructed one - it's a very simple chain of 'yes/no's and true/falses. The interesting part is obviously making the tree.",
-				"There are various algorithms for making trees out there, but in general all work towards minimizing entropy. Not the physical kind, but the Informational kind. In the context of a decision tree and nodes, entropy is high when points arriving at a node vary a lot in terms of their labels. If we have a tree that buckets equal numbers of orange and purple points together, this tree has high entropy and is bad. Vice versa - if we end up bucketing orange points together, and purple points separately, then there is low entropy, and this is a good tree.",
-				"Another key component is the backpropogation algorithm. Because of the network's straightforward structure, we can mathematically find a way to optimize our network. We calculate a 'gradient', which involves calculating derivatives for each individual neuron, and then adjusting all the weights accordingly. We adjust the weights by going back from the last layer to the first - hence 'back propogation' of weight updates.",
-				"A lot of cooler applications of Neural Networks revolve around using more complex forms than a simple Dense network (as presented here).",
-				"Convolutional Networks (ConvNets) are experts at image processing, as they 'Convolve' across the whole image, ie. scan the image with a smaller moving window.",
-				"Recurrent Neural Networks (RNNs) are powerful for data generation, both for images and text, because of their power to 'remember' data from previous entries in a time series."
+				<img className = "col-xs-12 col-md-6" src = "./img/tree_flow.png"/>,
+				<img className = "col-xs-12 col-md-6" src = "./img/tree_entropy.png"/>,
+				"There are various algorithms for making trees out there, but in general all work towards minimizing entropy. Not the physical kind, but the Informational kind. In the context of a decision tree and nodes, entropy is high when points in a 'bucket' vary a lot in terms of their labels. If we have a tree that buckets equal numbers of orange and purple points together, this tree has high entropy and is bad. Vice versa - if we end up bucketing orange points together, and purple points separately, then there is low entropy, and this is a good tree.",
+				"Popular techniques for using trees involves Boosting and Bagging.",
+				"Boosting involves training a large number of low-depth (ie high bias) trees that predict just above random chance - then, you intelligently let each small tree contribute towards a final, weighted prediction. This approach primarily lowers the bias of your model.",
+				"Bagging involves resampling the dataset - with your training data, we want to generate a new training set that's just a bit different from the original. We do this by randomly picking one out of n points in the original dataset - and we continue this for as many times as we need to form our new 'bag' of training data. Keep in mind the same datapoint is allowed to be picked more than once. This approach tackles variance in your model, and can reduce overfitting.",
+				"The cool thing about bagging and boosting is that you usually don't have to worry about tradeoffs - boosting reduces bias without overfitting too much, and bagging reduces variance/overfitting without increasing bias too much. For a lot of machine learning, there's a tradeoff between bias and variance - so this ability to decrease one without significantly affecting the other makes bagging and boosting so powerful.",
+				"Note that bagging and boosting are general approaches that don't have to be specific to trees - it's just that trees are more commonly associated with them. You could reduce bias of any algorithm by boosting, and reduce its variance by bagging."
 			],
-			pros: ["Universal Approximator - any continuous function can be approximated by a finite amount of neurons in one layer. No guarantees about learnability though - ie. there's a good fit out there, but it's kinda on you to find it. Somehow.",
-				"As stated, very effective at certain problems such as visual or linguistic problems."
-			],
-			cons: ["Bulky - training can take a bit of time, and the number of layers people are training these days are sort of ridiculous",
-				"Mysterious - in some ways, we're not entirely sure why they're so effective, especially within certain fields such as Vision."
+			pros: ["Very easy to implement and interpret"],
+			cons: ["Overfits if tree depth is too high",
+				"Instable - if data differs by a little bit, the resulting tree can look drastically different, especially if trees have low depth.",
+				"Decision boundaries are orthogonal - no drawing 'slanted' lines to separate classes"
 			],
 			links: [
-				<a target = "_blank" href = "https://en.wikipedia.org/wiki/Artificial_neural_network">Wikipedia: Artificial neural network</a>,
-				<a target = "_blank" href = "http://cs231n.github.io/optimization-2/">Intuitions on backpropogation (Stanford CS 231n, Karpathy)</a>,
-				<a target = "_blank" href = "https://ujjwalkarn.me/2016/08/11/intuitive-explanation-convnets/">Intuitive explanation of ConvNets (Karn)</a>,
-				<a target = "_blank" href = "http://karpathy.github.io/2015/05/21/rnn-effectiveness/">The Unreasonable Effectiveness of Recurrent Neural Networks (Karpathy)</a>
+				<a target = "_blank" href = "https://en.wikipedia.org/wiki/Decision_tree">Wikipedia: Decision Tree</a>,
+				<a target = "_blank" href = "https://en.wikipedia.org/wiki/Bootstrap_aggregating">Wikipedia: Bootstrap Aggregating (Bagging)</a>,
+				<a target = "_blank" href = "http://xgboost.readthedocs.io/en/latest/model.html">Introduction to Boosted Trees (XGBoost, a popular Boosted Tree library)</a>
 			]
 		});
 	}

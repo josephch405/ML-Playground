@@ -4,7 +4,7 @@ html {
 	font-family: 'Roboto Slab', serif;
 }
 
-*{
+* {
 	transition: all 0.2s ease;
 }
 
@@ -12,7 +12,7 @@ html {
 	text-align: center;
 }
 
-input[type=text]{
+input[type=text] {
 	border: none;
 	border-bottom: 2px solid;
 	border-color: black;
@@ -20,7 +20,7 @@ input[type=text]{
 	padding: 6px;
 	width: 50px;
 	text-align: center;
-	&:focus{
+	&:focus {
 		border-color: #FF5400;
 	}
 }
@@ -28,29 +28,29 @@ input[type=text]{
 #options {
 	padding: 1vh;
 	line-height: 120%;
-	#trainAndDisplay{
+	#trainAndDisplay {
 		width: 100px;
-    	background: linear-gradient(to right, black 50%, white 50%);
-    	background-position:right bottom;
-    	background-size: 200% 100%;
+		background: linear-gradient(to right, black 50%, white 50%);
+		background-position: right bottom;
+		background-size: 200% 100%;
 		border: 0;
 		border-radius: 4px;
 		font-size: 2vh;
-		box-shadow: 0 0 10px 0 rgba(0,0,0,.4);
+		box-shadow: 0 0 10px 0 rgba(0, 0, 0, .4);
 		padding: 12px;
-		&:hover{
-    		background-position:left bottom;
+		&:hover {
+			background-position: left bottom;
 			color: white;
 		}
 	}
-	#ANN-panel{
+	#ANN-panel {
 		display: flex;
 		flex-direction: row;
-		.layer{
+		.layer {
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
-			button{
+			button {
 				width: 3vh;
 				height: 3vh;
 				margin: .5vh 1.5vh .5vh 1.5vh;
@@ -58,9 +58,9 @@ input[type=text]{
 				border-radius: 4px;
 				background-color: black;
 				color: white;
-				box-shadow: 0 0 10px 0 rgba(0,0,0,.3)
+				box-shadow: 0 0 10px 0 rgba(0, 0, 0, .3)
 			}
-			.flipped{
+			.flipped {
 				background-color: white;
 				color: black;
 			}
@@ -74,7 +74,7 @@ canvas {
 	margin-top: 6vh;
 	width: 400px;
 	height: 400px;
-	box-shadow: 0 0 10px 0 rgba(0,0,0,.2);
+	box-shadow: 0 0 10px 0 rgba(0, 0, 0, .2);
 	width: 100%;
 	height: auto;
 }
@@ -94,35 +94,35 @@ canvas {
 			height: 4vh;
 			margin: 1vh;
 			border-radius: 4px;
-			&:hover{
-				box-shadow: 0 0 10px 0 rgba(0,0,0,.2);
+			border: .2vh solid rgba(0, 0, 0, 0);
+			&:hover {
+				border: .2vh solid #333; //box-shadow: 0 0 10px 0 rgba(0, 0, 0, .2);
 			}
 		}
-		#br-1 ~ label {
+		#br-1~label {
 			background-color: #FF5400;
 			&:hover {
 				background-color: #FF9059;
 			}
 		}
-		#br-2 ~ label {
+		#br-2~label {
 			background-color: #9900D8;
 			&:hover {
 				background-color: #CA49FF;
 			}
 		}
-		#br-3 ~ label {
+		#br-3~label {
 			background-color: #4444FF;
 			&:hover {
 				background-color: #8686FF;
 			}
 		}
-		#br--1 ~ label {
+		#br--1~label {
 			background: url(x.png) no-repeat center center;
 			background-size: cover;
 		}
-		input:checked ~ label{
-			border: 2px solid white;
-			box-shadow: 0 0 10px 0 rgba(0,0,0,.5);
+		input:checked~label {
+			border: .4vh solid #000; //box-shadow: 0 0 10px 0 rgba(0, 0, 0, .5);
 		}
 	}
 }
@@ -132,16 +132,16 @@ canvas {
 	padding-left: 4vh;
 	margin-bottom: 2vh;
 	margin-top: 0;
-	box-shadow: 0 0 15px 0 rgba(0,0,0,.4);
-	font-size: 5vh;
-	//border: black solid;
+	box-shadow: 0 0 15px 0 rgba(0, 0, 0, .4);
+	font-size: 5vh; //border: black solid;
 	//border-width: 0 0 5px 0;
 }
 
 #model-selector {
 	display: inline-block;
 	width: 100%;
-	> div {
+	>a>div {
+		color: black;
 		display: inline-block;
 		padding: 1.5vh;
 		width: 14vh;
@@ -152,19 +152,20 @@ canvas {
 		border-radius: 5px;
 		margin: .5vh;
 		text-align: center;
-		background-color: #FFFFFF;
-		float: left;
-		box-shadow: 0 0 0 0 rgba(0,0,0,.3);
+		background-color: #FFF;
+		float: left; // box-shadow: 0 0 0 0 rgba(0,0,0,.3);
+		border: solid .2vh #BBB;
 		h4 {
 			font-size: 2vh;
 		}
-		&:hover {
-			border-color: #FFF;
-			box-shadow: 0 0 15px 0 rgba(0,0,0,.3);
-		}
 		&.true {
-			border-color: #FFF;
-			box-shadow: 0 0 15px 0 rgba(0,0,0,.3);
+			border: .4vh solid #000; // box-shadow: 0 0 15px 0 rgba(0,0,0,.3);
+		}
+		&:hover {
+			border: .2vh solid #EEE; // box-shadow: 0 0 15px 0 rgba(0,0,0,.3);\
+		}
+		&.true:hover {
+			border: .4vh solid #888; // box-shadow: 0 0 15px 0 rgba(0,0,0,.3);\
 		}
 		img {
 			width: 8vh;
@@ -172,21 +173,22 @@ canvas {
 	}
 }
 
-#infoPanel{
-	div, ul{
+#infoPanel {
+	div,
+	ul {
 		font-size: 2vh;
 		line-height: 4vh;
 		white-space: pre-line;
 	}
-	ul{
+	ul {
 		list-style: none;
-		>li:before{
+		>li:before {
 			content: "-  "
 		}
 	}
 	margin-top: 50px;
 	margin-bottom: 120px;
-	.para{
+	.para {
 		text-indent: 5%;
 		* {
 			margin-top: 10px;

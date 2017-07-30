@@ -1,19 +1,19 @@
 import S from "./s";
 import React from "react";
 
-export default class MLModel{
-	constructor(){
+export default class MLModel {
+	constructor() {
 		this.xTr = [];
 		this.yTr = [];
 		this.isRegression = false;
 	}
-	setTraining(xTr, yTr){
+	setTraining(xTr, yTr) {
 		this.xTr = xTr;
 		this.yTr = yTr;
 	}
-	batchClassif(input){
+	batchClassif(input) {
 		return new Promise((ok, err) => {
-			var output = input.map((i)=>{
+			var output = input.map((i) => {
 				return this.classif(i[0], i[1]);
 			});
 			ok([input, output]);
@@ -30,32 +30,32 @@ export default class MLModel{
 		}
 		return bestIndex;
 	}
-	classif(x, y){
+	classif(x, y) {
 		return;
 	}
-	train(){
+	train() {
 		return;
 	}
-	getClassif(){
+	getClassif() {
 		return this.batchClassif.bind(this);
 	}
-	uiInstance(){
-		return(<div>No options yet.</div>);
+	uiInstance() {
+		return (<div>No options yet.</div>);
 	}
-	info(){
-		return(<div>No info yet.</div>);
+	info() {
+		return (<div>No info yet.</div>);
 	}
-	pr2cl(pr){
+	pr2cl(pr) {
 		if (pr > 0)
 			return S.class1;
 		return S.class2;
 	}
-	cl2pr(cl){
-		if(cl == S.class1)
+	cl2pr(cl) {
+		if (cl == S.class1)
 			return 1;
 		return -1;
 	}
-	generateInfo({name, tldr, expl1, params, usecase, expl2, pros, cons, links}){
+	generateInfo({ name, tldr, expl1, params, usecase, expl2, pros, cons, links }) {
 		return (<div>
 			<h1>{name}</h1>
 			<h2>TL;DR - {tldr}</h2>
@@ -65,18 +65,19 @@ export default class MLModel{
 			<h2>Use Cases:</h2>
 			{this.liGen(usecase)}
 			<div className = "para">
-				{expl2.map((i, j)=><div key = {j}>{i}</div>)}
+				{expl2.map((i, j)=><div className="col-xs-12" key = {j}>{i}</div>)}
 			</div>
-			<h2>The Good</h2>
-			{this.liGen(pros)}
-			<h2>The Bad</h2>
-			{this.liGen(cons)}
-			<h2>Learn more...</h2>
-			{this.liGen(links)}
-
+			<div className="col-xs-12 col-md-6"><h2>The Good</h2>
+			{this.liGen(pros)}</div>
+			<div className="col-xs-12 col-md-6"><h2>The Bad</h2>
+			{this.liGen(cons)}</div>
+			<div className="col-xs-12">
+				<h2>Learn more...</h2>
+				{this.liGen(links)}
+			</div>
 		</div>);
 	}
-	liGen(arr){
+	liGen(arr) {
 		return <ul>{arr.map((i, j)=><li key = {j}>{i}</li>)}</ul>;
 	}
 }
