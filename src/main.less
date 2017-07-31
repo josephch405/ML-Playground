@@ -2,11 +2,10 @@ body,
 html {
 	margin: 0;
 	font-family: 'Roboto Slab', serif;
+	display: block !important;
 }
 
-* {
-	transition: all 0.2s ease;
-}
+* {}
 
 #canvasDiv {
 	text-align: center;
@@ -23,6 +22,10 @@ input[type=text] {
 	&:focus {
 		border-color: #FF5400;
 	}
+}
+
+.container {
+	transition: all 0.2s ease;
 }
 
 #options {
@@ -71,7 +74,7 @@ input[type=text] {
 canvas {
 	display: inline;
 	box-sizing: border-box;
-	margin-top: 6vh;
+	margin-top: 3vh;
 	width: 400px;
 	height: 400px;
 	box-shadow: 0 0 10px 0 rgba(0, 0, 0, .2);
@@ -133,8 +136,14 @@ canvas {
 	margin-bottom: 2vh;
 	margin-top: 0;
 	box-shadow: 0 0 15px 0 rgba(0, 0, 0, .4);
-	font-size: 5vh; //border: black solid;
+	position: relative;
+	height: 8vh;
+	font-size: 3vh; //border: black solid;
 	//border-width: 0 0 5px 0;
+	#logo {
+		height: 100%; // float: right;
+		vertical-align: top;
+	}
 }
 
 #model-selector {
