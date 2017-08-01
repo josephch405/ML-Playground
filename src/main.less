@@ -20,12 +20,32 @@ input[type=text] {
 	width: 50px;
 	text-align: center;
 	&:focus {
-		border-color: #FF5400;
+		border-color: #ff7f2a;
 	}
 }
 
-.container {
-	transition: all 0.2s ease;
+#feedback {
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	color: white;
+	background-color: #ff7f2a;
+	font-size: 2.2vh;
+	padding: 2vh;
+	padding-bottom: 1.6vh;
+	margin: 0;
+	border: 0;
+	z-index: 5;
+	box-shadow: 0 0 5vh 0 rgba(0, 0, 0, .2);
+	transition: all 0.1s ease;
+}
+
+#feedback:hover {
+	padding-bottom: 2.4vh;
+}
+
+.container * {
+	transition: all 0.1s ease;
 }
 
 #options {
@@ -131,6 +151,7 @@ canvas {
 }
 
 #topbar {
+	z-index: -1;
 	padding: 2vh;
 	padding-left: 4vh;
 	margin-bottom: 2vh;
