@@ -50,11 +50,12 @@ export default class UI extends React.Component {
 		this.props.train();
 	}
 	render() {
+		
+
 		return (
 			<div>
 
 				<div id = "brushes">
-				Click to add data points: 
 					{[S.class1, S.class2, S.eraser].map((i)=>{
 						return(
 							<div key = {i}>
@@ -66,15 +67,17 @@ export default class UI extends React.Component {
 				</div>
 
 				<div id = "model-selector">
-					<a href="#"><div className = {this.state.modelSelected == S.model[0]} onClick = {() => this.changeModel(S.model[0])}><img src = "./img/knn.png"/> <h4>K Nearest Neighbors</h4> </div></a>
-					<a href="#"><div className = {this.state.modelSelected == S.model[1]} onClick = {() => this.changeModel(S.model[1])}><img src = "./img/perceptron.png"/> <h4> Perceptron </h4> </div></a>
-					<a href="#"><div className = {this.state.modelSelected == S.model[2]} onClick = {() => this.changeModel(S.model[2])}><img src = "./img/linear.png"/> <h4> Support Vector Machine</h4> </div></a>
-					<a href="#"><div className = {this.state.modelSelected == S.model[3]} onClick = {() => this.changeModel(S.model[3])}><img src = "./img/ann.png"/> <h4> Artificial Neural Network </h4> </div></a>
-					<a href="#"><div className = {this.state.modelSelected == S.model[4]} onClick = {() => this.changeModel(S.model[4])}><img src = "./img/tree.png"/> <h4> Decision Tree </h4> </div></a>
+					<a href="#"><div className = {this.state.modelSelected == S.model[0]} onClick = {() => this.changeModel(S.model[0])}><img src = "./build/img/knn.png"/> <h4>K Nearest Neighbors</h4> </div></a>
+					<a href="#"><div className = {this.state.modelSelected == S.model[1]} onClick = {() => this.changeModel(S.model[1])}><img src = "./build/img/perceptron.png"/> <h4> Perceptron </h4> </div></a>
+					<a href="#"><div className = {this.state.modelSelected == S.model[2]} onClick = {() => this.changeModel(S.model[2])}><img src = "./build/img/linear.png"/> <h4> Support Vector Machine</h4> </div></a>
+					<a href="#"><div className = {this.state.modelSelected == S.model[3]} onClick = {() => this.changeModel(S.model[3])}><img src = "./build/img/ann.png"/> <h4> Artificial Neural Network </h4> </div></a>
+					<a href="#"><div className = {this.state.modelSelected == S.model[4]} onClick = {() => this.changeModel(S.model[4])}><img src = "./build/img/tree.png"/> <h4> Decision Tree </h4> </div></a>
 				</div>
 
-				<h3>Parameters:</h3>
-				<this.state.modelUi/><br/>
+				<div id="parameters">
+					<h3>Parameters:</h3>
+					<this.state.modelUi/><br/>
+				</div>
 				<button id = "trainAndDisplay" onClick = {() => {this.train();}}>Train</button>
 
 			</div>

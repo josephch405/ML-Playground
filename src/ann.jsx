@@ -277,7 +277,7 @@ export default class Ann extends MLModel {
 			usecase: ["Binary Classification", "Multi-class Classification", "Regression"],
 			expl2: ["The hottest thing out there (note: written in 2017). Who knows how long this trend will go on for.",
 				"The basic premise is that you have multiple layers of perceptrons. Each layer takes in input from the last, and each neuron outputs one number - ie. 'fires'. We then apply some activation function to this 'fired' output, and then we move onto the next layer.",
-				<img className = "col-xs-10 col-xs-offset-1" src = "./img/ann_flow.png"/>,
+				<img className = "col-xs-10 col-xs-offset-1" src = "./build/img/ann_flow.png"/>,
 				"The activation function is crucial in this - if you didn't push outputs through an activation function, you're effectively training a simple perceptron. In other words, activation functions are what gives Neural Networks their magic. In this case, we use a tanh activation function that scales outputs between -1 to 1 - a variety of others are used, such as Rectified Linear Units (ReLU) and the logistic function.",
 				"Another key component is the backpropogation algorithm. Because of the network's straightforward structure, we can mathematically find a way to optimize our network. We calculate a 'gradient', which involves calculating derivatives for each individual neuron, and then adjusting all the weights accordingly. We adjust the weights by going back from the last layer to the first - hence 'back propogation' of weight updates.",
 				"A lot of cooler applications of Neural Networks revolve around using more complex forms than a simple Dense network (as presented here).",

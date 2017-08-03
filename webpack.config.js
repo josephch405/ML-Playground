@@ -8,7 +8,8 @@ var config = {
 	entry: {main:APP_DIR + "/main.jsx"},
 	output: {
 		path: BUILD_DIR,
-		filename: "./js/[name].bundle.js"
+		filename: "./js/[name].bundle.js",
+		publicPath: "build"
 	},
 	module: {
 		loaders: [{
@@ -28,7 +29,7 @@ var config = {
 		}, {
 			test: /\.(jpe?g|png|gif|svg)$/i,
 			loaders: [
-				"file-loader?hash=sha512&digest=hex&name=./img/[hash].[ext]",
+				"file-loader?hash=sha512&digest=hex&name=/img/[hash].[ext]",
 				"image-webpack-loader?bypassOnDebug&optimizationLevel=7&interlaced=false"
 			]
 		}]
