@@ -34654,7 +34654,7 @@ class Ann extends __WEBPACK_IMPORTED_MODULE_3__mlmodel__["a" /* default */] {
 		this.layers = [2, 3, 2, 1];
 		this.shuffleWeights();
 		this.classif = this.classif.bind(this);
-		this.alpha = 0.3;
+		this.alpha = 0.1;
 		this.maxEpochs = 100;
 		this.maxError = 0.05;
 	}
