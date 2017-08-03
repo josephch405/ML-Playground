@@ -34651,12 +34651,12 @@ const MAX_LAYERS = 8;
 class Ann extends __WEBPACK_IMPORTED_MODULE_3__mlmodel__["a" /* default */] {
 	constructor() {
 		super();
-		this.layers = [2, 3, 2, 1];
+		this.layers = [2, 4, 3, 1];
 		this.shuffleWeights();
 		this.classif = this.classif.bind(this);
-		this.alpha = 0.1;
-		this.maxEpochs = 100;
-		this.maxError = 0.05;
+		this.alpha = 0.02;
+		this.maxEpochs = 500;
+		this.maxError = 0.02;
 	}
 	shuffleWeights() {
 		this.A = [];
@@ -34811,7 +34811,7 @@ class Ann extends __WEBPACK_IMPORTED_MODULE_3__mlmodel__["a" /* default */] {
 			this.maxError = ee / 100;
 			return e;
 		}
-		return this.maxError;
+		return this.maxError * 100;
 	}
 	uiInstance() {
 		//var setK = this.setK.bind(this);//this.setK.bind(this);
