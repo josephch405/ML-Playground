@@ -82,7 +82,7 @@ class JoyrideWrapper extends React.Component {
 				ref="joyride"
 				steps={steps}
 				run={true}
-				debug={true}
+				debug={false}
 				showSkipButton={true}
 				type={"continuous"}
 				showStepsProgress={true}

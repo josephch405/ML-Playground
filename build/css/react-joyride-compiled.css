@@ -240,7 +240,7 @@
 .joyride-tooltip__header {
     border-bottom: 1px solid #FF5400;
     color: #555;
-    font-size: 20px;
+    font-size: 2vh;
     padding-bottom: 6px;
     padding-right: 18px;
     position: relative
@@ -251,9 +251,9 @@
 }
 
 .joyride-tooltip__main {
-    font-size: 16px;
-    padding-bottom: 18px;
-    padding-right: 18px
+    font-size: 1.6vh;
+    padding-bottom: 1.8vh;
+    padding-right: 1.8vh
 }
 
 .joyride-tooltip__footer {
@@ -282,7 +282,7 @@
     background-color: #FF5400;
     border-radius: 4px;
     color: #fff;
-    padding: 6px 12px;
+    padding: .6vh 1.2vh;
     transition: background-color .2s ease-in-out
 }
 
