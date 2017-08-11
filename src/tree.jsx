@@ -165,7 +165,7 @@ export default class Tree extends MLModel {
 		return this.generateInfo({
 			name: "Decision Tree",
 			tldr: "If computers played 21 questions",
-			expl1: "Design a tree that tries to put data into buckets, using certain thresholds on features",
+			expl1: "Design a tree that tries to put data into buckets, using certain thresholds on features (ie inputs)",
 			params: ["Max depth (\u2264 100): Maximum number of splits for the tree"],
 			usecase: ["Binary Classification", "Multi-class Classification", "Regression"],
 			expl2: ["Basically flowcharts. You begin at the root node. Based on the value of one feature (or sometimes more), we go to the left or right child of the tree. Et cetera, until we arrive at a leaf node, and then we make a prediction based on that leaf.",
@@ -185,9 +185,9 @@ export default class Tree extends MLModel {
 				"Decision boundaries are orthogonal - no drawing 'slanted' lines to separate classes"
 			],
 			links: [
-				<a target = "_blank" href = "https://en.wikipedia.org/wiki/Decision_tree">Wikipedia: Decision Tree</a>,
-				<a target = "_blank" href = "https://en.wikipedia.org/wiki/Bootstrap_aggregating">Wikipedia: Bootstrap Aggregating (Bagging)</a>,
-				<a target = "_blank" href = "http://xgboost.readthedocs.io/en/latest/model.html">Introduction to Boosted Trees (XGBoost, a popular Boosted Tree library)</a>
+				["https://en.wikipedia.org/wiki/Decision_tree", "Wikipedia: Decision Tree"],
+				["https://en.wikipedia.org/wiki/Bootstrap_aggregating", "Wikipedia: Bootstrap Aggregating (Bagging)"],
+				["http://xgboost.readthedocs.io/en/latest/model.html", "Introduction to Boosted Trees (XGBoost, a popular Boosted Tree library)"]
 			]
 		});
 	}

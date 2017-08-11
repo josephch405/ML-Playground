@@ -17,7 +17,7 @@ var config = {
 			include: APP_DIR,
 			loader: "babel-loader",
 			query: {
-				presets:["react"]
+				presets:["es2015", "react"]
 			}
 		}, {
 			test: /\.less$/,

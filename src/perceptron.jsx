@@ -100,9 +100,9 @@ export default class Perceptron extends MLModel {
 			cons: ["Assumes linearly separable data - does poorly otherwise",
 				"Can end up with bad fits with points right on the 'edge'"],
 			links: [
-				<a target = "_blank" href = "https://en.wikipedia.org/wiki/Perceptron">Wikipedia: Perceptron</a>,
-				<a target = "_blank" href = "http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Perceptron.html">SKlearn perceptron package</a>,
-				<a target = "_blank" href = "http://www.cs.cornell.edu/courses/cs4780/2017sp/lectures/lecturenote03.html">Perceptron math notes (Cornell CS 4780, Weinberger)</a>
+				["https://en.wikipedia.org/wiki/Perceptron", "Wikipedia: Perceptron"],
+				["http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Perceptron.html", "SKlearn perceptron package"],
+				["http://www.cs.cornell.edu/courses/cs4780/2017sp/lectures/lecturenote03.html", "Perceptron math notes (Cornell CS 4780, Weinberger)"]
 			]
 		});
 	}

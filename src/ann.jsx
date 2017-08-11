@@ -122,18 +122,7 @@ export default class Ann extends MLModel {
 		}
 		return;
 	}
-	pr2cl(pr) {
-		if (pr > 0)
-			return S.class1;
-		return S.class2;
-	}
-	cl2pr(cl) {
-		if (cl == S.class1)
-			return 1;
-		return -1;
-	}
 	addNeuron(layer) {
-		console.log(layer);
 		if (layer && layer > 0 && layer < this.layers.length - 1 && this.layers[layer] < MAX_PER_LAYER) {
 			this.layers[layer] += 1;
 		}
@@ -291,10 +280,10 @@ export default class Ann extends MLModel {
 				"Mysterious - in some ways, we're not entirely sure why they're so effective. Kind of like black boxes almost. Easy to visualize if you're working with image data, but on higher dimensions it takes some creativity to understand the neurons and weights."
 			],
 			links: [
-				<a target = "_blank" href = "https://en.wikipedia.org/wiki/Artificial_neural_network">Wikipedia: Artificial neural network</a>,
-				<a target = "_blank" href = "http://cs231n.github.io/optimization-2/">Intuitions on backpropogation (Stanford CS 231n, Karpathy)</a>,
-				<a target = "_blank" href = "https://ujjwalkarn.me/2016/08/11/intuitive-explanation-convnets/">Intuitive explanation of ConvNets (Karn)</a>,
-				<a target = "_blank" href = "http://karpathy.github.io/2015/05/21/rnn-effectiveness/">The Unreasonable Effectiveness of Recurrent Neural Networks (Karpathy)</a>
+				["https://en.wikipedia.org/wiki/Artificial_neural_network", "Wikipedia: Artificial neural network"],
+				["http://cs231n.github.io/optimization-2/", "Intuitions on backpropogation (Stanford CS 231n, Karpathy)"],
+				["https://ujjwalkarn.me/2016/08/11/intuitive-explanation-convnets/", "Intuitive explanation of ConvNets (Karn)"],
+				["http://karpathy.github.io/2015/05/21/rnn-effectiveness/", "The Unreasonable Effectiveness of Recurrent Neural Networks (Karpathy)"]
 			]
 		});
 	}

@@ -73,11 +73,16 @@ export default class MLModel {
 			{this.liGen(cons)}</div>
 			<div className="col-xs-12">
 				<h2>Learn more...</h2>
-				{this.liGen(links)}
+				{this.linkGen(links)}
 			</div>
 		</div>);
 	}
 	liGen(arr) {
 		return <ul>{arr.map((i, j)=><li key = {j}>{i}</li>)}</ul>;
+	}
+	linkGen(arr) {
+		return <ul>{arr.map((i, j)=><li key = {j}>
+			<a target="_blank" href={i[0]}>{i[1]}</a>
+			</li>)}</ul>;
 	}
 }

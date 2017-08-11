@@ -29,11 +29,10 @@ export default class SVM extends MLModel {
 		return true;
 	}
 	setC(c){
-		if(!isNaN(parseFloat(c))){
+		if(parseFloat(c) >= 0){
 			this.C = parseFloat(c);
-			return true;
 		}
-		return false;
+		return c;
 	}
 	uiInstance(){
 		var self = this;
@@ -54,11 +53,9 @@ export default class SVM extends MLModel {
 					}
 				}
 				onChangeC(e){
-					if(self.setC(e.target.value)) {
-						this.setState({
-							C: e.target.value
-						});
-					}
+					this.setState({
+						C: self.setC(e.target.value)
+					})
 				}
 				render(){
 					return(
@@ -88,11 +85,11 @@ export default class SVM extends MLModel {
 				"Parametric (Linear SVM): model remains same size regardless of dataset size"],
 			cons: ["Non-parametric (RBF Kernel SVM): model itself may get more complicated as data set grows"],
 			links: [
-				<a href = "https://en.wikipedia.org/wiki/Support_vector_machine">Wikipedia: Support vector machine</a>,
-				<a href = "http://scikit-learn.org/stable/modules/svm.html">SKlearn Support Vector Machines overview </a>,
-				<a href = "http://www.cs.cornell.edu/courses/cs4780/2017sp/lectures/lecturenote09.html">SVM math notes (Cornell CS 4780, Weinberger)</a>,
-				<a href = "http://www.cs.cornell.edu/courses/cs4780/2017sp/lectures/lecturenote13.html">Kernels math notes (Cornell CS 4780, Weinberger)</a>,
-				<a href = "http://cs229.stanford.edu/materials/smo.pdf">Math behind simplified SMO SVM algorithm used in the Karpathy package</a>
+				["https://en.wikipedia.org/wiki/Support_vector_machine", "Wikipedia: Support vector machine"],
+				["http://scikit-learn.org/stable/modules/svm.html", "SKlearn Support Vector Machines overview"],
+				["http://www.cs.cornell.edu/courses/cs4780/2017sp/lectures/lecturenote09.html", "SVM math notes (Cornell CS 4780, Weinberger)"],
+				["http://www.cs.cornell.edu/courses/cs4780/2017sp/lectures/lecturenote13.html", "Kernels math notes (Cornell CS 4780, Weinberger)"],
+				["http://cs229.stanford.edu/materials/smo.pdf", "Math behind simplified SMO SVM algorithm used in the Karpathy package"]
 			]
 		});
 	}

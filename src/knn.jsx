@@ -94,16 +94,16 @@ export default class Knn extends MLModel{
 			usecase: ["Binary Classification", "Multi-class Classification", "Regression"],
 			expl2: ["A simple and straightforward algorithm. The underlying assumption is that datapoints close to each other share the same label.",
 				"Analogy: if I hang out with CS majors, then I'm probably also a CS major (or that one Philosophy major who's minoring in everything.)",
-				"Note that distance can be defined different ways, such as Manhattan (sum of all features), Euclidean (geometric distance), p-norm distance...typically Euclidean is used (like in this demo), but Manhattan can be faster and thus preferable."],
+				"Note that distance can be defined different ways, such as Manhattan (sum of all features, or inputs), Euclidean (geometric distance), p-norm distance...typically Euclidean is used (like in this demo), but Manhattan can be faster and thus preferable."],
 			pros: ["Simple to implement"],
 			cons: ["Non-Parametric - size of model grows as training data grows. It could take a long time to compute distances for billions of datapoints.",
 				"Curse of Dimensionality - as number of features increase (ie. more dimensions), the average distance between randomly distributed \
 				points converge to a fixed value. This means that most points end up equidistant to each other - so distance becomes less meaningful as a metric"],
 			links: [
-				<a target = "_blank" href = "https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm">Wikipedia: k-nearest neighbors algorithm</a>,
-				<a target = "_blank" href = "http://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html">SKlearn KNN classifier package</a>,
-				<a target = "_blank" href = "http://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsRegressor.html">SKlearn KNN regressor package</a>,				
-				<a target = "_blank" href = "http://www.cs.cornell.edu/courses/cs4780/2017sp/lectures/lecturenote02_kNN.html">KNN math notes (Cornell CS 4780, Weinberger)</a>
+				["https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm", "Wikipedia: k-nearest neighbors algorithm"],
+				["http://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html", "SKlearn KNN classifier package"],
+				["http://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsRegressor.html", "SKlearn KNN regressor package"],
+				["http://www.cs.cornell.edu/courses/cs4780/2017sp/lectures/lecturenote02_kNN.html", "KNN math notes (Cornell CS 4780, Weinberger)"]
 			]
 		});
 	}

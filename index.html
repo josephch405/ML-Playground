@@ -1,58 +1,57 @@
 <head>
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
-    <script src="./build/bootstrap/js/jquery.min.js"></script>
-    <script src="./build/bootstrap/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="./build/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="./build/css/react-joyride-compiled.css">
-    <title>Machine Learning Playground</title>
-    <link rel="icon" href="./build/img/perceptron.png">
-    <script>
-    (function(a, s, y, n, c, h, i, d, e) {
-        s.className += ' ' + y;
-        h.start = 1 * new Date;
-        h.end = i = function() { s.className = s.className.replace(RegExp(' ?' + y), '') };
-        (a[n] = a[n] || []).hide = h;
-        setTimeout(function() {
-            i();
-            h.end = null
-        }, c);
-        h.timeout = c;
-    })(window, document.documentElement, 'async-hide', 'dataLayer', 4000, { 'GTM-5HMQSTW': true });
-    </script>
-    <script>
-    (function(i, s, o, g, r, a, m) {
-        i['GoogleAnalyticsObject'] = r;
-        i[r] = i[r] || function() {
-            (i[r].q = i[r].q || []).push(arguments)
-        }, i[r].l = 1 * new Date();
-        a = s.createElement(o),
-            m = s.getElementsByTagName(o)[0];
-        a.async = 1;
-        a.src = g;
-        m.parentNode.insertBefore(a, m)
-    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+	<link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
+	<script src="./build/bootstrap/js/jquery.min.js"></script>
+	<script src="./build/bootstrap/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="./build/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="./build/css/react-joyride-compiled.css">
+	<title>Machine Learning Playground</title>
+	<link rel="icon" href="./build/img/ann.png">
+	<script>
+	(function(a, s, y, n, c, h, i, d, e) {
+		s.className += ' ' + y;
+		h.start = 1 * new Date;
+		h.end = i = function() { s.className = s.className.replace(RegExp(' ?' + y), '') };
+		(a[n] = a[n] || []).hide = h;
+		setTimeout(function() {
+			i();
+			h.end = null
+		}, c);
+		h.timeout = c;
+	})(window, document.documentElement, 'async-hide', 'dataLayer', 4000, { 'GTM-5HMQSTW': true });
+	</script>
+	<script>
+	(function(i, s, o, g, r, a, m) {
+		i['GoogleAnalyticsObject'] = r;
+		i[r] = i[r] || function() {
+			(i[r].q = i[r].q || []).push(arguments)
+		}, i[r].l = 1 * new Date();
+		a = s.createElement(o),
+		m = s.getElementsByTagName(o)[0];
+		a.async = 1;
+		a.src = g;
+		m.parentNode.insertBefore(a, m)
+	})(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
-    ga('create', 'UA-85207771-2', 'auto');
-    ga('require', 'GTM-5HMQSTW');
-    ga('send', 'pageview');
-    </script>
+	ga('create', 'UA-85207771-4', 'auto');
+	ga('send', 'pageview');
+	</script>
 </head>
 
 <body style="display: none">
-    <div id="joyride-panel"></div>
-    <a id="github" target="_blank" href="https://github.com/josephch405/ML-Playground"><img style="height:14vh;position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
-    <div id="topbar"><a href="http://jochuang.com"><img id="logo" src="./build/img/logo.svg" /></a>Machine Learning Playground</div>
-    <a href="https://goo.gl/forms/sKeKfmOUFClwMWnn2" target="_blank">
-        <div id="feedback">Feedback</div>
-    </a>
-    <div class="container">
-        <div id="canvasDiv" class="col-sm-12 col-md-7">
-            <canvas id="canvas">
-            </canvas>
-        </div>
-        <div class="col-sm-12 col-md-5" id="options"></div>
-        <div class="col-sm-12" id="infoPanel"></div>
-    </div>
+	<div id="joyride-panel"></div>
+	<a id="github" target="_blank" href="https://github.com/josephch405/ML-Playground"><img style="height:14vh;position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
+	<div id="topbar"><a href="http://jochuang.com"><img id="logo" src="./build/img/logo.svg" /></a>Machine Learning Playground</div>
+	<a href="https://goo.gl/forms/sKeKfmOUFClwMWnn2" target="_blank">
+		<div id="feedback">Feedback</div>
+	</a>
+	<div class="container">
+		<div id="canvasDiv" class="col-sm-12 col-md-7">
+			<canvas id="canvas">
+			</canvas>
+		</div>
+		<div class="col-sm-12 col-md-5" id="options"></div>
+		<div class="col-sm-12" id="infoPanel"></div>
+	</div>
 </body>
 <script src="./build/js/main.bundle.js"></script>
 <footer>
