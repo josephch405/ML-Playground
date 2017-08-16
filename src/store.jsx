@@ -31,6 +31,11 @@ export default class Store{
 			this.dispatchToClassif();
 		}
 	}
+	clearAll(){
+		this.xTr = [];
+		this.yTr = [];
+		this.dispatchToClassif();
+	}
 	dispatchToClassif(){
 		this.classif.setTraining(this.xTr, this.yTr);
 	}

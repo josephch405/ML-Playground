@@ -105,6 +105,24 @@ canvas {
 
 #brushes {
 	font-size: 2vh;
+	#clearAll{
+		font-size: 1.4vh;
+		height: 4vh;
+		box-sizing: border-box;
+		width: 80px;
+		background: linear-gradient(to right, black 50%, white 50%);
+		background-position: right bottom;
+		background-size: 200% 100%;
+		border: 0;
+		border-radius: 4px;
+		box-shadow: 0 0 10px 0 rgba(0, 0, 0, .4);
+		padding: 12px;
+		&:hover {
+			background-position: left bottom;
+			color: white;
+		}
+
+	}
 	div {
 		display: inline-block;
 		vertical-align: middle;
@@ -231,5 +249,14 @@ canvas {
 		* {
 			margin-top: 10px;
 		}
+	}
+
+	.good h2{
+		padding-bottom: 8px;
+		border-bottom: 3px solid green;
+	}
+	.bad h2{
+		padding-bottom: 8px;
+		border-bottom: 3px solid red;
 	}
 }

@@ -88,6 +88,9 @@ class JoyrideWrapper extends React.Component {
 				showStepsProgress={true}
 				callback={this.callback}
 				allowClicksThruHole={true}
+				scrollToSteps={false}
+				autoStart={true}
+				showOverlay={false}
 			/>
 		);
 	}
@@ -105,7 +108,8 @@ ReactDOM.render(
 	<UI setClass = {(brush) => {canvas.setBrush(brush);}}
 		train = {() => {canvas.trainAndClassif();}}
 		store = {store}
-		renderInfo = {renderInfo} />,
+		renderInfo = {renderInfo}
+	clearAll = {()=>{canvas.clearAll()}} />,
 	document.getElementById("options")
 );
 

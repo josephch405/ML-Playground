@@ -67,9 +67,9 @@ export default class MLModel {
 			<div className = "para">
 				{expl2.map((i, j)=><div className="col-xs-12" key = {j}>{i}</div>)}
 			</div>
-			<div className="col-xs-12 col-md-6"><h2>The Good</h2>
+			<div className="good col-xs-12 col-md-6"><h2>The Good</h2>
 			{this.liGen(pros)}</div>
-			<div className="col-xs-12 col-md-6"><h2>The Bad</h2>
+			<div className="bad col-xs-12 col-md-6"><h2>The Bad</h2>
 			{this.liGen(cons)}</div>
 			<div className="col-xs-12">
 				<h2>Learn more...</h2>

@@ -46,6 +46,11 @@ export default class Canvas {
 	linkToStore(store){
 		this.store = store;
 	}
+	clearAll(){
+		this.store.clearAll();
+		this.clearCtx();
+		this.drawStoreTr();
+	}
 	onPointAdded(evt){
 		//	catch case here!
 

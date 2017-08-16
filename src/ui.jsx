@@ -49,6 +49,9 @@ export default class UI extends React.Component {
 	train() {
 		this.props.train();
 	}
+	clearAll(){
+		this.props.clearAll();
+	}
 	render() {
 		
 
@@ -64,6 +67,7 @@ export default class UI extends React.Component {
 							</div>
 						);
 					})}
+					<button onClick={()=>this.clearAll()} id="clearAll">Clear all</button>
 				</div>
 
 				<div id = "model-selector">
