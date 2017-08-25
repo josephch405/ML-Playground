@@ -30,7 +30,7 @@ const steps = [{
 }, {
 	title: "Select Data type",
 	text: "You get two colors, or classes, to chose from. Select x to begin Eraser Mode.",
-	selector: "#brushes",
+	selector: "#brushes > div",
 	position: "bottom",
 	isFixed: false
 }, {

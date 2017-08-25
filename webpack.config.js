@@ -1,11 +1,11 @@
 var webpack = require("webpack");
 var path = require("path");
 
-var BUILD_DIR = path.resolve(__dirname, "build");
-var APP_DIR = path.resolve(__dirname, "src");
+var BUILD_DIR = path.join(__dirname, "build");
+var APP_DIR = path.join(__dirname, "src");
 
 var config = {
-	entry: {main:APP_DIR + "/main.jsx"},
+	entry: {main: APP_DIR + "/main.jsx"},
 	output: {
 		path: BUILD_DIR,
 		filename: "./js/[name].bundle.js",
@@ -29,8 +29,7 @@ var config = {
 		}, {
 			test: /\.(jpe?g|png|gif|svg)$/i,
 			loaders: [
-				"file-loader?hash=sha512&digest=hex&name=/img/[hash].[ext]",
-				"image-webpack-loader?bypassOnDebug&optimizationLevel=7&interlaced=false"
+				"url-loader"
 			]
 		}]
 	},
