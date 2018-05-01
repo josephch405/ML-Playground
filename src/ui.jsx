@@ -10,9 +10,11 @@ import Perceptron from "./perceptron";
 import SVM from "./svm";
 import Ann from "./ann";
 import Tree from "./tree";
+import FileSaver from "file-saver";
+import FileReaderInput from 'react-file-reader-input';
 
 const modelList = [new Knn(), new Perceptron(), new SVM(), new Ann(), new Tree()];
-const modelUiList = modelList.map(function(model) {
+const modelUiList = modelList.map(function (model) {
 	return model.uiInstance();
 });
 
@@ -49,40 +51,53 @@ export default class UI extends React.Component {
 	train() {
 		this.props.train();
 	}
-	clearAll(){
+	clearAll() {
 		this.props.clearAll();
 	}
+	export() {
+		console.log(this)
+		var blob = new Blob([this.props.store.exportJSONString()], {type: "text/plain;charset=utf-8"});
+		FileSaver.saveAs(blob, "data.json");
+	}
+	handleUpload(result){
+		this.props.store.importJSONString(result[0][0].target.result);
+		this.props.repaint();
+	}
 	render() {
-		
-
 		return (
 			<div>
-
-				<div id = "brushes">
-					{[S.class1, S.class2, S.eraser].map((i)=>{
-						return(
-							<div key = {i}>
-								<input id = {"br-" + i} value = {i} type = "radio" checked = {this.state.brushSelected == i} onChange = {this.handleChange}/>
+				<div id="io">
+					<FileReaderInput as="text" id="data-file-input"
+						onChange={(a, b) => this.handleUpload(b)}>
+          				<button>Upload Data</button>
+        			</FileReaderInput>
+					<button onClick={() => this.export()}>Save Data</button>
+				</div>
+				<div id="brushes">
+					{[S.class1, S.class2, S.eraser].map((i) => {
+						return (
+							<div key={i}>
+								<input id={"br-" + i} value={i} type="radio" checked={this.state.brushSelected == i} onChange={this.handleChange} />
 								<label htmlFor={"br-" + i}></label>
 							</div>
 						);
 					})}
-					<button onClick={()=>this.clearAll()} id="clearAll">Clear all</button>
+					<button onClick={() => this.clearAll()} id="clearAll">Clear all</button>
 				</div>
 
-				<div id = "model-selector">
-					<a href="#"><div className = {this.state.modelSelected == S.model[0]} onClick = {() => this.changeModel(S.model[0])}><img src = "./build/img/knn.png"/> <h4>K Nearest Neighbors</h4> </div></a>
-					<a href="#"><div className = {this.state.modelSelected == S.model[1]} onClick = {() => this.changeModel(S.model[1])}><img src = "./build/img/perceptron.png"/> <h4> Perceptron </h4> </div></a>
-					<a href="#"><div className = {this.state.modelSelected == S.model[2]} onClick = {() => this.changeModel(S.model[2])}><img src = "./build/img/linear.png"/> <h4> Support Vector Machine</h4> </div></a>
-					<a href="#"><div className = {this.state.modelSelected == S.model[3]} onClick = {() => this.changeModel(S.model[3])}><img src = "./build/img/ann.png"/> <h4> Artificial Neural Network </h4> </div></a>
-					<a href="#"><div className = {this.state.modelSelected == S.model[4]} onClick = {() => this.changeModel(S.model[4])}><img src = "./build/img/tree.png"/> <h4> Decision Tree </h4> </div></a>
+				<div id="model-selector">
+					<a href="#"><div className={this.state.modelSelected == S.model[0]} onClick={() => this.changeModel(S.model[0])}><img src="./build/img/knn.png" /> <h4>K Nearest Neighbors</h4> </div></a>
+					<a href="#"><div className={this.state.modelSelected == S.model[1]} onClick={() => this.changeModel(S.model[1])}><img src="./build/img/perceptron.png" /> <h4> Perceptron </h4> </div></a>
+					<a href="#"><div className={this.state.modelSelected == S.model[2]} onClick={() => this.changeModel(S.model[2])}><img src="./build/img/linear.png" /> <h4> Support Vector Machine</h4> </div></a>
+					<a href="#"><div className={this.state.modelSelected == S.model[3]} onClick={() => this.changeModel(S.model[3])}><img src="./build/img/ann.png" /> <h4> Artificial Neural Network </h4> </div></a>
+					<a href="#"><div className={this.state.modelSelected == S.model[4]} onClick={() => this.changeModel(S.model[4])}><img src="./build/img/tree.png" /> <h4> Decision Tree </h4> </div></a>
 				</div>
 
 				<div id="parameters">
 					<h3>Parameters:</h3>
-					<this.state.modelUi/><br/>
+					<this.state.modelUi /><br />
 				</div>
-				<button id = "trainAndDisplay" onClick = {() => {this.train();}}>Train</button>
+				<button id="trainAndDisplay" onClick={() => { this.train(); }}>Train</button>
 
 			</div>
 		);

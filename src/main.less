@@ -103,6 +103,30 @@ canvas {
 	max-width: 70vh;
 }
 
+#io{
+	div{
+		display: inline-block
+	}
+	button{
+		font-size: 1.6vh;
+		height: 4vh;
+		box-sizing: border-box;
+		width: 14vh;
+		background: linear-gradient(to right, black 50%, white 50%);
+		background-position: right bottom;
+		margin-right: 2vh;
+		background-size: 200% 100%;
+		border: 0;
+		border-radius: 4px;
+		box-shadow: 0 0 10px 0 rgba(0, 0, 0, .4);
+		padding: 1.2vh;
+		&:hover {
+			background-position: left bottom;
+			color: white;
+		}
+	}
+}
+
 #brushes {
 	font-size: 2vh;
 	#clearAll{
@@ -121,7 +145,6 @@ canvas {
 			background-position: left bottom;
 			color: white;
 		}
-
 	}
 	div {
 		display: inline-block;

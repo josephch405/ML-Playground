@@ -109,7 +109,8 @@ ReactDOM.render(
 		train = {() => {canvas.trainAndClassif();}}
 		store = {store}
 		renderInfo = {renderInfo}
-	clearAll = {()=>{canvas.clearAll()}} />,
+		repaint = {()=>{canvas.clearCtx();canvas.drawStoreTr()}}
+		clearAll = {()=>{canvas.clearAll()}} />,
 	document.getElementById("options")
 );
 

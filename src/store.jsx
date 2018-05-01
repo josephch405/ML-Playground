@@ -59,4 +59,13 @@ export default class Store{
 			ok(this.classif.getClassif());
 		});
 	}
+	exportJSONString(){
+		return JSON.stringify([this.xTr, this.yTr]);
+	}
+	importJSONString(str){
+		let obj = JSON.parse(str);
+		this.xTr = obj[0];
+		this.yTr = obj[1];
+		this.dispatchToClassif();
+	}
 }
