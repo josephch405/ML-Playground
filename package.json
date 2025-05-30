@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack --progress --colors --watch",
-    "build": "webpack -p"
+    "dev": "webpack --progress --watch --mode development",
+    "build": "webpack --mode production"
   },
   "repository": {
     "type": "git",
@@ -18,24 +18,27 @@
   },
   "homepage": "https://github.com/josephch405/mldemos#readme",
   "devDependencies": {
+    "@babel/core": "^7.27.4",
+    "@babel/preset-env": "^7.27.2",
+    "@babel/preset-react": "^7.27.1",
     "babel-core": "^6.26.3",
-    "babel-loader": "^6.4.1",
-    "babel-preset-es2015": "^6.24.1",
-    "css-loader": "^0.27.3",
+    "babel-loader": "^10.0.0",
+    "css-loader": "^7.1.2",
     "eslint": "^4.18.2",
     "eslint-plugin-react": "^7.1.0",
-    "file-loader": "^0.10.1",
+    "file-loader": "^6.2.0",
     "less": "^3.0.4",
-    "less-loader": "^3.0.0",
-    "style-loader": "^0.14.1",
-    "url-loader": "^1.0.1",
-    "webpack": "^2.2.1"
+    "less-loader": "^12.3.0",
+    "style-loader": "^4.0.0",
+    "terser-webpack-plugin": "^5.3.14",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.99.9"
   },
   "dependencies": {
     "babel-preset-react": "^6.24.1",
     "bootstrap": "^4.3.1",
     "file-saver": "^1.3.8",
-    "image-webpack-loader": "^4.3.1",
+    "image-webpack-loader": "^8.1.0",
     "mathjs": "^7.5.1",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",

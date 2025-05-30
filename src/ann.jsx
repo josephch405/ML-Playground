@@ -1,6 +1,6 @@
 import S from "./s";
 import React from "react";
-import { default as m } from "mathjs";
+import * as m from "mathjs";
 import MLModel from "./mlmodel";
 
 const norm = 100;

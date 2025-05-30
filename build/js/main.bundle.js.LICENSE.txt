@@ -1,0 +1,55 @@
+/*
+object-assign
+(c) Sindre Sorhus
+@license MIT
+*/
+
+/*!
+ *  decimal.js v10.5.0
+ *  An arbitrary-precision Decimal type for JavaScript.
+ *  https://github.com/MikeMcl/decimal.js
+ *  Copyright (c) 2025 Michael Mclaughlin <M8ch88l@gmail.com>
+ *  MIT Licence
+ */
+
+/*! @source http://purl.eligrey.com/github/FileSaver.js/blob/master/FileSaver.js */
+
+/**
+ * @license Fraction.js v4.3.7 31/08/2023
+ * https://www.xarg.org/2014/03/rational-numbers-in-javascript/
+ *
+ * Copyright (c) 2023, Robert Eisele (robert@raw.org)
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ **/
+
+/**
+ * Checks if an event is supported in the current execution environment.
+ *
+ * NOTE: This will not work correctly for non-generic events such as `change`,
+ * `reset`, `load`, `error`, and `select`.
+ *
+ * Borrows from Modernizr.
+ *
+ * @param {string} eventNameSuffix Event name, e.g. "click".
+ * @param {?boolean} capture Check if the capture phase is supported.
+ * @return {boolean} True if the event is supported.
+ * @internal
+ * @license Modernizr 3.0.0pre (Custom Build) | MIT
+ */
+
+/**
+* @license nested-property https://github.com/cosmosio/nested-property
+*
+* The MIT License (MIT)
+*
+* Copyright (c) 2014-2015 Olivier Scherrer <pode.fr@gmail.com>
+*/
+
+/** @license React v16.13.1
+ * react-is.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
